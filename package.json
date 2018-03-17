@@ -1,0 +1,29 @@
+{
+  "name": "only-owner-can-merge",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Justin Law <hello@justinlaw.org> (https://github.io/jusx/gh-owner-merge-bot)",
+  "license": "ISC",
+  "repository": "https://github.com/jusx/gh-owner-merge-bot.git",
+  "scripts": {
+    "start": "probot run ./index.js",
+    "test": "jest && standard"
+  },
+  "dependencies": {
+    "probot": "^5.0.0"
+  },
+  "devDependencies": {
+    "jest": "^21.2.1",
+    "smee-client": "^1.0.1",
+    "standard": "^10.0.3"
+  },
+  "engines": {
+    "node": ">= 7.7.0",
+    "npm": ">= 4.0.0"
+  },
+  "standard": {
+    "env": [
+      "jest"
+    ]
+  }
+}
