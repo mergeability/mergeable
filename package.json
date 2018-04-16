@@ -10,6 +10,7 @@
     "test": "jest && standard"
   },
   "dependencies": {
+    "js-yaml": "^3.11.0",
     "probot": "^5.0.0"
   },
   "devDependencies": {
