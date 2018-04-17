@@ -1,10 +1,10 @@
 {
-  "name": "only-owner-can-merge",
+  "name": "mergeable",
   "version": "1.0.0",
   "description": "",
-  "author": "Justin Law <hello@justinlaw.org> (https://github.io/jusx/gh-owner-merge-bot)",
+  "author": "Justin Law <hello@justinlaw.org> (https://github.io/jusx/mergeable)",
   "license": "ISC",
-  "repository": "https://github.com/jusx/gh-owner-merge-bot.git",
+  "repository": "https://github.com/jusx/mergeable.git",
   "scripts": {
     "start": "probot run ./index.js",
     "test": "jest && standard"
