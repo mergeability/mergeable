@@ -8,11 +8,11 @@ By default the Mergeable configuration is as follows:
 
 ```yml
 mergeable:
-  # PR must not have any label that is tested true with the following regex
-  label: 'wip|do not merge|work in progress|experimental'
+  # PR must not have any label that has the following terms to be mergeable
+  label: 'work in progress|do not merge|experimental|proof of concept'
 
-  # PR must not have a title that is tested true with the following regex
-  title: 'wip|do not merge|poc'
+  # PR must not have any of the following terms in the title. i.e. (wip) My PR Title
+  title: 'wip|dnm|exp|poc'
 
   # Minimum of 1 review approval is needed.
   approvals: 1
@@ -31,17 +31,28 @@ mergeable:
   label: 'wip|do not merge|experimental'
 
   # Regular expression to be tested on the title. Not mergeable when true.  
-  title: 'wip|poc' #  
+  title: 'wip' #  
 ```
 
-## Setup
+## Usage
 
-```
-# Install dependencies
-npm install
+### Install the app
+1. [Install and Configure](https://github.com/apps/mergeable) the Mergeable GitHub App.
+2. [Configure](#configuration) Mergeable or do nothing else and just go with the default.
+3. Ensure branch is protected and [Require status checks to pass before merging](https://help.github.com/articles/enabling-required-status-checks/) is checked.
 
-# Run the bot
-npm start
-```
+### Deploy your own
 
-Deploy to your server and configure it as a GitHub App.
+If you would like to run your own instance of this plugin, see the [docs for deploying GitHub Apps](https://github.com/probot/probot/blob/master/docs/deployment.md).
+
+This GitHub App requires these permissions & events:
+
+- Repository metadata - **Read & Write**
+- Pull requests - **Read Only**
+- Single File - **Read-only**
+ - Path: `.github/mergeable.yml`
+
+And subscription to the following events:
+- [x] Pull request
+- [x] Pull request review comment
+- [x] Pull request review

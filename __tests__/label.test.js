@@ -13,7 +13,7 @@ test('fail gracefully if invalid regex', async () => {
 test('mergeable is false if regex found or true if not when there is only one label', async () => {
   let config = new Configuration()
 
-  let validation = await label(createMock('WIP Label'), config.settings)
+  let validation = await label(createMock('work in progress'), config.settings)
   expect(validation.mergeable).toBe(false)
 
   validation = await label(createMock('Some Label'), config.settings)
@@ -23,7 +23,7 @@ test('mergeable is false if regex found or true if not when there is only one la
 test('mergeable is false if regex found or true if not when there are multiple labels', async () => {
   let config = (new Configuration()).settings
 
-  let validation = await label(createMock(['abc', 'WIP Label', 'xyz']), config)
+  let validation = await label(createMock(['abc', 'experimental', 'xyz']), config)
   expect(validation.mergeable).toBe(false)
 
   validation = await label(createMock(['Some Label', '123', '456']), config)
@@ -32,7 +32,7 @@ test('mergeable is false if regex found or true if not when there are multiple l
 
 test('description is correct', async () => {
   let config = new Configuration()
-  let validation = await label(createMock('WIP Label'), config.settings)
+  let validation = await label(createMock('Work in Progress'), config.settings)
 
   expect(validation.mergeable).toBe(false)
   expect(validation.description).toBe(`Label contains "${Configuration.DEFAULTS.label}"`)
