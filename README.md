@@ -1,3 +1,4 @@
+[![CircleCI](https://circleci.com/gh/jusx/mergeable.svg?style=shield)](https://circleci.com/gh/jusx/mergeable)
 # The Mergeable Bot
 A GitHub App that prevents merging of pull requests based on [configurations](#configuration).
 
