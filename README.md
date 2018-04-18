@@ -8,10 +8,10 @@ By default the Mergeable configuration is as follows:
 
 ```yml
 mergeable:
-  # PR must not have any label that is tested true with the following regex
+  # PR must not have any label that has the following terms to be mergeable
   label: 'work in progress|do not merge|experimental|proof of concept'
 
-  # PR must not have a title that is tested true with the following regex
+  # PR must not have any of the following terms in the title. i.e. (wip) My PR Title
   title: 'wip|dnm|exp|poc'
 
   # Minimum of 1 review approval is needed.
