@@ -51,7 +51,7 @@ This GitHub App requires these permissions & events:
 - Repository metadata - **Read & Write**
 - Pull requests - **Read Only**
 - Single File - **Read-only**
- - Path: `.github/mergeable.yml`
+  - Path: `.github/mergeable.yml`
 
 And subscription to the following events:
 - [x] Pull request
