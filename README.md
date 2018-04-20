@@ -1,7 +1,15 @@
 # The Mergeable Bot
 A GitHub App that prevents merging of pull requests based on [configurations](#configuration).
 
-This is a GitHub App built with [probot](https://github.com/probot/probot).
+- Prevent your pull requests from being mergeable when certain terms are in the **title** or **label**.
+
+- Prevent your pull requests from being mergeable when the **milestone** on the pull request does not match with what is configured.
+
+- Make your pull requests mergeable only when there are `n` number of **approved reviews** where `n` is configurable.
+
+<blockquote>
+Improve workflow. [Install it now!](https://github.com/apps/mergeable)
+</blockquote>
 
 ## Configuration
 By default the Mergeable configuration is as follows:
@@ -31,7 +39,10 @@ mergeable:
   label: 'wip|do not merge|experimental'
 
   # Regular expression to be tested on the title. Not mergeable when true.  
-  title: 'wip' #  
+  title: 'wip'
+
+  # Only mergeable when milestone is as specified below.
+  milestone: 'version 1'  
 ```
 
 ## Usage
@@ -56,3 +67,6 @@ And subscription to the following events:
 - [x] Pull request
 - [x] Pull request review comment
 - [x] Pull request review
+
+## About
+Mergeable Bot is a GitHub App built with [probot](https://github.com/probot/probot).

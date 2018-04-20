@@ -1,7 +1,14 @@
 const Configuration = require('./lib/configuration')
 
 module.exports = (robot) => {
-  robot.log('')
+  robot.on(
+    [
+      'issues.milestoned'
+    ],
+    context => {
+      console.log(context.payload.issue.pull_request)
+    }
+  )
   robot.on(
     [ 'pull_request.opened',
       'pull_request.edited',
@@ -9,17 +16,19 @@ module.exports = (robot) => {
       'pull_request_review.edited',
       'pull_request_review.dismissed',
       'pull_request.labeled',
-      'pull_request.unlabeled'
+      'pull_request.unlabeled',
+      'pull_request.assigned',
+      'pull_request.unassigned'
     ],
     handle
   )
 
   async function handle (context) {
     var config = await Configuration.instanceWithContext(context)
-    console.log(config)
+    robot.log(config)
 
     let validators = []
-    let includes = [ 'approvals', 'title', 'label' ]
+    let includes = [ 'approvals', 'title', 'label', 'milestone' ]
     includes.forEach(validator => {
       validators.push(require(`./lib/${validator}`)(context, config.settings))
     })
