@@ -8,9 +8,7 @@ module.exports = (robot) => {
       'pull_request_review.edited',
       'pull_request_review.dismissed',
       'pull_request.labeled',
-      'pull_request.unlabeled',
-      'pull_request.assigned',
-      'pull_request.unassigned'
+      'pull_request.unlabeled'
     ],
     handle
   )
