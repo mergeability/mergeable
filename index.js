@@ -2,14 +2,6 @@ const Configuration = require('./lib/configuration')
 
 module.exports = (robot) => {
   robot.on(
-    [
-      'issues.milestoned'
-    ],
-    context => {
-      console.log(context.payload.issue.pull_request)
-    }
-  )
-  robot.on(
     [ 'pull_request.opened',
       'pull_request.edited',
       'pull_request_review.submitted',
