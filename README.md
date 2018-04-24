@@ -1,12 +1,12 @@
 [![CircleCI](https://circleci.com/gh/jusx/mergeable.svg?style=shield)](https://circleci.com/gh/jusx/mergeable)
 # The Mergeable Bot
-A GitHub App that prevents merging of pull requests based on [configurations](#configuration):
+A GitHub App that prevents merging of pull requests based on [configurations](#configuration). Make your pull requests mergeable only when:
 
-- Prevent your pull requests from being mergeable when certain terms are in the **title** or **label**.
+- Certain terms are not in the **title** or **label**.
 
-- Prevent your pull requests from being mergeable when the **milestone** on the pull request does not match with what is configured.
+- The **milestone** on the pull request matches with what is configured.
 
-- Make your pull requests mergeable only when there are `n` number of **approved reviews** where `n` is configurable.
+- There are at least `n` number of **approved reviews**, where `n` is configurable.
 
 <blockquote>
 [Install it](https://github.com/apps/mergeable) or [deploy your own](#deploy-your-own)
