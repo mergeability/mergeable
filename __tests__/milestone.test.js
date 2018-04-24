@@ -19,7 +19,7 @@ test('shoud be false when milestone is set in settings but null in PR', async ()
 test('description should be correct', async () => {
   let settings = createMockConfig('Version 1').settings
   let validation = await milestone(createMockPR(), null, settings)
-  expect(validation.description).toBe(`Milestone must be ${settings.mergeable.milestone}"`)
+  expect(validation.description).toBe(`Milestone must be "${settings.mergeable.milestone}"`)
 })
 
 // TODO move this to a more relevant test when we refactor index.js
