@@ -1,3 +1,4 @@
+[![CircleCI](https://circleci.com/gh/jusx/mergeable.svg?style=shield)](https://circleci.com/gh/jusx/mergeable)
 # The Mergeable Bot
 A GitHub App that prevents merging of pull requests based on [configurations](#configuration):
 
@@ -64,7 +65,7 @@ This GitHub App requires these permissions & events:
 - Pull requests - **Read Only**
 - Issues - **Read Only**
 - Single File - **Read-only**
- - Path: `.github/mergeable.yml`
+  - Path: `.github/mergeable.yml`
 
 And subscription to the following events:
 - [x] Pull request
