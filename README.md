@@ -1,5 +1,5 @@
 # The Mergeable Bot
-A GitHub App that prevents merging of pull requests based on [configurations](#configuration).
+A GitHub App that prevents merging of pull requests based on [configurations](#configuration):
 
 - Prevent your pull requests from being mergeable when certain terms are in the **title** or **label**.
 
@@ -8,8 +8,10 @@ A GitHub App that prevents merging of pull requests based on [configurations](#c
 - Make your pull requests mergeable only when there are `n` number of **approved reviews** where `n` is configurable.
 
 <blockquote>
-Improve workflow. [Install it now!](https://github.com/apps/mergeable)
+[Install it](https://github.com/apps/mergeable) or [deploy your own](#deploy-your-own)
 </blockquote>
+
+The Mergeable Bot is built with [probot](https://github.com/probot/probot).
 
 ## Configuration
 By default the Mergeable configuration is as follows:
@@ -60,6 +62,7 @@ This GitHub App requires these permissions & events:
 
 - Repository metadata - **Read & Write**
 - Pull requests - **Read Only**
+- Issues - **Read Only**
 - Single File - **Read-only**
  - Path: `.github/mergeable.yml`
 
@@ -67,6 +70,4 @@ And subscription to the following events:
 - [x] Pull request
 - [x] Pull request review comment
 - [x] Pull request review
-
-## About
-Mergeable Bot is a GitHub App built with [probot](https://github.com/probot/probot).
+- [x] Issues

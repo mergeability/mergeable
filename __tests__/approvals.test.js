@@ -11,11 +11,6 @@ const createMockContext = (minimum, data) => {
 
   return {
     repo: jest.fn(),
-    payload: {
-      pull_request: {
-        number: 1
-      }
-    },
     github: {
       pullRequests: {
         getReviews: jest.fn().mockReturnValue({ data: data })
@@ -32,26 +27,26 @@ const config = (min) => {
 }
 
 test('that mergeable is true when less than minimum', async () => {
-  let validation = await approvals(createMockContext(1), config(2))
+  let validation = await approvals({ number: 1 }, createMockContext(1), config(2))
   expect(validation.mergeable).toBe(false)
 })
 
 test('that mergeable is true when the same as minimum', async () => {
-  let validation = await approvals(createMockContext(2), config(2))
+  let validation = await approvals({ number: 1 }, createMockContext(2), config(2))
   expect(validation.mergeable).toBe(true)
 })
 
 test('that mergeable is true when greater than minimum', async () => {
-  let validation = await approvals(createMockContext(3), config(2))
+  let validation = await approvals({ number: 1 }, createMockContext(3), config(2))
   expect(validation.mergeable).toBe(true)
 })
 
 test('that description is dynamic based on minimum', async () => {
-  let validation = await approvals(createMockContext(3), config(5))
+  let validation = await approvals({ number: 1 }, createMockContext(3), config(5))
   expect(validation.description).toBe('At least 5 review approval(s) required.')
 })
 
 test('that description is null when mergeable', async () => {
-  let validation = await approvals(createMockContext(5), config(5))
+  let validation = await approvals({ number: 1 }, createMockContext(5), config(5))
   expect(validation.description).toBe(null)
 })

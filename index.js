@@ -1,4 +1,5 @@
 const Configuration = require('./lib/configuration')
+const fetch = require('node-fetch')
 
 module.exports = (robot) => {
   robot.on(
@@ -10,20 +11,36 @@ module.exports = (robot) => {
       'pull_request.labeled',
       'pull_request.unlabeled'
     ],
-    handle
+    handlePullRequest
   )
 
-  async function handle (context) {
+  robot.on(['issues.milestoned', 'issues.demilestoned'], handleIssues)
+
+  // TODO abstract to lib and write tests.
+  async function handleIssues (context) {
+    if (context.payload.issue.pull_request) {
+      let res = await fetch(context.payload.issue.pull_request.url)
+      let pr = await res.json()
+      handle(context, pr)
+    }
+  }
+
+  async function handlePullRequest (context) {
+    handle(context, context.payload.pull_request)
+  }
+
+  var handle = async (context, pullRequest) => {
     var config = await Configuration.instanceWithContext(context)
     robot.log(config)
 
     let validators = []
     let includes = [ 'approvals', 'title', 'label', 'milestone' ]
+
     includes.forEach(validator => {
-      validators.push(require(`./lib/${validator}`)(context, config.settings))
+      validators.push(require(`./lib/${validator}`)(pullRequest, context, config.settings))
     })
 
-    Promise.all(validators).then((results) => {
+    Promise.all(validators).then(async (results) => {
       let failures = results.filter(validated => !validated.mergeable)
 
       let status, description
@@ -38,7 +55,7 @@ module.exports = (robot) => {
       }
 
       context.github.repos.createStatus(context.repo({
-        sha: context.payload.pull_request.head.sha,
+        sha: pullRequest.head.sha,
         state: status,
         target_url: 'https://github.com/apps/mergeable',
         description: description,
