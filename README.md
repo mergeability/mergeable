@@ -9,8 +9,8 @@ A GitHub App that prevents merging of pull requests based on [configurations](#c
 - There are at least `n` number of **approved reviews**, where `n` is configurable.
 
 
+![Screenshot](https://raw.githubusercontent.com/jusx/mergeable/5d9c9cab357b12b84af62044ac46648d9fca84c4/screenshot.gif)
 > [Install it](https://github.com/apps/mergeable) or [deploy your own](#deploy-your-own).
-
 
 The Mergeable Bot is built with [probot](https://github.com/probot/probot).
 
