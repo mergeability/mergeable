@@ -6,42 +6,43 @@ test('fail gracefully if invalid regex', async () => {
     mergeable:
       label: '@#$@#$@#$'
   `)
-  let validation = await label(createMock('WIP'), config.settings)
+  let validation = await label(createMockPR(), createMockContext('WIP'), config.settings)
   expect(validation.mergeable).toBe(true)
 })
 
 test('mergeable is false if regex found or true if not when there is only one label', async () => {
   let config = new Configuration()
 
-  let validation = await label(createMock('work in progress'), config.settings)
+  let validation = await label(createMockPR(), createMockContext('work in progress'), config.settings)
   expect(validation.mergeable).toBe(false)
 
-  validation = await label(createMock('Some Label'), config.settings)
+  validation = await label(createMockPR(), createMockContext('Some Label'), config.settings)
   expect(validation.mergeable).toBe(true)
 })
 
 test('mergeable is false if regex found or true if not when there are multiple labels', async () => {
   let config = (new Configuration()).settings
 
-  let validation = await label(createMock(['abc', 'experimental', 'xyz']), config)
+  let validation = await label(createMockPR(), createMockContext(['abc', 'experimental', 'xyz']), config)
   expect(validation.mergeable).toBe(false)
 
-  validation = await label(createMock(['Some Label', '123', '456']), config)
+  validation = await label(createMockPR(), createMockContext(['Some Label', '123', '456']), config)
   expect(validation.mergeable).toBe(true)
 })
 
 test('description is correct', async () => {
   let config = new Configuration()
-  let validation = await label(createMock('Work in Progress'), config.settings)
+  let validation = await label(createMockPR(),
+    createMockContext('Work in Progress'), config.settings)
 
   expect(validation.mergeable).toBe(false)
   expect(validation.description).toBe(`Label contains "${Configuration.DEFAULTS.label}"`)
 
-  validation = await label(createMock('Just Label'), config.settings)
+  validation = await label(createMockPR(), createMockContext('Just Label'), config.settings)
   expect(validation.description).toBe(null)
 })
 
-const createMock = (labels) => {
+const createMockContext = (labels) => {
   let labelArray = []
   if (Array.isArray(labels)) {
     labels.forEach((label) => {
@@ -53,9 +54,6 @@ const createMock = (labels) => {
 
   return {
     repo: jest.fn(),
-    payload: {
-      pull_request: { number: 1 }
-    },
     github: {
       issues: {
         getIssueLabels: () => {
@@ -64,4 +62,8 @@ const createMock = (labels) => {
       }
     }
   }
+}
+
+const createMockPR = () => {
+  return { number: 1 }
 }

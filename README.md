@@ -1,8 +1,18 @@
 [![CircleCI](https://circleci.com/gh/jusx/mergeable.svg?style=shield)](https://circleci.com/gh/jusx/mergeable)
 # The Mergeable Bot
-A GitHub App that prevents merging of pull requests based on [configurations](#configuration).
+A GitHub App that prevents merging of pull requests based on [configurations](#configuration). Make your pull requests mergeable only when:
 
-This is a GitHub App built with [probot](https://github.com/probot/probot).
+- Certain terms are not in the **title** or **label**.
+
+- The **milestone** on the pull request matches with what is configured.
+
+- There are at least `n` number of **approved reviews**, where `n` is configurable.
+
+<blockquote>
+[Install it](https://github.com/apps/mergeable) or [deploy your own](#deploy-your-own)
+</blockquote>
+
+The Mergeable Bot is built with [probot](https://github.com/probot/probot).
 
 ## Configuration
 By default the Mergeable configuration is as follows:
@@ -32,7 +42,10 @@ mergeable:
   label: 'wip|do not merge|experimental'
 
   # Regular expression to be tested on the title. Not mergeable when true.  
-  title: 'wip' #  
+  title: 'wip'
+
+  # Only mergeable when milestone is as specified below.
+  milestone: 'version 1'  
 ```
 
 ## Usage
@@ -50,6 +63,7 @@ This GitHub App requires these permissions & events:
 
 - Repository metadata - **Read & Write**
 - Pull requests - **Read Only**
+- Issues - **Read Only**
 - Single File - **Read-only**
   - Path: `.github/mergeable.yml`
 
@@ -57,3 +71,4 @@ And subscription to the following events:
 - [x] Pull request
 - [x] Pull request review comment
 - [x] Pull request review
+- [x] Issues
