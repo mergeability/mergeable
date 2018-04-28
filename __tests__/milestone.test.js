@@ -22,45 +22,12 @@ test('description should be correct', async () => {
   expect(validation.description).toBe(`Milestone must be "${settings.mergeable.milestone}"`)
 })
 
-// TODO move this to a more relevant test when we refactor index.js
-// test('issue event that is a PR should validate appropriately', async () => {
-//   let settings = createMockConfig('Version 1').settings
-//   let validation = await milestone(createMockIssueEvent('version 1', true), settings)
-//   expect(validation.mergeable).toBe(true)
-//
-//   validation = await milestone(createMockIssueEvent('version 2', true), settings)
-//   expect(validation.mergeable).toBe(false)
-// })
-//
-
-// test('issue event that is NOT a PR should return mergeable as true', async () => {
-//   let settings = createMockConfig('Version 1').settings
-//
-//   let validation = await milestone(createMockIssueEvent('version 1', false), settings)
-//   expect(validation.mergeable).toBe(true)
-//   validation = await milestone(createMockIssueEvent('version 2', false), settings)
-//   expect(validation.mergeable).toBe(true)
-// })
-
 const createMockConfig = (milestone) => {
   return new Configuration(`
     mergeable:
       milestone: ${milestone}
   `)
 }
-
-// TODO move this to a more relevant test when we refactor index.js
-// const createMockIssueEvent = (milestone, isPR) => {
-//   let data = {
-//     payload: {
-//       issue: { milestone: {title: milestone} }
-//     }
-//   }
-//
-//   if (isPR) data.payload.issue.pull_request = {url: 'https://api.github.com/repos/abc/def/pulls/1'}
-//
-//   return data
-// }
 
 const createMockPR = (milestone) => {
   return { milestone: {

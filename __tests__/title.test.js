@@ -1,3 +1,4 @@
+const Helper = require('../__fixtures__/helper')
 const title = require('../lib/title')
 const Configuration = require('../lib/configuration')
 
@@ -32,5 +33,5 @@ test('description is correct', async () => {
 })
 
 const createMockPR = (title) => {
-  return { title: title }
+  return Helper.mockContext({ title: title }).payload.pull_request
 }
