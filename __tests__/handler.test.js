@@ -4,7 +4,7 @@ const Configuration = require('../lib/configuration')
 Configuration.DEFAULTS.approvals = 0
 
 test('handlePullRequest when it is mergeable', async () => {
-  let context = Helper.mockContext({ title: 'title' })
+  let context = mockContext('title')
   await Handler.handlePullRequest(context)
 
   expect(context.repo).lastCalledWith(
@@ -13,7 +13,7 @@ test('handlePullRequest when it is mergeable', async () => {
 })
 
 test('handlePullRequest when it is NOT mergeable', async () => {
-  let context = Helper.mockContext({ title: 'wip' })
+  let context = mockContext('wip')
   await Handler.handlePullRequest(context)
 
   expect(context.repo).lastCalledWith(
@@ -22,3 +22,11 @@ test('handlePullRequest when it is NOT mergeable', async () => {
 })
 
 // TODO add tests for handleIssues
+
+const mockContext = (title) => {
+  let context = Helper.mockContext({ title: title })
+  context.repo = jest.fn((arg) => {
+    if (!arg) return { owner: 'owner', repo: 'repo' }
+  })
+  return context
+}

@@ -3,9 +3,7 @@ module.exports = {
     if (!options) options = {}
 
     return {
-      repo: jest.fn((arg) => {
-        if (!arg) return { owner: 'owner', repo: 'repo' }
-      }),
+      repo: () => { return { owner: 'owner', repo: 'repo' } },
       payload: {
         pull_request: {
           title: (options.title) ? options.title : 'title',
