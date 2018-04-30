@@ -1,3 +1,4 @@
+const Helper = require('../__fixtures__/helper')
 const label = require('../lib/label')
 const Configuration = require('../lib/configuration')
 
@@ -52,18 +53,9 @@ const createMockContext = (labels) => {
     labelArray = [{ name: labels }]
   }
 
-  return {
-    repo: jest.fn(),
-    github: {
-      issues: {
-        getIssueLabels: () => {
-          return { data: labelArray }
-        }
-      }
-    }
-  }
+  return Helper.mockContext({ labels: labelArray })
 }
 
 const createMockPR = () => {
-  return { number: 1 }
+  return Helper.mockContext().payload.pull_request
 }

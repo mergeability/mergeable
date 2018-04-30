@@ -82,10 +82,9 @@ test('that instanceWithContext returns the right Configuration', async () => {
 
 test('that instanceWithContext still returns the Configuration when repo does not content mergeable.yml', async () => {
   let context = {
-    repo: jest.fn().mockReturnValue({
-      repo: '',
-      owner: ''
-    }),
+    repo: () => {
+      return {repo: '', owner: ''}
+    },
     payload: {
       pull_request: {
         number: 1
