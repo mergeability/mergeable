@@ -5,20 +5,20 @@ Configuration.DEFAULTS.approvals = 0
 
 test('handlePullRequest when it is mergeable', async () => {
   let context = mockContext('title')
-  await Handler.handlePullRequest(context)
-
-  expect(context.repo).lastCalledWith(
-    Helper.expectedStatus('success', 'Okay to merge.')
-  )
+  Handler.handlePullRequest(context).then(() => {
+    expect(context.repo).lastCalledWith(
+      Helper.expectedStatus('success', 'Okay to merge.')
+    )
+  })
 })
 
 test('handlePullRequest when it is NOT mergeable', async () => {
   let context = mockContext('wip')
-  await Handler.handlePullRequest(context)
-
-  expect(context.repo).lastCalledWith(
-    Helper.expectedStatus('failure', 'Title contains "wip|dnm|exp|poc"')
-  )
+  Handler.handlePullRequest(context).then(() => {
+    expect(context.repo).lastCalledWith(
+      Helper.expectedStatus('failure', 'Title contains "wip|dnm|exp|poc"')
+    )
+  })
 })
 
 // TODO add tests for handleIssues
