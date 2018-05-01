@@ -32,6 +32,7 @@ test('that defaults load correctly when mergeable is null', () => {
   expect(mergeable.approvals).toBe(Configuration.DEFAULTS.approvals)
   expect(mergeable.title).toBe(Configuration.DEFAULTS.title)
   expect(mergeable.label).toBe(Configuration.DEFAULTS.label)
+  expect(mergeable.exclude).toBe(undefined)
 })
 
 test('that defaults load correctly when mergeable has partial properties defined', () => {
