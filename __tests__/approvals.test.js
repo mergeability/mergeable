@@ -1,30 +1,6 @@
+const Helper = require('../__fixtures__/helper')
 const approvals = require('../lib/approvals')
 const Configuration = require('../lib/configuration')
-
-const createMockContext = (minimum, data) => {
-  if (!data) data = []
-  for (let i = 0; i < minimum; i++) {
-    data.push({
-      state: 'APPROVED'
-    })
-  }
-
-  return {
-    repo: jest.fn(),
-    github: {
-      pullRequests: {
-        getReviews: jest.fn().mockReturnValue({ data: data })
-      }
-    }
-  }
-}
-
-const config = (min) => {
-  return (new Configuration(`
-    mergeable:
-      approvals: ${min}
-  `)).settings
-}
 
 test('that mergeable is true when less than minimum', async () => {
   let validation = await approvals({ number: 1 }, createMockContext(1), config(2))
@@ -50,3 +26,21 @@ test('that description is null when mergeable', async () => {
   let validation = await approvals({ number: 1 }, createMockContext(5), config(5))
   expect(validation.description).toBe(null)
 })
+
+const createMockContext = (minimum, data) => {
+  if (!data) data = []
+  for (let i = 0; i < minimum; i++) {
+    data.push({
+      state: 'APPROVED'
+    })
+  }
+
+  return Helper.mockContext({reviews: data})
+}
+
+const config = (min) => {
+  return (new Configuration(`
+    mergeable:
+      approvals: ${min}
+  `)).settings
+}
