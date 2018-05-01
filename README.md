@@ -2,7 +2,7 @@
 # The Mergeable Bot
 A GitHub App that prevents merging of pull requests based on [configurations](#configuration). Make your pull requests mergeable only when:
 
-- Certain terms are not in the **title** or **label**.
+- Certain terms are not in the **title** and/or **label**.
 
 - The **milestone** on the pull request matches with what is configured.
 
@@ -45,7 +45,10 @@ mergeable:
   title: 'wip'
 
   # Only mergeable when milestone is as specified below.
-  milestone: 'version 1'  
+  milestone: 'version 1'
+
+  # exclude any of the checks above. Comma separated list. For example, the following will exclude checks for approvals and label.
+  exclude: 'approvals, label'
 ```
 
 ## Usage
