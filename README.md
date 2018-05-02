@@ -47,7 +47,7 @@ mergeable:
   # Only mergeable when milestone is as specified below.
   milestone: 'version 1'
 
-  # exclude any of the checks above. Comma separated list. For example, the following will exclude checks for approvals and label.
+  # exclude any of the mergeable validation above. A comma separated list. For example, the following will exclude validations for approvals and label.
   exclude: 'approvals, label'
 ```
 
