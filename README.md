@@ -1,18 +1,18 @@
-[![CircleCI](https://circleci.com/gh/jusx/mergeable.svg?style=shield)](https://circleci.com/gh/jusx/mergeable)
+
+![icon](mergeable.png)
 # The Mergeable Bot
 A GitHub App that prevents merging of pull requests based on [configurations](#configuration). Make your pull requests mergeable only when:
 
-- Certain terms are not in the **title** and/or **label**.
+- Certain terms are not in the **title** and/or **label** (i.e. "work in progress").
 
 - The **milestone** on the pull request matches with what is configured.
 
 - There are at least `n` number of **approved reviews**, where `n` is configurable.
 
-
 ![Screenshot](https://raw.githubusercontent.com/jusx/mergeable/5d9c9cab357b12b84af62044ac46648d9fca84c4/screenshot.gif)
 > [Install it](https://github.com/apps/mergeable) or [deploy your own](#deploy-your-own).
 
-The Mergeable Bot is built with [probot](https://github.com/probot/probot).
+Enforce **consistency** into your github pull request workflow.
 
 ## Configuration
 By default the Mergeable configuration is as follows:
@@ -47,14 +47,14 @@ mergeable:
   # Only mergeable when milestone is as specified below.
   milestone: 'version 1'
 
-  # exclude any of the checks above. Comma separated list. For example, the following will exclude checks for approvals and label.
+  # exclude any of the mergeable validation above. A comma separated list. For example, the following will exclude validations for approvals and label.
   exclude: 'approvals, label'
 ```
 
 ## Usage
 
 ### Install the app
-1. [Install and Configure](https://github.com/apps/mergeable) the Mergeable GitHub App.
+1. [Install](https://github.com/apps/mergeable) the Mergeable GitHub App.
 2. [Configure](#configuration) Mergeable or do nothing else and just go with the default.
 3. Ensure branch is protected and [Require status checks to pass before merging](https://help.github.com/articles/enabling-required-status-checks/) is checked.
 
@@ -75,3 +75,6 @@ And subscription to the following events:
 - [x] Pull request review comment
 - [x] Pull request review
 - [x] Issues
+
+---
+[![CircleCI](https://circleci.com/gh/jusx/mergeable.svg?style=shield)](https://circleci.com/gh/jusx/mergeable) & Built with [probot](https://github.com/probot/probot).
