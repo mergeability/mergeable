@@ -76,5 +76,8 @@ And subscription to the following events:
 - [x] Pull request review
 - [x] Issues
 
+## Contributions
+On [Github](https://github.com/jusx/mergeable): [Contribute](CONTRIBUTING.md) by creating a pull request or create a [new issue](https://github.com/jusx/mergeable/issues) to request for features.
+
 ---
-[![CircleCI](https://circleci.com/gh/jusx/mergeable.svg?style=shield)](https://circleci.com/gh/jusx/mergeable) & Built with [probot](https://github.com/probot/probot).
+[![CircleCI](https://circleci.com/gh/jusx/mergeable.svg?style=shield)](https://circleci.com/gh/jusx/mergeable) & built with [probot](https://github.com/probot/probot).
