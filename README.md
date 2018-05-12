@@ -27,6 +27,9 @@ mergeable:
 
   # Minimum of 1 review approval is needed.
   approvals: 1
+  
+  # The body of the PR must not be empty
+  body: 'non-empty'
 ```
 
 You can override the defaults by creating a `.github/mergeable.yml` file in your repository.
@@ -47,7 +50,7 @@ mergeable:
   # Only mergeable when milestone is as specified below.
   milestone: 'version 1'
 
-  # exclude any of the mergeable validation above. A comma separated list. For example, the following will exclude validations for approvals and label.
+  # exclude any of the mergeable validation above. A comma separated list. For example, the following will exclude validations for approvals, label.
   exclude: 'approvals, label'
 ```
 
