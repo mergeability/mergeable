@@ -7,6 +7,7 @@ module.exports = {
       payload: {
         pull_request: {
           title: (options.title) ? options.title : 'title',
+          body: (options.body) ? options.body : '',
           number: 1,
           head: { sha: 'sha1' }
         }
