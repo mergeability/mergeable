@@ -5,14 +5,25 @@ Configuration.DEFAULTS.approvals = 0
 
 test('handlePullRequest when it is mergeable', async () => {
   let context = mockContext('title')
-  expectSuccessStatus(context)
+  await expectSuccessStatus(context)
 })
 
 test('handlePullRequest when it is NOT mergeable', async () => {
   let context = mockContext('wip')
-  Handler.handlePullRequest(context).then(() => {
+
+  await Handler.handlePullRequest(context).then(() => {
     expect(context.repo).lastCalledWith(
       Helper.expectedStatus('failure', 'Title contains "wip|dnm|exp|poc"')
+    )
+  })
+})
+
+test('handle creates pending status', async () => {
+  let context = mockContext()
+
+  await Handler.handlePullRequest(context).then(() => {
+    expect(context.repo).toBeCalledWith(
+      Helper.expectedStatus('pending', 'Checking to see if this is mergeable...')
     )
   })
 })
@@ -28,7 +39,7 @@ test('one exclude configuration will exclude the validation', async () => {
         exclude: 'title'
     `).toString('base64') }})
   }
-  expectSuccessStatus(context)
+  await expectSuccessStatus(context)
 })
 
 test('more than one exclude configuration will exclude the validation', async () => {
@@ -41,17 +52,18 @@ test('more than one exclude configuration will exclude the validation', async ()
         exclude: 'approvals, title, label'
     `).toString('base64') }})
   }
-  expectSuccessStatus(context)
+  await expectSuccessStatus(context)
 })
 
 // TODO add tests for handleIssues
 
-const expectSuccessStatus = (context) => {
-  Handler.handlePullRequest(context).then(() => {
-    expect(context.repo).lastCalledWith(
-      Helper.expectedStatus('success', 'Okay to merge.')
-    )
-  })
+const expectSuccessStatus = async (context) => {
+  await Handler.handlePullRequest(context)
+    .then(() => {
+      expect(context.repo).lastCalledWith(
+        Helper.expectedStatus('success', 'Okay to merge.')
+      )
+    })
 }
 
 const mockContext = (title) => {
