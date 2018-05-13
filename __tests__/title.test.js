@@ -41,7 +41,7 @@ test('checks that it fail when exclude regex is in title', async () => {
 })
 
 test('checks that it fail when include regex is in title', async () => {
-  let includeList = `^\(feat\)|^\(doc\)|^\(fix\)`
+  let includeList = `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
   let config = new Configuration(`
     mergeable:
       title: 
@@ -50,9 +50,9 @@ test('checks that it fail when include regex is in title', async () => {
   `)
 
   let titleValidation = await title(createMockPR('include Title'), null, config.settings)
-  console.log(titleValidation)
   expect(titleValidation.mergeable).toBe(false)
-  expect(titleValidation.description).toBe(`Title does not contain ${includeList}`)
+
+  expect(titleValidation.description).toBe(`Title does not contain "${includeList}"`)
 
   titleValidation = await title(createMockPR('(feat) WIP Title'), null, config.settings)
 
