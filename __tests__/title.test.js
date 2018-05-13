@@ -2,6 +2,17 @@ const Helper = require('../__fixtures__/helper')
 const title = require('../lib/title')
 const Configuration = require('../lib/configuration')
 
+test('fail gracefully if invalid setting is provided', async () => {
+  // try to pass an array instead
+  let config = new Configuration(`
+    mergeable:
+      title: ['item 1', 'item 2' ]
+  `)
+
+  let titleValidation = await title(createMockPR('Valid Title'), null, config.settings)
+  expect(titleValidation.mergeable).toBe(true)
+})
+
 test('fail gracefully if invalid regex', async () => {
   let config = new Configuration(`
     mergeable:
@@ -9,6 +20,43 @@ test('fail gracefully if invalid regex', async () => {
   `)
   let titleValidation = await title(createMockPR('WIP Title'), null, config.settings)
   expect(titleValidation.mergeable).toBe(true)
+})
+
+test('checks that it fail when exclude regex is in title', async () => {
+  // try to pass an array instead
+  let config = new Configuration(`
+    mergeable:
+      title: 
+        include: '^\\(feat\\)|^\\(doc\\)|^\\(fix\\)' 
+        exclude: 'wip'
+  `)
+
+  let titleValidation = await title(createMockPR('WIP Title'), null, config.settings)
+
+  expect(titleValidation.mergeable).toBe(false)
+
+  titleValidation = await title(createMockPR('(feat) WIP Title'), null, config.settings)
+
+  expect(titleValidation.mergeable).toBe(false)
+})
+
+test('checks that it fail when include regex is in title', async () => {
+  let includeList = `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
+  let config = new Configuration(`
+    mergeable:
+      title: 
+        include: ${includeList}
+        exclude: 'wip'
+  `)
+
+  let titleValidation = await title(createMockPR('include Title'), null, config.settings)
+  expect(titleValidation.mergeable).toBe(false)
+
+  expect(titleValidation.description).toBe(`Title does not contain "${includeList}"`)
+
+  titleValidation = await title(createMockPR('(feat) WIP Title'), null, config.settings)
+
+  expect(titleValidation.mergeable).toBe(false)
 })
 
 test('isMergeable is false if regex found or true if not', async () => {
