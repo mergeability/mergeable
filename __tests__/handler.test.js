@@ -60,7 +60,7 @@ test('more than one exclude configuration will exclude the validation', async ()
 const expectSuccessStatus = async (context) => {
   await Handler.handlePullRequest(context)
     .then(() => {
-      expect(context.repo).lastCalledWith(
+      expect(context.repo).toBeCalledWith(
         Helper.expectedStatus('success', 'Okay to merge.')
       )
     })
