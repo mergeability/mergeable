@@ -23,7 +23,7 @@ test('handle creates pending status', async () => {
 
   await Handler.handlePullRequest(context).then(() => {
     expect(context.repo).toBeCalledWith(
-      Helper.expectedStatus('pending', 'Checking to see if this is mergeable...')
+      Helper.expectedStatus('pending', 'Validating...')
     )
   })
 })
