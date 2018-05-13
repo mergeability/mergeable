@@ -11,7 +11,8 @@ test('handlePullRequest when it is mergeable', async () => {
 test('handlePullRequest when it is NOT mergeable', async () => {
   let context = mockContext('wip')
 
-  Handler.handlePullRequest(context).then(() => {
+  setTimeout(() => {}, 10000)
+  await Handler.handlePullRequest(context).then(() => {
     expect(context.repo).lastCalledWith(
       Helper.expectedStatus('failure', 'Title contains "wip|dnm|exp|poc"')
     )
@@ -58,7 +59,8 @@ test('more than one exclude configuration will exclude the validation', async ()
 // TODO add tests for handleIssues
 
 const expectSuccessStatus = async (context) => {
-  Handler.handlePullRequest(context)
+  setTimeout(() => {}, 10000)
+  await Handler.handlePullRequest(context)
     .then(() => {
       expect(context.repo).lastCalledWith(
         Helper.expectedStatus('success', 'Okay to merge.')
