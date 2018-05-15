@@ -27,9 +27,6 @@ mergeable:
 
   # Minimum of 1 review approval is needed.
   approvals: 1
-  
-  # The body of the PR must not be empty
-  body: 'non-empty'
 ```
 
 You can override the defaults by creating a `.github/mergeable.yml` file in your repository.
