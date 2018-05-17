@@ -27,8 +27,8 @@ test('checks that it fail when exclude regex is in title', async () => {
   let config = new Configuration(`
     mergeable:
       title: 
-        must-include: '^\\(feat\\)|^\\(doc\\)|^\\(fix\\)' 
-        must-exclude: 'wip'
+        must_include: '^\\(feat\\)|^\\(doc\\)|^\\(fix\\)' 
+        must_exclude: 'wip'
   `)
 
   let titleValidation = await title(createMockPR('WIP Title'), null, config.settings)
@@ -40,13 +40,70 @@ test('checks that it fail when exclude regex is in title', async () => {
   expect(titleValidation.mergeable).toBe(false)
 })
 
+test('checks that advance setting of must_include works', async () => {
+  let includeList = `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
+  let testMessage = 'this is a test message'
+  let config = new Configuration(`
+    mergeable:
+      title: 
+        must_include: 
+          regex: ${includeList}
+          message: ${testMessage}
+        must_exclude: 'wip'
+  `)
+
+  let titleValidation = await title(createMockPR('include Title'), null, config.settings)
+  expect(titleValidation.mergeable).toBe(false)
+  expect(titleValidation.description[0]).toBe(testMessage)
+
+  titleValidation = await title(createMockPR('(feat) WIP Title'), null, config.settings)
+
+  expect(titleValidation.mergeable).toBe(false)
+})
+
+test('checks that it fail when begins_with is not in title', async () => {
+  let match = '(test)'
+  let config = new Configuration(`
+    mergeable:
+      title: 
+        begins_with: 
+          match: ${match} 
+  `)
+
+  let titleValidation = await title(createMockPR('include Title'), null, config.settings)
+  expect(titleValidation.mergeable).toBe(false)
+  expect(titleValidation.description[0]).toBe(`Must begins with "${match}"`)
+
+  titleValidation = await title(createMockPR('(test) WIP Title'), null, config.settings)
+
+  expect(titleValidation.mergeable).toBe(true)
+})
+
+test('checks that it fail when ends_with is not in title', async () => {
+  let match = '(test)'
+  let config = new Configuration(`
+    mergeable:
+      title: 
+        ends_with: 
+          match: ${match} 
+  `)
+
+  let titleValidation = await title(createMockPR('include Title'), null, config.settings)
+  expect(titleValidation.mergeable).toBe(false)
+  expect(titleValidation.description[0]).toBe(`Must ends with "${match}"`)
+
+  titleValidation = await title(createMockPR('WIP Title (test)'), null, config.settings)
+
+  expect(titleValidation.mergeable).toBe(true)
+})
+
 test('checks that it fail when include regex is in title', async () => {
   let includeList = `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
   let config = new Configuration(`
     mergeable:
       title: 
-        must-include: ${includeList}
-        must-exclude: 'wip'
+        must_include: ${includeList}
+        must_exclude: 'wip'
   `)
 
   let titleValidation = await title(createMockPR('include Title'), null, config.settings)
