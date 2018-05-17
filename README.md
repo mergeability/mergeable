@@ -64,7 +64,8 @@ If you would like to run your own instance of this plugin, see the [docs for dep
 
 This GitHub App requires these permissions & events:
 
-- Repository metadata - **Read & Write**
+- Repository metadata - **Read Only**
+- Commit Statuses - **Read & Write**
 - Pull requests - **Read Only**
 - Issues - **Read Only**
 - Single File - **Read-only**
