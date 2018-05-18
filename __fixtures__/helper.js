@@ -31,6 +31,9 @@ module.exports = {
         issues: {
           getIssueLabels: () => {
             return { data: (options.labels) ? options.labels : [] }
+          },
+          get: () => {
+            return {data: (options.milestone) ? {milestone: options.milestone} : {}}
           }
         }
       }
