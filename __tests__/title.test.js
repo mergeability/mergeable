@@ -72,7 +72,7 @@ test('checks that it fail when begins_with is not in title', async () => {
 
   let titleValidation = await title(createMockPR('include Title'), null, config.settings)
   expect(titleValidation.mergeable).toBe(false)
-  expect(titleValidation.description[0]).toBe(`Must begins with "${match}"`)
+  expect(titleValidation.description[0]).toBe(`Title must begins with "${match}"`)
 
   titleValidation = await title(createMockPR('(test) WIP Title'), null, config.settings)
 
@@ -90,7 +90,7 @@ test('checks that it fail when ends_with is not in title', async () => {
 
   let titleValidation = await title(createMockPR('include Title'), null, config.settings)
   expect(titleValidation.mergeable).toBe(false)
-  expect(titleValidation.description[0]).toBe(`Must ends with "${match}"`)
+  expect(titleValidation.description[0]).toBe(`Title must ends with "${match}"`)
 
   titleValidation = await title(createMockPR('WIP Title (test)'), null, config.settings)
 

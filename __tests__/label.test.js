@@ -43,6 +43,34 @@ test('description is correct', async () => {
   expect(validation.description).toBe(null)
 })
 
+test('mergeable is true if must_include is one of the label', async () => {
+  let config = new Configuration(`
+    mergeable:
+      label: 
+        must_include: 'abc'
+  `).settings
+
+  let validation = await label(createMockPR(), createMockContext(['abc', 'experimental', 'xyz']), config)
+  expect(validation.mergeable).toBe(true)
+
+  validation = await label(createMockPR(), createMockContext(['Some Label', '123', '456']), config)
+  expect(validation.mergeable).toBe(false)
+})
+
+test('mergeable is false if must_exclude is one of the label', async () => {
+  let config = new Configuration(`
+    mergeable:
+      label: 
+        must_exclude: 'xyz'
+  `).settings
+
+  let validation = await label(createMockPR(), createMockContext(['abc', 'experimental', 'xyz']), config)
+  expect(validation.mergeable).toBe(false)
+
+  validation = await label(createMockPR(), createMockContext(['Some Label', '123', '456']), config)
+  expect(validation.mergeable).toBe(true)
+})
+
 const createMockContext = (labels) => {
   let labelArray = []
   if (Array.isArray(labels)) {
