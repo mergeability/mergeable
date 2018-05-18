@@ -14,15 +14,12 @@ A GitHub App that validates pull requests for mergeability based on [rule-sets](
 
 - **Description** of the pull request is not empty.
 
-The above is the default. More options and rule-sets are available through (#configuration).
+The above is the default. More options and rule-sets are available through [Configuration](#configuration).
 
 ![Screenshot](https://raw.githubusercontent.com/jusx/mergeable/5d9c9cab357b12b84af62044ac46648d9fca84c4/screenshot.gif)
 
-<p style="text-align:center">
-<a href="https://github.com/apps/mergeable" style="padding:10px;background-image: linear-gradient(-180deg, #34d058 0%, #28a745 90%);background-color: #28a745;color:#fff;border:1px solid #111;border-radius: 0.25em;">Install Mergeable for Free</a>
-</p>
 
-<p style="text-align:center">Encourage **consistency** on your github pull request workflow.</p>
+> [Install Mergeable](https://github.com/apps/mergeable) and encourage **consistency** on your github pull request workflow.
 
 ## Configuration
 Mergeable is fully configurable. Configuration of the ruleset can be done in two ways. Simple and advanced. You can configure mergeable by creating a `.github/mergeable.yml` file in your repository.
