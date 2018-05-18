@@ -10,7 +10,7 @@ A GitHub App that validates pull requests for mergeability based on [rule-sets](
 
 - **Milestone** on the pull request matches configured OR [closing issues using keywords](https://help.github.com/articles/closing-issues-using-keywords/) are queried and it's milestone matched against configured milestone name.
 
-- **Approvals** have at least 1 approved review.
+- **Approvals** have at least 1 approved review. And if a required reviewers list is specified validates those users have reviewed the PR.
 
 - **Description** of the pull request is not empty.
 
