@@ -29,7 +29,7 @@ test('handle creates pending status', async () => {
 })
 
 test('one exclude configuration will exclude the validation', async () => {
-  let context = Helper.mockContext({ title: 'wip' })
+  let context = Helper.mockContext({ title: 'wip', body: 'body' })
   context.repo = mockRepo()
 
   context.github.repos.getContent = () => {
@@ -43,7 +43,7 @@ test('one exclude configuration will exclude the validation', async () => {
 })
 
 test('more than one exclude configuration will exclude the validation', async () => {
-  let context = Helper.mockContext({ title: 'wip', label: ['proof of concept'] })
+  let context = Helper.mockContext({ title: 'wip', label: ['proof of concept'], body: 'body' })
   context.repo = mockRepo()
 
   context.github.repos.getContent = () => {
@@ -58,7 +58,7 @@ test('more than one exclude configuration will exclude the validation', async ()
 // TODO add tests for handleIssues
 
 const expectSuccessStatus = async (context) => {
-  Handler.handlePullRequest(context)
+  await Handler.handlePullRequest(context)
     .then(() => {
       expect(context.repo).lastCalledWith(
         Helper.expectedStatus('success', 'Okay to merge.')
@@ -67,7 +67,7 @@ const expectSuccessStatus = async (context) => {
 }
 
 const mockContext = (title) => {
-  let context = Helper.mockContext({ title: title })
+  let context = Helper.mockContext({ title: title, body: 'body' })
   context.repo = mockRepo()
   return context
 }

@@ -1,21 +1,33 @@
-
 ![icon](mergeable.png)
+
 # The Mergeable Bot
-A GitHub App that prevents merging of pull requests based on [configurations](#configuration). Make your pull requests mergeable only when:
 
-- Certain terms are not in the **title** and/or **label** (i.e. "work in progress").
+A GitHub App that validates pull requests for mergeability based on [rule-sets](#configuration). Make your pull requests mergeable only when the:
 
-- The **milestone** on the pull request matches with what is configured.
+- **Title** does not contain the terms `wip`, `dnm`, `exp`, or `poc`.
 
-- There are at least `n` number of **approved reviews**, where `n` is configurable.
+- **Label** contains the terms `work in progress`, `do not merge`, `experimental` or `proof of concept`
+
+- **Milestone** on the pull request matches with what is configured.
+
+- **Approvals** have at least 1 approved review.
+
+- **Description** of the pull request is not empty.
+
+The above is the default. More options and rule-sets are available through (#configuration).
 
 ![Screenshot](https://raw.githubusercontent.com/jusx/mergeable/5d9c9cab357b12b84af62044ac46648d9fca84c4/screenshot.gif)
-> [Install it](https://github.com/apps/mergeable) or [deploy your own](#deploy-your-own).
 
-Enforce **consistency** into your github pull request workflow.
+<p style="text-align:center">
+<a href="https://github.com/apps/mergeable" style="padding:10px;background-image: linear-gradient(-180deg, #34d058 0%, #28a745 90%);background-color: #28a745;color:#fff;border:1px solid #111;border-radius: 0.25em;">Install Mergeable for Free</a>
+</p>
+
+<p style="text-align:center">Encourage **consistency** on your github pull request workflow.</p>
 
 ## Configuration
-By default the Mergeable configuration is as follows:
+Mergeable is fully configurable. Configuration of the ruleset can be done in two ways. Simple and advanced. You can configure mergeable by creating a `.github/mergeable.yml` file in your repository.
+
+If the yml file doesn't exist, the bot will default to the following ruleset:
 
 ```yml
 mergeable:
@@ -29,16 +41,14 @@ mergeable:
   approvals: 1
 ```
 
-You can override the defaults by creating a `.github/mergeable.yml` file in your repository.
-
-All configurations are optional. Here is an example:
+A simple configuration would be as follows:
 
 ```yml
 mergeable:
   # Minimum of 5 approvals is needed.
   approvals: 5
 
-  # Regular expression. In this example, whenever a PR has a label with the words wip, do not merge or experimental it will not be mergeable
+  # Regular expression. In this example, whenever a PR has a label with the word 'wip'
   label: 'wip|do not merge|experimental'
 
   # Regular expression to be tested on the title. Not mergeable when true.  
@@ -51,6 +61,84 @@ mergeable:
   exclude: 'approvals, label'
 ```
 
+However you may want to have more advanced rulesets:
+
+```YML
+
+  # implemented!
+  title:
+    must_include:
+      regex: `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
+      message: `Title must have prefixes for the following: (feat), (doc), (fix)`
+    must_exclude:
+      regex: 'wip'
+      message: 'This PR is work in progress.'
+    begins_with:
+      match: '(feat)|(doc)|(fix)'
+      message: 'Custom message...'
+    ends_with:
+      match: '(feat)|(doc)|(fix)'
+      message: 'Custom message...'
+
+  # not implemented yet.    
+  label:
+    must_include:
+      regex: `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
+      message: `Title must have prefixes for the following: (feat), (doc), (fix)`
+    must_exclude:
+      regex: 'wip'
+      message: 'Custom message. This PR is work in progress.'
+    begins_with:
+      match: '(feat)|(doc)|(fix)'
+      message: 'Come message...'
+    ends_with:
+      match: '(feat)|(doc)|(fix)'
+      message: 'Come message...'  
+
+  # not implemented yet.    
+  milestone:
+    must_include:
+      regex: `Release 1`
+      message: `Custom message...`
+    must_exclude:
+      regex: 'jibberish'
+      message: 'Custom message...'
+    begins_with:
+      match: 'Release'
+      message: 'Custom message...'
+    ends_with:
+      match: ''
+      message: 'Custom message...'  
+
+  # not implemented yet.    
+  approvals:
+    min: 5
+      message: 'Custom message...'
+    required:
+      reviewers: [ user1, user2 ]   # list of gh usernames
+      message: 'Custom message...'
+
+
+  # not implemented yet.  
+  description:
+    no_empty:
+      enabled: false
+      message: 'Custom message...'
+    must_include:
+      regex: 'feat'
+      message: 'Custom message...'
+    must_exclude:
+      regex: 'DO NOT MERGE'
+      message:
+
+  # not implemented yet.      
+  assignee:
+    min: 1
+    max: 1
+    message: 'Custom message...'
+```    
+
+
 ## Usage
 
 ### Install the app
@@ -60,9 +148,9 @@ mergeable:
 
 ### Deploy your own
 
-If you would like to run your own instance of this plugin, see the [docs for deploying GitHub Apps](https://github.com/probot/probot/blob/master/docs/deployment.md).
+If you would like to run your own instance of this plugin, you can do so by forking this repo and deploying it to your own servers.
 
-This GitHub App requires these permissions & events:
+[Create a GitHub App](https://github.com/settings/apps/new) and configure the permissions & events with the following settings:
 
 - Repository metadata - **Read Only**
 - Commit Statuses - **Read & Write**
@@ -79,6 +167,7 @@ And subscription to the following events:
 
 ## Contributions
 On [Github](https://github.com/jusx/mergeable): [Contribute](https://github.com/jusx/mergeable/blob/master/CONTRIBUTING.md) by creating a pull request or create a [new issue](https://github.com/jusx/mergeable/issues) to request for features.
+
 
 ---
 [![CircleCI](https://circleci.com/gh/jusx/mergeable.svg?style=shield)](https://circleci.com/gh/jusx/mergeable) & built with [probot](https://github.com/probot/probot).
