@@ -6,15 +6,15 @@ A GitHub App that validates pull requests for mergeability based on [rule-sets](
 
 - **Title** does not contain the terms `wip`, `dnm`, `exp`, or `poc`.
 
-- **Label** contains the terms `work in progress`, `do not merge`, `experimental` or `proof of concept`
+- **Label** does not contains the terms `work in progress`, `do not merge`, `experimental` or `proof of concept`
 
-- **Milestone** on the pull request matches with what is configured.
+- **Milestone** on the pull request matches configured OR [closing issues using keywords](https://help.github.com/articles/closing-issues-using-keywords/) are queried and it's milestone matched against configured milestone name.
 
-- **Approvals** have at least 1 approved review.
+- **Approvals** have at least 1 approved review. And if a required reviewers list is specified validates those users have reviewed the PR.
 
 - **Description** of the pull request is not empty.
 
-The above is the default. More options and rule-sets are available through [Configuration](#configuration).
+Mergeable is **highly** configurable. More options and rule-sets are available through [Configuration](#configuration).
 
 ![Screenshot](https://raw.githubusercontent.com/jusx/mergeable/5d9c9cab357b12b84af62044ac46648d9fca84c4/screenshot.gif)
 
@@ -60,9 +60,8 @@ mergeable:
 
 However you may want to have more advanced rulesets:
 
-```YML
+```yml
 
-  # implemented!
   title:
     must_include:
       regex: `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
@@ -77,7 +76,6 @@ However you may want to have more advanced rulesets:
       match: '(feat)|(doc)|(fix)'
       message: 'Custom message...'
 
-  # not implemented yet.    
   label:
     must_include:
       regex: `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
@@ -92,7 +90,6 @@ However you may want to have more advanced rulesets:
       match: '(feat)|(doc)|(fix)'
       message: 'Come message...'  
 
-  # not implemented yet.    
   milestone:
     must_include:
       regex: `Release 1`
@@ -107,12 +104,11 @@ However you may want to have more advanced rulesets:
       match: ''
       message: 'Custom message...'  
 
-  # not implemented yet.    
   approvals:
     min: 5
       message: 'Custom message...'
     required:
-      reviewers: [ user1, user2 ]   # list of gh usernames
+      reviewers: [ user1, user2 ]   # list of github usernames required to review
       message: 'Custom message...'
 
 
