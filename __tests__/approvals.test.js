@@ -85,12 +85,44 @@ test('mergeable is false if required user has not approved', async () => {
   expect(validation.description).toBe(null)
 })
 
+test('checks that latest review is used', async () => {
+  let reviewList = [
+    {
+      user: {
+        login: 'userA'
+      },
+      state: 'APPROVED',
+      submitted_at: Date.now()
+    },
+    {
+      user: {
+        login: 'userA'
+      },
+      state: 'CHANGES_REQUESTED',
+      submitted_at: Date.now() + 1000
+    }
+  ]
+  let configuration = `
+  mergeable:
+    approvals:
+      required:
+        reviewers: ['userA']
+  `
+
+  let validation = await approvals({ number: 1 }, createMockContext(5, reviewList), config({config: configuration}))
+  expect(validation.description[0]).toBe('Approval: userA required')
+})
+
 const createMockContext = (minimum, data) => {
   if (!data) {
     data = []
     for (let i = 0; i < minimum; i++) {
       data.push({
-        state: 'APPROVED'
+        user: {
+          login: `user${i}`
+        },
+        state: 'APPROVED',
+        submitted_at: Date.now() + i
       })
     }
   }
