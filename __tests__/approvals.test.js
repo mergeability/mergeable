@@ -16,7 +16,6 @@ test('that mergeable is true when less than minimum', async () => {
 
 test('that mergeable is true when the same as minimum', async () => {
   let validation = await approvals(defaultPR, createMockContext(2), config({min: 2}))
-  console.log(validation)
   expect(validation.mergeable).toBe(true)
 })
 
