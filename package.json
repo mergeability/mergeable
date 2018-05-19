@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "js-yaml": "^3.11.0",
+    "lodash": "^4.17.10",
     "node-fetch": "^2.1.2",
     "probot": "^5.0.0"
   },
