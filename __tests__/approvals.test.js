@@ -16,7 +16,6 @@ test('that mergeable is true when less than minimum', async () => {
 
 test('that mergeable is true when the same as minimum', async () => {
   let validation = await approvals(defaultPR, createMockContext(2), config({min: 2}))
-  console.log(validation)
   expect(validation.mergeable).toBe(true)
 })
 
@@ -108,12 +107,44 @@ test('pr creator is removed from required reviewer list', async () => {
   expect(validation.description[0]).toBe('Approval: userC required')
 })
 
+test('checks that latest review is used', async () => {
+  let reviewList = [
+    {
+      user: {
+        login: 'userA'
+      },
+      state: 'APPROVED',
+      submitted_at: Date.now()
+    },
+    {
+      user: {
+        login: 'userA'
+      },
+      state: 'CHANGES_REQUESTED',
+      submitted_at: Date.now() + 1000
+    }
+  ]
+  let configuration = `
+  mergeable:
+    approvals:
+      required:
+        reviewers: ['userA']
+  `
+
+  let validation = await approvals(defaultPR, createMockContext(5, reviewList), config({config: configuration}))
+  expect(validation.description[0]).toBe('Approval: userA required')
+})
+
 const createMockContext = (minimum, data) => {
   if (!data) {
     data = []
     for (let i = 0; i < minimum; i++) {
       data.push({
-        state: 'APPROVED'
+        user: {
+          login: `user${i}`
+        },
+        state: 'APPROVED',
+        submitted_at: Date.now() + i
       })
     }
   }
