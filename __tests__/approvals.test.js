@@ -144,11 +144,11 @@ test('mergeable advanceSetting min works', async () => {
         message: 'This is a test message'
   `
 
-  let validation = await approvals({ number: 1 }, createMockContext(1), config({config: configuration}))
+  let validation = await approvals(defaultPR, createMockContext(1), config({config: configuration}))
   expect(validation.mergeable).toBe(false)
   expect(validation.description[0]).toBe('This is a test message')
 
-  validation = await approvals({ number: 1 }, createMockContext(3), config({config: configuration}))
+  validation = await approvals(defaultPR, createMockContext(3), config({config: configuration}))
   expect(validation.mergeable).toBe(true)
 })
 
@@ -161,11 +161,11 @@ test('mergeable advanceSetting max works', async () => {
         message: 'This is a test message'
   `
 
-  let validation = await approvals({ number: 1 }, createMockContext(3), config({config: configuration}))
+  let validation = await approvals(defaultPR, createMockContext(3), config({config: configuration}))
   expect(validation.mergeable).toBe(false)
   expect(validation.description[0]).toBe('This is a test message')
 
-  validation = await approvals({ number: 1 }, createMockContext(1), config({config: configuration}))
+  validation = await approvals(defaultPR, createMockContext(1), config({config: configuration}))
   expect(validation.mergeable).toBe(true)
 })
 
