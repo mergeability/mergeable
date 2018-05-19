@@ -6,6 +6,9 @@ module.exports = {
       repo: () => { return { owner: 'owner', repo: 'repo' } },
       payload: {
         pull_request: {
+          user: {
+            login: 'creator'
+          },
           title: (options.title) ? options.title : 'title',
           body: (options.body) ? options.body : '',
           number: 1,
