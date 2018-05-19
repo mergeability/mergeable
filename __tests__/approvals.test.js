@@ -132,7 +132,7 @@ test('checks that latest review is used', async () => {
         reviewers: ['userA']
   `
 
-  let validation = await approvals({ number: 1 }, createMockContext(5, reviewList), config({config: configuration}))
+  let validation = await approvals(defaultPR, createMockContext(5, reviewList), config({config: configuration}))
   expect(validation.description[0]).toBe('Approval: userA required')
 })
 
