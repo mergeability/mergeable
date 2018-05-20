@@ -135,40 +135,6 @@ test('checks that latest review is used', async () => {
   expect(validation.description[0]).toBe('Approval: userA required')
 })
 
-test('mergeable advanceSetting min works', async () => {
-  let configuration = `
-  mergeable:
-    approvals:
-      min: 
-        count: 2
-        message: 'This is a test message'
-  `
-
-  let validation = await approvals(defaultPR, createMockContext(1), config({config: configuration}))
-  expect(validation.mergeable).toBe(false)
-  expect(validation.description[0]).toBe('This is a test message')
-
-  validation = await approvals(defaultPR, createMockContext(3), config({config: configuration}))
-  expect(validation.mergeable).toBe(true)
-})
-
-test('mergeable advanceSetting max works', async () => {
-  let configuration = `
-  mergeable:
-    approvals:
-      max: 
-        count: 2
-        message: 'This is a test message'
-  `
-
-  let validation = await approvals(defaultPR, createMockContext(3), config({config: configuration}))
-  expect(validation.mergeable).toBe(false)
-  expect(validation.description[0]).toBe('This is a test message')
-
-  validation = await approvals(defaultPR, createMockContext(1), config({config: configuration}))
-  expect(validation.mergeable).toBe(true)
-})
-
 const createMockContext = (minimum, data) => {
   if (!data) {
     data = []
