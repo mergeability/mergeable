@@ -11,8 +11,12 @@ module.exports = {
           },
           title: (options.title) ? options.title : 'title',
           body: (options.body) ? options.body : '',
-          number: 1,
-          head: { sha: 'sha1' }
+          number: (options.number) ? options.number : 1,
+          head: {
+            sha: 'sha1',
+            repo: {
+              issues_url: 'testRepo/issues{/number}'
+            }}
         }
       },
       github: {
@@ -29,6 +33,17 @@ module.exports = {
         pullRequests: {
           getReviews: () => {
             return { data: (options.reviews) ? options.reviews : [] }
+          }
+        },
+        projects: {
+          getRepoProjects: () => {
+            return { data: (options.repoProjects) ? options.repoProjects : [] }
+          },
+          getProjectColumns: () => {
+            return { data: (options.projectColumns) ? options.projectColumns : [] }
+          },
+          getProjectCards: () => {
+            return { data: (options.projectCards) ? options.projectCards : [] }
           }
         },
         issues: {
