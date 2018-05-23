@@ -46,21 +46,6 @@ test('checks that advance_setting max is working', async () => {
   let configuration = `
   mergeable:
     assignee:
-      min: 2
-  `
-
-  let validation = await assignee(createMockPR(1), null, config({config: configuration}))
-  expect(validation.mergeable).toBe(false)
-  expect(validation.description[0]).toBe('Assignee count is less than "2"')
-
-  validation = await assignee(createMockPR(2), null, config({config: configuration}))
-  expect(validation.mergeable).toBe(true)
-})
-
-test('checks that advance_setting max is working', async () => {
-  let configuration = `
-  mergeable:
-    assignee:
       max: 2
   `
 
