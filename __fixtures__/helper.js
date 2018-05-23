@@ -12,7 +12,8 @@ module.exports = {
           title: (options.title) ? options.title : 'title',
           body: (options.body) ? options.body : '',
           number: 1,
-          head: { sha: 'sha1' }
+          head: { ref: 'test', sha: 'sha1' },
+          assignees: (options.assignees) ? options.assignees : []
         }
       },
       github: {
@@ -24,6 +25,16 @@ module.exports = {
               error.code = 404
               throw error
             })
+          }
+        },
+        checks: {
+          create: () => {
+            return { data: {
+              id: 1
+            }}
+          },
+          update: () => {
+            return {}
           }
         },
         pullRequests: {
@@ -45,11 +56,14 @@ module.exports = {
 
   expectedStatus: (status, description) => {
     return {
-      context: 'Mergeable',
-      description: description,
-      sha: 'sha1',
-      state: status,
-      target_url: 'https://github.com/apps/mergeable'
+      check_run_id: 1,
+      conclusion: status,
+      name: 'Mergeable',
+      output: {
+        title: `Result: ${status}`,
+        summary: description
+      },
+      status: 'completed'
     }
   }
 
