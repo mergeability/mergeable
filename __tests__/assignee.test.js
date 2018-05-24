@@ -30,8 +30,9 @@ test('that description is null when mergeable', async () => {
 test('checks that advance_setting min is working', async () => {
   let configuration = `
   mergeable:
-    assignee:
-      min: 2
+    pull_requests:
+      assignee:
+        min: 2
   `
 
   let validation = await assignee(createMockPR(1), null, config({config: configuration}))
@@ -45,8 +46,9 @@ test('checks that advance_setting min is working', async () => {
 test('checks that advance_setting max is working', async () => {
   let configuration = `
   mergeable:
-    assignee:
-      max: 2
+    pull_requests:
+      assignee:
+        max: 2
   `
 
   let validation = await assignee(createMockPR(3), null, config({config: configuration}))
@@ -60,10 +62,11 @@ test('checks that advance_setting max is working', async () => {
 test('checks that advance_setting message is working', async () => {
   let configuration = `
   mergeable:
-    assignee:
-      max:
-        count: 2
-        message: 'test string'
+    pull_requests:
+      assignee:
+        max:
+          count: 2
+          message: 'test string'
   `
 
   let validation = await assignee(createMockPR(3), null, config({config: configuration}))
@@ -91,9 +94,10 @@ const config = ({min, config}) => {
   if (min) {
     return (new Configuration(`
     mergeable:
-      assignee: ${min}
-  `)).settings
+      pull_requests:
+        assignee: ${min}
+  `)).settings.mergeable.pull_requests
   }
 
-  return (new Configuration(config)).settings
+  return (new Configuration(config)).settings.mergeable.pull_requests
 }

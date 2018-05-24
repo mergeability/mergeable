@@ -14,37 +14,39 @@ test('that Configuration validates root node in yml', () => {
 test('that constructor loads settings correctly', () => {
   let config = new Configuration(`
     mergeable:
-      approvals: 5
-      label: 'label regex'
-      title: 'title regex'
+      pull_requests:
+        approvals: 5
+        label: 'label regex'
+        title: 'title regex'
   `)
 
-  let mergeable = config.settings.mergeable
-  expect(mergeable.approvals).toBe(5)
-  expect(mergeable.title).toBe('title regex')
-  expect(mergeable.label).toBe('label regex')
+  let pullRequest = config.settings.mergeable.pull_requests
+  expect(pullRequest.approvals).toBe(5)
+  expect(pullRequest.title).toBe('title regex')
+  expect(pullRequest.label).toBe('label regex')
 })
 
 test('that defaults load correctly when mergeable is null', () => {
   let config = new Configuration(`mergeable:`)
-  let mergeable = config.settings.mergeable
+  let pullRequests = config.settings.mergeable.pull_requests
 
-  expect(mergeable.approvals).toBe(Configuration.DEFAULTS.approvals)
-  expect(mergeable.title).toBe(Configuration.DEFAULTS.title)
-  expect(mergeable.label).toBe(Configuration.DEFAULTS.label)
-  expect(mergeable.exclude).toBe(undefined)
+  expect(pullRequests.approvals).toBe(Configuration.DEFAULTS.approvals)
+  expect(pullRequests.title).toBe(Configuration.DEFAULTS.title)
+  expect(pullRequests.label).toBe(Configuration.DEFAULTS.label)
+  expect(pullRequests.exclude).toBe(undefined)
 })
 
 test('that defaults load correctly when mergeable has partial properties defined', () => {
   let config = new Configuration(`
     mergeable:
-      approvals: 1
+      pull_requests:
+        approvals: 1
     `)
 
-  let mergeable = config.settings.mergeable
-  expect(mergeable.approvals).toBe(1)
-  expect(mergeable.title).toBe(Configuration.DEFAULTS.title)
-  expect(mergeable.label).toBe(Configuration.DEFAULTS.label)
+  let pullRequest = config.settings.mergeable.pull_requests
+  expect(pullRequest.approvals).toBe(1)
+  expect(pullRequest.title).toBe(Configuration.DEFAULTS.title)
+  expect(pullRequest.label).toBe(Configuration.DEFAULTS.label)
 })
 
 test('that instanceWithContext returns the right Configuration', async () => {
@@ -63,9 +65,10 @@ test('that instanceWithContext returns the right Configuration', async () => {
         getContent: jest.fn().mockReturnValue(
           Promise.resolve({ data: { content: Buffer.from(`
             mergeable:
-              approvals: 5
-              label: 'label regex'
-              title: 'title regex'
+              pull_requests:
+                approvals: 5
+                label: 'label regex'
+                title: 'title regex'
           `).toString('base64') }})
         )
       }
@@ -73,10 +76,10 @@ test('that instanceWithContext returns the right Configuration', async () => {
   }
 
   Configuration.instanceWithContext(context).then(config => {
-    let mergeable = config.settings.mergeable
-    expect(mergeable.approvals).toBe(5)
-    expect(mergeable.title).toBe('title regex')
-    expect(mergeable.label).toBe('label regex')
+    let pullRequest = config.settings.mergeable.pull_requests
+    expect(pullRequest.approvals).toBe(5)
+    expect(pullRequest.title).toBe('title regex')
+    expect(pullRequest.label).toBe('label regex')
   })
   expect(context.github.repos.getContent.mock.calls.length).toBe(1)
 })
@@ -106,10 +109,10 @@ test('that instanceWithContext still returns the Configuration when repo does no
   }
 
   Configuration.instanceWithContext(context).then(config => {
-    let mergeable = config.settings.mergeable
-    expect(mergeable.approvals).toBe(Configuration.DEFAULTS.approvals)
-    expect(mergeable.title).toBe(Configuration.DEFAULTS.title)
-    expect(mergeable.label).toBe(Configuration.DEFAULTS.label)
+    let pullRequest = config.settings.mergeable.pull_requests
+    expect(pullRequest.approvals).toBe(Configuration.DEFAULTS.approvals)
+    expect(pullRequest.title).toBe(Configuration.DEFAULTS.title)
+    expect(pullRequest.label).toBe(Configuration.DEFAULTS.label)
   }).catch(err => {
     /* global fail */
     fail('Should handle error: ' + err)

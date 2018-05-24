@@ -28,34 +28,36 @@ If the yml file doesn't exist, the bot will default to the following ruleset:
 
 ```yml
 mergeable:
-  # PR must not have any label that has the following terms to be mergeable
-  label: 'work in progress|do not merge|experimental|proof of concept'
+  pull_requests:
+    # PR must not have any label that has the following terms to be mergeable
+    label: 'work in progress|do not merge|experimental|proof of concept'
 
-  # PR must not have any of the following terms in the title. i.e. (wip) My PR Title
-  title: 'wip|dnm|exp|poc'
+    # PR must not have any of the following terms in the title. i.e. (wip) My PR Title
+    title: 'wip|dnm|exp|poc'
 
-  # Minimum of 1 review approval is needed.
-  approvals: 1
+    # Minimum of 1 review approval is needed.
+    approvals: 1
 ```
 
 A simple configuration would be as follows:
 
 ```yml
 mergeable:
-  # Minimum of 5 approvals is needed.
-  approvals: 5
+  pull_requests:
+    # Minimum of 5 approvals is needed.
+    approvals: 5
 
-  # Regular expression. In this example, whenever a PR has a label with the word 'wip'
-  label: 'wip|do not merge|experimental'
+    # Regular expression. In this example, whenever a PR has a label with the word 'wip'
+    label: 'wip|do not merge|experimental'
 
-  # Regular expression to be tested on the title. Not mergeable when true.  
-  title: 'wip'
+    # Regular expression to be tested on the title. Not mergeable when true.  
+    title: 'wip'
 
-  # Only mergeable when milestone is as specified below.
-  milestone: 'version 1'
+    # Only mergeable when milestone is as specified below.
+    milestone: 'version 1'
 
-  # exclude any of the mergeable validation above. A comma separated list. For example, the following will exclude validations for approvals and label.
-  exclude: 'approvals, label'
+    # exclude any of the mergeable validation above. A comma separated list. For example, the following will exclude validations for approvals and label.
+    exclude: 'approvals, label'
 ```
 
 However you may want to have more advanced rulesets:
