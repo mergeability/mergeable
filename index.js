@@ -17,4 +17,7 @@ module.exports = (robot) => {
   robot.on(['issues.milestoned', 'issues.demilestoned'],
     (context) => { Handler.handleIssues(context) }
   )
+  robot.on(['issues.opened'],
+    (context) => { Handler.handleIssueOpened(context) }
+  )
 }
