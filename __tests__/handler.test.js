@@ -12,8 +12,8 @@ test('handlePullRequest when it is NOT mergeable', async () => {
   let context = mockContext('wip')
 
   Handler.handlePullRequest(context).then(() => {
-    expect(context.repo).lastCalledWith(
-      Helper.expectedStatus('failure', 'Title contains "wip|dnm|exp|poc"')
+    expect(context.repo).toHaveBeenLastCalledWith(
+      expect.objectContaining(Helper.expectedStatus('failure', 'Title contains "wip|dnm|exp|poc"'))
     )
   })
 })
@@ -23,7 +23,7 @@ test('handle creates pending status', async () => {
 
   await Handler.handlePullRequest(context).then(() => {
     expect(context.repo).toBeCalledWith(
-      Helper.expectedStatus('pending', 'Validating...')
+      expect.objectContaining({status: 'in_progress'})
     )
   })
 })
@@ -61,7 +61,7 @@ const expectSuccessStatus = async (context) => {
   await Handler.handlePullRequest(context)
     .then(() => {
       expect(context.repo).lastCalledWith(
-        Helper.expectedStatus('success', 'Okay to merge.')
+        expect.objectContaining(Helper.expectedStatus('success', 'Okay to merge.'))
       )
     })
 }
