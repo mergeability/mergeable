@@ -11,8 +11,13 @@ module.exports = {
           },
           title: (options.title) ? options.title : 'title',
           body: (options.body) ? options.body : '',
-          number: 1,
-          head: { sha: 'sha1' },
+          number: (options.number) ? options.number : 1,
+          head: {
+            ref: 'test',
+            sha: 'sha1',
+            repo: {
+              issues_url: 'testRepo/issues{/number}'
+            }},
           assignees: (options.assignees) ? options.assignees : []
         }
       },
@@ -27,9 +32,30 @@ module.exports = {
             })
           }
         },
+        checks: {
+          create: () => {
+            return { data: {
+              id: 1
+            }}
+          },
+          update: () => {
+            return {}
+          }
+        },
         pullRequests: {
           getReviews: () => {
             return { data: (options.reviews) ? options.reviews : [] }
+          }
+        },
+        projects: {
+          getRepoProjects: () => {
+            return { data: (options.repoProjects) ? options.repoProjects : [] }
+          },
+          getProjectColumns: () => {
+            return { data: (options.projectColumns) ? options.projectColumns : [] }
+          },
+          getProjectCards: () => {
+            return { data: (options.projectCards) ? options.projectCards : [] }
           }
         },
         issues: {
@@ -46,11 +72,14 @@ module.exports = {
 
   expectedStatus: (status, description) => {
     return {
-      context: 'Mergeable',
-      description: description,
-      sha: 'sha1',
-      state: status,
-      target_url: 'https://github.com/apps/mergeable'
+      check_run_id: 1,
+      conclusion: status,
+      name: 'Mergeable',
+      output: {
+        title: `Result: ${status}`,
+        summary: description
+      },
+      status: 'completed'
     }
   }
 
