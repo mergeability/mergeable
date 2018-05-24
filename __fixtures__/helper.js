@@ -16,7 +16,8 @@ module.exports = {
             sha: 'sha1',
             repo: {
               issues_url: 'testRepo/issues{/number}'
-            }}
+            }},
+          assignees: (options.assignees) ? options.assignees : []
         }
       },
       github: {
