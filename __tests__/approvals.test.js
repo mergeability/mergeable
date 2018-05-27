@@ -12,7 +12,7 @@ const defaultPR = {
 test('that it fails gracefully when approval is not defined', async () => {
   let validation = await approvals(defaultPR, createMockContext(1), (new Configuration(`
     mergeable:
-  `)).settings)
+  `)).settings.mergeable)
   // mergeable should return true because approval count is zero
   expect(validation.mergeable).toBe(true)
 })
@@ -177,6 +177,24 @@ test('mergeable advanceSetting max works', async () => {
   expect(validation.mergeable).toBe(true)
 })
 
+test('test pullRequests sub works with advanceSetting max', async () => {
+  let configuration = `
+  mergeable:
+    pull_requests:
+      approvals:
+        max: 
+          count: 2
+          message: 'This is a test message'
+  `
+
+  let validation = await approvals(defaultPR, createMockContext(3), config({config: configuration}).pull_requests)
+  expect(validation.mergeable).toBe(false)
+  expect(validation.description[0]).toBe('This is a test message')
+
+  validation = await approvals(defaultPR, createMockContext(1), config({config: configuration}).pull_requests)
+  expect(validation.mergeable).toBe(true)
+})
+
 const createMockContext = (minimum, data) => {
   if (!data) {
     data = []
@@ -199,8 +217,8 @@ const config = ({min, config}) => {
     return (new Configuration(`
     mergeable:
       approvals: ${min}
-  `)).settings
+  `)).settings.mergeable
   }
 
-  return (new Configuration(config)).settings
+  return (new Configuration(config)).settings.mergeable
 }

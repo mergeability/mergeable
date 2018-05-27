@@ -92,8 +92,8 @@ const config = ({min, config}) => {
     return (new Configuration(`
     mergeable:
       assignee: ${min}
-  `)).settings
+  `)).settings.mergeable
   }
 
-  return (new Configuration(config)).settings
+  return (new Configuration(config)).settings.mergeable
 }

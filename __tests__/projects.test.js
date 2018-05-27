@@ -51,5 +51,5 @@ const config = (projectName) => {
   return (new Configuration(`
   mergeable:
     project: '${projectName}'
-`)).settings
+`)).settings.mergeable
 }
