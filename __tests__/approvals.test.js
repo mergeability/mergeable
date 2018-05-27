@@ -9,6 +9,14 @@ const defaultPR = {
   number: 1
 }
 
+test('that it fails gracefully when approval is not defined', async () => {
+  let validation = await approvals(defaultPR, createMockContext(1), (new Configuration(`
+    mergeable:
+  `)).settings)
+  // mergeable should return true because approval count is zero
+  expect(validation.mergeable).toBe(true)
+})
+
 test('that mergeable is true when less than minimum', async () => {
   let validation = await approvals(defaultPR, createMockContext(1), config({min: 2}))
   expect(validation.mergeable).toBe(false)
