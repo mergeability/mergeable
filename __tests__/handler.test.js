@@ -35,8 +35,9 @@ test('one exclude configuration will exclude the validation', async () => {
   context.github.repos.getContent = () => {
     return Promise.resolve({ data: { content: Buffer.from(`
       mergeable:
-        approvals: 0
-        exclude: 'title'
+        pull_requests:
+          approvals: 0
+          exclude: 'title'
     `).toString('base64') }})
   }
   await expectSuccessStatus(context)
@@ -49,7 +50,8 @@ test('more than one exclude configuration will exclude the validation', async ()
   context.github.repos.getContent = () => {
     return Promise.resolve({ data: { content: Buffer.from(`
       mergeable:
-        exclude: 'approvals, title, label'
+        pull_requests:
+          exclude: 'approvals, title, label'
     `).toString('base64') }})
   }
   await expectSuccessStatus(context)

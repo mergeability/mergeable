@@ -51,9 +51,10 @@ test('mergeable is false if required member(s) has not approved', async () => {
   ]
   let configuration = `
   mergeable:
-    approvals:
-      required: 
-        reviewers: ['userA', 'userC']
+    pull_requests:
+      approvals:
+        required: 
+          reviewers: ['userA', 'userC']
   `
   let validation = await approvals(defaultPR, createMockContext(5, reviewList), config({ config: configuration }))
   expect(validation.description[0]).toBe('Approval: userC required')
@@ -82,9 +83,10 @@ test('mergeable is false if required user has not approved', async () => {
   ]
   let configuration = `
   mergeable:
-    approvals:
-      required:
-        reviewers: ['userA', 'userC']
+    pull_requests:
+      approvals:
+        required:
+          reviewers: ['userA', 'userC']
   `
 
   let validation = await approvals(defaultPR, createMockContext(5, reviewList), config({config: configuration}))
@@ -97,9 +99,10 @@ test('pr creator is removed from required reviewer list', async () => {
 
   let configuration = `
   mergeable:
-    approvals:
-      required:
-        reviewers: ['creator', 'userC']
+    pull_requests:
+      approvals:
+        required:
+          reviewers: ['creator', 'userC']
   `
 
   let validation = await approvals(defaultPR, createMockContext(5, reviewList), config({config: configuration}))
@@ -126,9 +129,10 @@ test('checks that latest review is used', async () => {
   ]
   let configuration = `
   mergeable:
-    approvals:
-      required:
-        reviewers: ['userA']
+    pull_requests:
+      approvals:
+        required:
+          reviewers: ['userA']
   `
 
   let validation = await approvals(defaultPR, createMockContext(5, reviewList), config({config: configuration}))
@@ -138,10 +142,11 @@ test('checks that latest review is used', async () => {
 test('mergeable advanceSetting min works', async () => {
   let configuration = `
   mergeable:
-    approvals:
-      min: 
-        count: 2
-        message: 'This is a test message'
+    pull_requests:
+      approvals:
+        min: 
+          count: 2
+          message: 'This is a test message'
   `
 
   let validation = await approvals(defaultPR, createMockContext(1), config({config: configuration}))
@@ -155,10 +160,11 @@ test('mergeable advanceSetting min works', async () => {
 test('mergeable advanceSetting max works', async () => {
   let configuration = `
   mergeable:
-    approvals:
-      max: 
-        count: 2
-        message: 'This is a test message'
+    pull_requests:
+      approvals:
+        max: 
+          count: 2
+          message: 'This is a test message'
   `
 
   let validation = await approvals(defaultPR, createMockContext(3), config({config: configuration}))
@@ -190,9 +196,10 @@ const config = ({min, config}) => {
   if (min) {
     return (new Configuration(`
     mergeable:
-      approvals: ${min}
-  `)).settings
+      pull_requests:
+        approvals: ${min}
+  `)).settings.mergeable.pull_requests
   }
 
-  return (new Configuration(config)).settings
+  return (new Configuration(config)).settings.mergeable.pull_requests
 }

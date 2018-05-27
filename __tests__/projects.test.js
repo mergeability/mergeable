@@ -50,6 +50,7 @@ const createMockContext = (data) => {
 const config = (projectName) => {
   return (new Configuration(`
   mergeable:
-    project: '${projectName}'
-`)).settings
+    pull_requests:
+      project: '${projectName}'
+`)).settings.mergeable.pull_requests
 }
