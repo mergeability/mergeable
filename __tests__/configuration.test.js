@@ -81,6 +81,76 @@ test('that instanceWithContext returns the right Configuration', async () => {
   expect(context.github.repos.getContent.mock.calls.length).toBe(1)
 })
 
+test('that instanceWithContext returns the right Configuration (pull_requrests)', async () => {
+  let context = {
+    repo: jest.fn().mockReturnValue({
+      repo: '',
+      owner: ''
+    }),
+    payload: {
+      pull_request: {
+        number: 1
+      }
+    },
+    github: {
+      repos: {
+        getContent: jest.fn().mockReturnValue(
+          Promise.resolve({ data: { content: Buffer.from(`
+            mergeable:
+              pull_requests:
+                label: 'label issue regex'
+                title: 'title issue regex'
+          `).toString('base64') }})
+        )
+      }
+    }
+  }
+
+  await Configuration.instanceWithContext(context).then(config => {
+    let mergeable = config.settings.mergeable
+    expect(mergeable.title).toBe(undefined)
+    expect(mergeable.label).toBe(undefined)
+    expect(mergeable.pull_requests.title).toBe('title issue regex')
+    expect(mergeable.pull_requests.label).toBe('label issue regex')
+  })
+  expect(context.github.repos.getContent.mock.calls.length).toBe(1)
+})
+
+test('that instanceWithContext returns the right Configuration (issues)', async () => {
+  let context = {
+    repo: jest.fn().mockReturnValue({
+      repo: '',
+      owner: ''
+    }),
+    payload: {
+      pull_request: {
+        number: 1
+      }
+    },
+    github: {
+      repos: {
+        getContent: jest.fn().mockReturnValue(
+          Promise.resolve({ data: { content: Buffer.from(`
+            mergeable:
+              issues:
+                label: 'label issue regex'
+                title: 'title issue regex'
+          `).toString('base64') }})
+        )
+      }
+    }
+  }
+
+  await Configuration.instanceWithContext(context).then(config => {
+    let mergeable = config.settings.mergeable
+    expect(mergeable.title).toBe(undefined)
+    expect(mergeable.label).toBe(undefined)
+    expect(mergeable.issues.title).toBe('title issue regex')
+    expect(mergeable.issues.label).toBe('label issue regex')
+  })
+  expect(context.github.repos.getContent.mock.calls.length).toBe(1)
+})
+
 test('that instanceWithContext still returns the Configuration when repo does not content mergeable.yml', async () => {
   let context = {
     repo: () => {

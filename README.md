@@ -58,6 +58,19 @@ mergeable:
 
     # exclude any of the mergeable validation above. A comma separated list. For example, the following will exclude validations for approvals and label.
     exclude: 'approvals, label'
+    
+  issues:
+      # Regular expression. In this example, whenever a PR has a label with the word 'wip'
+      label: 'wip|do not merge|experimental'
+  
+      # Regular expression to be tested on the title. Not mergeable when true.  
+      title: 'wip'
+  
+      # Only mergeable when milestone is as specified below.
+      milestone: 'version 1'
+  
+      # exclude any of the mergeable validation above. A comma separated list. For example, the following will exclude validations for approvals and label.
+      exclude: 'approvals, label'
 ```
 
 However you may want to have more advanced rulesets:
