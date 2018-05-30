@@ -33,15 +33,15 @@ const createMockPR = ({description, number}) => {
 
 const createMockContext = (data) => {
   const repoProjects = [
-      {name: 'Project One', id: 1},
-      {name: 'Porject Two', id: 2}
+    {name: 'Project One', id: 1},
+    {name: 'Porject Two', id: 2}
   ]
   const projectColumns = [
-      {id: 1}
+    {id: 1}
   ]
   const projectCards = [
-      {content_url: 'testRepo/issues/1'},
-      {content_url: 'testRepo/issues/2'}
+    {content_url: 'testRepo/issues/1'},
+    {content_url: 'testRepo/issues/2'}
   ]
 
   return Helper.mockContext({repoProjects: repoProjects, projectColumns: projectColumns, projectCards: projectCards})

@@ -1,4 +1,5 @@
 const Handler = require('./lib/handler')
+const scheduler = require('probot-scheduler')
 
 module.exports = (robot) => {
   robot.on(
@@ -11,10 +12,16 @@ module.exports = (robot) => {
       'pull_request.unlabeled',
       'pull_request.synchronize'
     ],
-    (context) => { Handler.handlePullRequest(context) }
+    context => Handler.handlePullRequest(context)
   )
 
   robot.on(['issues.milestoned', 'issues.demilestoned'],
-    (context) => { Handler.handleIssues(context) }
+    context => Handler.handleIssues(context)
+  )
+
+  // check every two seconds.
+  scheduler(robot, { interval: 60 * 60 * 2 })
+  robot.on('schedule.repository',
+    context => Handler.handleStale(context)
   )
 }
