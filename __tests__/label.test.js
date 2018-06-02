@@ -6,23 +6,23 @@ test('fail gracefully if invalid regex', async () => {
   let config = new Configuration(`
     mergeable:
       label: '@#$@#$@#$'
-  `)
-  let validation = await label(createMockPR(), createMockContext('WIP'), config.settings)
+  `).settings.mergeable
+  let validation = await label(createMockPR(), createMockContext('WIP'), config)
   expect(validation.mergeable).toBe(true)
 })
 
 test('mergeable is false if regex found or true if not when there is only one label', async () => {
-  let config = new Configuration()
+  let config = new Configuration().settings.mergeable
 
-  let validation = await label(createMockPR(), createMockContext('work in progress'), config.settings)
+  let validation = await label(createMockPR(), createMockContext('work in progress'), config)
   expect(validation.mergeable).toBe(false)
 
-  validation = await label(createMockPR(), createMockContext('Some Label'), config.settings)
+  validation = await label(createMockPR(), createMockContext('Some Label'), config)
   expect(validation.mergeable).toBe(true)
 })
 
 test('mergeable is false if regex found or true if not when there are multiple labels', async () => {
-  let config = (new Configuration()).settings
+  let config = (new Configuration()).settings.mergeable
 
   let validation = await label(createMockPR(), createMockContext(['abc', 'experimental', 'xyz']), config)
   expect(validation.mergeable).toBe(false)
@@ -32,14 +32,14 @@ test('mergeable is false if regex found or true if not when there are multiple l
 })
 
 test('description is correct', async () => {
-  let config = new Configuration()
+  let config = new Configuration().settings.mergeable
   let validation = await label(createMockPR(),
-    createMockContext('Work in Progress'), config.settings)
+    createMockContext('Work in Progress'), config)
 
   expect(validation.mergeable).toBe(false)
   expect(validation.description).toBe(`Label contains "${Configuration.DEFAULTS.label}"`)
 
-  validation = await label(createMockPR(), createMockContext('Just Label'), config.settings)
+  validation = await label(createMockPR(), createMockContext('Just Label'), config)
   expect(validation.description).toBe(null)
 })
 
@@ -48,7 +48,7 @@ test('mergeable is true if must_include is one of the label', async () => {
     mergeable:
       label: 
         must_include: 'abc'
-  `).settings
+  `).settings.mergeable
 
   let validation = await label(createMockPR(), createMockContext(['abc', 'experimental', 'xyz']), config)
   expect(validation.mergeable).toBe(true)
@@ -62,7 +62,7 @@ test('mergeable is false if must_exclude is one of the label', async () => {
     mergeable:
       label: 
         must_exclude: 'xyz'
-  `).settings
+  `).settings.mergeable
 
   let validation = await label(createMockPR(), createMockContext(['abc', 'experimental', 'xyz']), config)
   expect(validation.mergeable).toBe(false)
