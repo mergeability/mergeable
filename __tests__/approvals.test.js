@@ -195,7 +195,54 @@ test('test pullRequests sub works with advanceSetting max', async () => {
   expect(validation.mergeable).toBe(true)
 })
 
-const createMockContext = (minimum, data) => {
+test('that ownersEnabled will check owner file and append it to required list', async () => {
+  const codeowner = `*.go @bob`
+  let commitDiffs = createCommitDiffs(['first/second/third/dir/test.go'])
+  const configuration = `
+  mergeable:
+    approvals:
+      required:
+        reviewers: ['john']
+        owners: true
+`
+
+  let validations = await approvals(createMockPR(), createMockContext(0, [], codeowner, commitDiffs), config({config: configuration}))
+  expect(validations.mergeable).toBe(false)
+  expect(validations.description[0]).toBe('Approval: john ,bob(Code Owner) required')
+
+  commitDiffs = createCommitDiffs(['another/file/path/test.js'])
+
+  // bob shouldn't appear because he is not the owner of the files in the PR
+  validations = await approvals(createMockPR(), createMockContext(0, [], codeowner, commitDiffs), config({config: configuration}))
+  expect(validations.mergeable).toBe(false)
+  expect(validations.description[0]).toBe('Approval: john required')
+})
+
+test('that ownersEnabled will check owner file and is mergeable when approval is given', async () => {
+  const codeowner = `*.go @bob`
+  let commitDiffs = createCommitDiffs(['first/second/third/dir/test.go'])
+  const configuration = `
+  mergeable:
+    approvals:
+      required:
+        owners: true
+`
+  let reviews = createReviewList(['bob'])
+  let validations = await approvals(createMockPR(), createMockContext(0, [], codeowner, commitDiffs), config({config: configuration}))
+  expect(validations.mergeable).toBe(false)
+  expect(validations.description[0]).toBe('Approval: bob(Code Owner) required')
+
+  validations = await approvals(createMockPR(), createMockContext(0, reviews, codeowner, commitDiffs), config({config: configuration}))
+  expect(validations.mergeable).toBe(true)
+})
+
+const createCommitDiffs = (diffs) => {
+  return diffs.map(diff => ({
+    filename: diff
+  }))
+}
+
+const createMockContext = (minimum, data, owners, commitDiffs) => {
   if (!data) {
     data = []
     for (let i = 0; i < minimum; i++) {
@@ -209,7 +256,25 @@ const createMockContext = (minimum, data) => {
     }
   }
 
-  return Helper.mockContext({reviews: data})
+  return Helper.mockContext({reviews: data, codeowners: Buffer.from(`${owners}`).toString('base64'), compareCommits: commitDiffs})
+}
+
+const createMockPR = () => {
+  return Helper.mockContext({
+    user: {
+      login: 'creator'
+    },
+    number: 1
+  }).payload.pull_request
+}
+
+const createReviewList = (reviewers) => {
+  return reviewers.map(reviewer => ({
+    user: {
+      login: reviewer
+    },
+    state: 'APPROVED'
+  }))
 }
 
 const config = ({min, config}) => {
