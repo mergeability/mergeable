@@ -58,17 +58,22 @@ mergeable:
 
     # exclude any of the mergeable validation above. A comma separated list. For example, the following will exclude validations for approvals and label.
     exclude: 'approvals, label'
-    
+
+    # detect stale pull requests and comment on the PR such that the owner and everyone else who would normally get notifications be notified by Github.
+    stale:
+      days: 20 # number of days before the Pull Request is considered stale.
+      message: << 'This is more than 20 days old. Is it still relevant? If not please close it.'
+
   issues:
       # Regular expression. In this example, whenever a PR has a label with the word 'wip'
       label: 'wip|do not merge|experimental'
-  
+
       # Regular expression to be tested on the title. Not mergeable when true.  
       title: 'wip'
-  
+
       # Only mergeable when milestone is as specified below.
       milestone: 'version 1'
-  
+
       # exclude any of the mergeable validation above. A comma separated list. For example, the following will exclude validations for approvals and label.
       exclude: 'approvals, label'
 ```
