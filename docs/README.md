@@ -22,7 +22,7 @@
   <a href="#contributions">Contributions</a>
 </p>
 
-![screenshot](https://raw.githubusercontent.com/jusx/mergeable/5d9c9cab357b12b84af62044ac46648d9fca84c4/screenshot.gif)
+![screenshot](screenshot.gif)
 
 
 ## Key Features
