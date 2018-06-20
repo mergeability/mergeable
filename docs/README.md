@@ -1,30 +1,3 @@
-<!--
-![icon](m.png)
-
-# Mergeable
-[![CircleCI](https://circleci.com/gh/jusx/mergeable.svg?style=shield)](https://circleci.com/gh/jusx/mergeable)
-
-<!-- TODO include gitter and issues badges here -->
-
-
-<!-- TODO SCREENSHOT HERE -->
-<!--
->Encourage consistency, improve workflow and ensure code quality in your Github repositories through automation.
-
-
-Can be installed here free.
-
-## Table of contents
-- [Features](#features)
-- [Vision and Road Map](#vision_and_road_map)
-- [Configuration](#configuration)
-- [Usage](#usage)
-  - Installation
-  - Deploy your own instance
-- [Contribute](#contribute)
--->
-
-
 <h1 align="center">
   <br>
   <img src="m.png" alt="Mergeable" width="197"></a>
