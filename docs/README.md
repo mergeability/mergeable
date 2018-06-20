@@ -15,11 +15,11 @@
 </p>
 
 <p align="center">
-  <a href="#features">Key Features</a> •
+  <a href="#key-features">Key Features</a> •
   <a href="#vision">Vision</a> •
   <a href="#configuration">Configuration</a> •
   <a href="#usage">Usage</a> •
-  <a href="#contribution">Contributions</a>
+  <a href="#contributions">Contributions</a>
 </p>
 
 ![screenshot](https://raw.githubusercontent.com/jusx/mergeable/5d9c9cab357b12b84af62044ac46648d9fca84c4/screenshot.gif)
@@ -57,7 +57,7 @@ The Mergeable vision is to make the software development effort efficient so tha
 
 There are several areas in which we wish to automate for efficiency: consistency, workflow,  quality and statistics. The basic features for these areas are as follows:
 
-#### Consistency
+### Consistency
 
 - *Pull Request* validation for standards based on configured rulesets. ![completed](https://img.shields.io/badge/Status-completed-green.svg)
 
@@ -67,7 +67,7 @@ There are several areas in which we wish to automate for efficiency: consistency
 
 - Repo(s) audit. Scan repo(s) for standards configured in rulesets including existance OWNERS file, or .github contains TEMPLATES. Notify through creation of an issue in the repo(s).
 
-#### Workflow
+### Workflow
 
 - Kanban WIP limits. Limit the number of open Pull Requests by author.
 
@@ -81,14 +81,14 @@ There are several areas in which we wish to automate for efficiency: consistency
 
 - Slack Integration.
 
-#### Quality
+### Quality
 
 - Detect language and/or testing framework in a repos -- For example: ensure coverage must be greater than 80% or based on config. Suggest testing frameworks if none exists (display configured guideline by creating an issue etc.).
 - Suggest (by creating an issue in the repo) testing frameworks if none exists.
 - Linting standard. Automatically run linter based on tech stack.
 - Security analysis.
 
-#### Statistics
+### Statistics
 
 - Top contributor across repos.
 - Pull Request Merged.
@@ -314,11 +314,14 @@ mergeable:
       advanced_option (optional):
 ```
 
-You can have multiple subject, topic, `advanced_option`. Currently the list of subjects available are:
+### Structure & Formating
+The configuration file in general follows a structure. There is a hierarchy of `subject`, `topic`, and `advanced_option`.
+
+Currently the list of `subjects` available are:
 - pull_requests:
 - issues:
 
-A list of topics available for a simple configuration file are as follows:
+A list of `topics` available for a simple configuration file are as follows:
 - title: regex (must exlude)
 - description: regex (must exclude)
 - assignee: number (minimum number of assignees)
@@ -328,7 +331,7 @@ A list of topics available for a simple configuration file are as follows:
 - approvals: number (minimum number of assignee)
 - exclude: [] (exclude any of the topic above)
 
-A list of advanced_option for an advanced configuration file are as follows:
+A list of `advanced_option` for an advanced configuration file are as follows:
 - must_include
    - regex
    - message
@@ -354,7 +357,7 @@ A list of advanced_option for an advanced configuration file are as follows:
    - reviewers
    - message
 
-**Note**: Not all `advanced_option` works with all topics and `sub_options` must be provided for each advanced options
+**Note**: Not all `advanced_option` works with all topics and `sub_options` must be provided for each advanced options.
 
 
 ## Usage
