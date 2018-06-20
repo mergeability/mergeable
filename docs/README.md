@@ -137,167 +137,173 @@ Here's an example configuration file for advanced settings and all of it's possi
   mergeable:
   	pull_requests:
   		title:
-  		    must_include:
-  		      regex: `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
-  		      message: `Title must have prefixes for the following: (feat), (doc), (fix)`
-  		    must_exclude:
-  		      regex: 'wip'
-  		      message: 'This PR is work in progress.'
-  		    begins_with:
-  		      match: '(feat)|(doc)|(fix)'
-  		      message: 'Custom message...'
-  		    ends_with:
-  		      match: '(feat)|(doc)|(fix)'
-  		      message: 'Custom message...'
+        must_include:
+          regex: `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
+          message: `Title must have prefixes for the following: (feat), (doc), (fix)`
+        must_exclude:
+          regex: 'wip'
+          message: 'This PR is work in progress.'
+        begins_with:
+          match: '(feat)|(doc)|(fix)'
+          message: 'Custom message...'
+        ends_with:
+          match: '(feat)|(doc)|(fix)'
+          message: 'Custom message...'
 
-  		  label:
-  		    must_include:
-  		      regex: `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
-  		      message: `Title must have prefixes for the following: (feat), (doc), (fix)`
-  		    must_exclude:
-  		      regex: 'wip'
-  		      message: 'Custom message. This PR is work in progress.'
-  		    begins_with:
-  		      match: '(feat)|(doc)|(fix)'
-  		      message: 'Come message...'
-  		    ends_with:
-  		      match: '(feat)|(doc)|(fix)'
-  		      message: 'Come message...'  
+      label:
+        must_include:
+          regex: `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
+          message: `Title must have prefixes for the following: (feat), (doc), (fix)`
+        must_exclude:
+          regex: 'wip'
+          message: 'Custom message. This PR is work in progress.'
+        begins_with:
+          match: '(feat)|(doc)|(fix)'
+          message: 'Come message...'
+        ends_with:
+          match: '(feat)|(doc)|(fix)'
+          message: 'Come message...'  
 
-  		  milestone:
-  		    must_include:
-  		      regex: `Release 1`
-  		      message: `Custom message...`
-  		    must_exclude:
-  		      regex: 'jibberish'
-  		      message: 'Custom message...'
-  		    begins_with:
-  		      match: 'Release'
-  		      message: 'Custom message...'
-  		    ends_with:
-  		      match: ''
-  		      message: 'Custom message...'
-        project:
-  		    must_include:
-  		      regex: `Release 1`
-  		      message: `Custom message...`
-  		    must_exclude:
-  		      regex: 'jibberish'
-  		      message: 'Custom message...'
-  		    begins_with:
-  		      match: 'Release'
-  		      message: 'Custom message...'
-  		    ends_with:
-  		      match: ''
-  		      message: 'Custom message...'  
+      milestone:
+        must_include:
+          regex: `Release 1`
+          message: `Custom message...`
+        must_exclude:
+          regex: 'jibberish'
+          message: 'Custom message...'
+        begins_with:
+          match: 'Release'
+          message: 'Custom message...'
+        ends_with:
+          match: ''
+          message: 'Custom message...'
 
-  		  approvals:
-  		    min: 5
-  		      message: 'Custom message...'
-  		    required:
-  		      reviewers: [ user1, user2 ]   # list of github usernames required to review
-  		      message: 'Custom message...'		
+      project:
+        must_include:
+          regex: `Release 1`
+          message: `Custom message...`
+        must_exclude:
+          regex: 'jibberish'
+          message: 'Custom message...'
+        begins_with:
+          match: 'Release'
+          message: 'Custom message...'
+        ends_with:
+          match: ''
+          message: 'Custom message...'  
 
-  		  description:
-  		    no_empty:
-  		      enabled: false
-  		      message: 'Custom message...'
-  		    must_include:
-  		      regex: 'feat'
-  		      message: 'Custom message...'
-  		    must_exclude:
-  		      regex: 'DO NOT MERGE'
-  		      message: 'Custom message...'
+      approvals:
+        min: 5
+          message: 'Custom message...'
+        required:
+          reviewers: [ user1, user2 ]   # list of github usernames required to review
+          message: 'Custom message...'		
 
-  		  assignee:
-  		    min: 1
-  		    max: 1
-  		    message: 'Custom message...'
-     issues:
+      description:
+        no_empty:
+          enabled: false
+          message: 'Custom message...'
+        must_include:
+          regex: 'feat'
+          message: 'Custom message...'
+        must_exclude:
+          regex: 'DO NOT MERGE'
+          message: 'Custom message...'
+
+      assignee:
+        min: 1
+        max: 1
+        message: 'Custom message...'
+
+    #####
+    #  Advanced settings for issues. When any of the rules  below is not valid Mergeable will create a comment on that issue to let the author know.    
+    ###
+    issues:
   		title:
-  		    must_include:
-  		      regex: `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
-  		      message: `Title must have prefixes for the following: (feat), (doc), (fix)`
-  		    must_exclude:
-  		      regex: 'wip'
-  		      message: 'This PR is work in progress.'
-  		    begins_with:
-  		      match: '(feat)|(doc)|(fix)'
-  		      message: 'Custom message...'
-  		    ends_with:
-  		      match: '(feat)|(doc)|(fix)'
-  		      message: 'Custom message...'
+        must_include:
+          regex: `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
+          message: `Title must have prefixes for the following: (feat), (doc), (fix)`
+        must_exclude:
+          regex: 'wip'
+          message: 'This PR is work in progress.'
+        begins_with:
+          match: '(feat)|(doc)|(fix)'
+          message: 'Custom message...'
+        ends_with:
+          match: '(feat)|(doc)|(fix)'
+          message: 'Custom message...'
 
-  		  label:
-  		    must_include:
-  		      regex: `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
-  		      message: `Title must have prefixes for the following: (feat), (doc), (fix)`
-  		    must_exclude:
-  		      regex: 'wip'
-  		      message: 'Custom message. This PR is work in progress.'
-  		    begins_with:
-  		      match: '(feat)|(doc)|(fix)'
-  		      message: 'Come message...'
-  		    ends_with:
-  		      match: '(feat)|(doc)|(fix)'
-  		      message: 'Come message...'  
+      label:
+        must_include:
+          regex: `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
+          message: `Title must have prefixes for the following: (feat), (doc), (fix)`
+        must_exclude:
+          regex: 'wip'
+          message: 'Custom message. This PR is work in progress.'
+        begins_with:
+          match: '(feat)|(doc)|(fix)'
+          message: 'Come message...'
+        ends_with:
+          match: '(feat)|(doc)|(fix)'
+          message: 'Come message...'  
 
-  		  milestone:
-  		    must_include:
-  		      regex: `Release 1`
-  		      message: `Custom message...`
-  		    must_exclude:
-  		      regex: 'jibberish'
-  		      message: 'Custom message...'
-  		    begins_with:
-  		      match: 'Release'
-  		      message: 'Custom message...'
-  		    ends_with:
-  		      match: ''
-  		      message: 'Custom message...'  
-        project:
-  		    must_include:
-  		      regex: `Release 1`
-  		      message: `Custom message...`
-  		    must_exclude:
-  		      regex: 'jibberish'
-  		      message: 'Custom message...'
-  		    begins_with:
-  		      match: 'Release'
-  		      message: 'Custom message...'
-  		    ends_with:
-  		      match: ''
-  		      message: 'Custom message...'
+      milestone:
+        must_include:
+          regex: `Release 1`
+          message: `Custom message...`
+        must_exclude:
+          regex: 'jibberish'
+          message: 'Custom message...'
+        begins_with:
+          match: 'Release'
+          message: 'Custom message...'
+        ends_with:
+          match: ''
+          message: 'Custom message...'  
 
-  		  description:
-  		    no_empty:
-  		      enabled: false
-  		      message: 'Custom message...'
-  		    must_include:
-  		      regex: 'feat'
-  		      message: 'Custom message...'
-  		    must_exclude:
-  		      regex: 'DO NOT MERGE'
-  		      message: 'Custom message...'
+      project:
+        must_include:
+          regex: `Release 1`
+          message: `Custom message...`
+        must_exclude:
+          regex: 'jibberish'
+          message: 'Custom message...'
+        begins_with:
+          match: 'Release'
+          message: 'Custom message...'
+        ends_with:
+          match: ''
+          message: 'Custom message...'
 
-  		  assignee:
-  		    min: 1
-  		    max: 1
-  		    message: 'Custom message...'
+      description:
+        no_empty:
+          enabled: false
+          message: 'Custom message...'
+        must_include:
+          regex: 'feat'
+          message: 'Custom message...'
+        must_exclude:
+          regex: 'DO NOT MERGE'
+          message: 'Custom message...'
+
+      assignee:
+        min: 1
+        max: 1
+        message: 'Custom message...'
 ```
 
 By default if the configuration file does not exist, the following is the default settings out of the box:
 
 ```yml
-    ####################
-    # default settings
-    ####################
-    mergeable:
-      pull_requests:
-        label: 'work in progress|do not merge|experimental|proof of concept'
-    		title: 'wip|dnm|exp|poc'
-    		description:
-    			no-empty: true
+  ####################
+  # default settings
+  ####################
+  mergeable:
+    pull_requests:
+      label: 'work in progress|do not merge|experimental|proof of concept'
+  		title: 'wip|dnm|exp|poc'
+  		description:
+  			no-empty: true
 ```
 The configuration file follows a certain format. It is in the general following structure:
 
@@ -394,4 +400,5 @@ Running Locally:
 6. Add a repository for your Github app by going to [application settings](https://github.com/settings/installations)
 7. Do a test pull request to check if everything is working
 
-## Contributions [Contribute](https://github.com/jusx/mergeable/blob/master/CONTRIBUTING.md) by creating a pull request or create a [new issue](https://github.com/jusx/mergeable/issues) to request for features.
+## Contributions
+ [Contribute](https://github.com/jusx/mergeable/blob/master/CONTRIBUTING.md) by creating a pull request or create a [new issue](https://github.com/jusx/mergeable/issues) to request for features.
