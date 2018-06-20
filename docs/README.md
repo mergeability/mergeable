@@ -219,7 +219,7 @@ Here's an example configuration file for advanced settings and all of it's possi
     #  Advanced settings for issues. When any of the rules  below is not valid Mergeable will create a comment on that issue to let the author know.    
     ###
     issues:
-  		title:
+      title:
         must_include:
           regex: `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
           message: `Title must have prefixes for the following: (feat), (doc), (fix)`
