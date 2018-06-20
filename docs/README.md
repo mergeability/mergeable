@@ -46,7 +46,7 @@ Validate pull requests for mergeability based on content and structure of your P
 There may be certain formats and structure you want your Github issues to adhere to. Mergeable allows you to configure this and will create a comment with a list of suggested improvements to your Issue.
 
 - Notify the author and collaborators when an issues does not adhere to certain formats in the title.
-- Notify when labels are not assigned.
+
 - Notify when projects and milestones are not associated.
 
 Check the example configuration for [all the available features](#configuration). The Mergeable project is ongoing and there are a lot more that we are working on.
@@ -303,9 +303,9 @@ By default if the configuration file does not exist, the following is the defaul
   mergeable:
     pull_requests:
       label: 'work in progress|do not merge|experimental|proof of concept'
-  		title: 'wip|dnm|exp|poc'
-  		description:
-  			no-empty: true
+      title: 'wip|dnm|exp|poc'
+      description:
+        no-empty: true
 ```
 The configuration file follows a certain format. It is in the general following structure:
 
@@ -375,26 +375,27 @@ If you would like to run your own instance of this plugin, you can do so by fork
 
 [Create a GitHub App](https://github.com/settings/apps/new) and configure the permissions & events with the following:
 
-settings:
+**Settings:**
 - GitHub app name - **Your app name**
 - Webhook URL - **Your webhook url for listening to events** (local deployments you can use [smee.io](smee.io))
 - Webhook secret - **Your generated webhook seceret**
 
-permissions:
-- Issues - **Read Only**
+**Permissions:**
+- Checks - **Read & Write**
+- Issues - **Read & Write**
 - Repository metadata - **Read Only**
 - Pull requests - **Read Only**
 - Commit Statuses - **Read & Write**
 - Single File - **Read-only**
   - Path: `.github/mergeable.yml`
 
-And subscription to the following events:
+**And subscription to the following events:**
 - [x] Pull request
 - [x] Pull request review comment
 - [x] Pull request review
 - [x] Issues
 
-Running Locally:
+### Running Locally
 1. Clone the forked repository on to your machine
 2. Globally install smee-client from with npm ```npm install -g smee-client```
 3. Export all the variables required based on the ProBot deployment guide above
