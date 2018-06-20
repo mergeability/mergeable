@@ -394,8 +394,6 @@ And subscription to the following events:
 - [x] Pull request review
 - [x] Issues
 
-Depending on the type of deployment with probot please look at [ProBot Deployment Guide](https://probot.github.io/docs/deployment).
-
 Running Locally:
 1. Clone the forked repository on to your machine
 2. Globally install smee-client from with npm ```npm install -g smee-client```
