@@ -135,7 +135,7 @@ Here's an example configuration file for advanced settings and all of it's possi
   # example Advanced Settings
   ##############################
   mergeable:
-  	pull_requests:
+    pull_requests:
 
       title:
         must_include:
