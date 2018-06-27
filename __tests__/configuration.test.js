@@ -115,7 +115,6 @@ test('that instanceWithContext loads the configuration for stale correctly when 
     expect(mergeable.pull_requests.stale !== undefined).toBe(true)
     expect(mergeable.pull_requests.stale.days).toBe(20)
     expect(mergeable.pull_requests.stale.message).toBe(Configuration.DEFAULTS.stale.message)
-
   })
 
   context = createMockGhConfig(`

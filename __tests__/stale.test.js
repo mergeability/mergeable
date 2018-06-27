@@ -3,7 +3,7 @@ const stale = require('../lib/stale')
 const Configuration = require('../lib/configuration')
 
 test('will create comment when configured and stale pulls are found.', async () => {
-  let context = createMockContectWithPullsSetting([{number:1}])
+  let context = createMockContectWithPullsSetting([{number: 1}])
   let config = await Configuration.instanceWithContext(context)
 
   await stale(context, config)
@@ -11,7 +11,7 @@ test('will create comment when configured and stale pulls are found.', async () 
 })
 
 test('will create comment when configured and stale issues are found.', async () => {
-  let context = createMockContectWithIssueSetting([{number:1}])
+  let context = createMockContectWithIssueSetting([{number: 1}])
   let config = await Configuration.instanceWithContext(context)
 
   await stale(context, config)
@@ -19,7 +19,7 @@ test('will create comment when configured and stale issues are found.', async ()
 })
 
 test('will create comment when configured issues are found and multiple issues are found.', async () => {
-  let context = createMockContectWithIssueSetting([{number:1}, {number:2}])
+  let context = createMockContectWithIssueSetting([{number: 1}, {number: 2}])
   let config = await Configuration.instanceWithContext(context)
 
   await stale(context, config)
