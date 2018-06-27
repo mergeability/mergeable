@@ -3,41 +3,77 @@ const stale = require('../lib/stale')
 const Configuration = require('../lib/configuration')
 
 test('will create comment when configured and stale pulls are found.', async () => {
+  let context = createMockContectWithPullsSetting([{number:1}])
+  let config = await Configuration.instanceWithContext(context)
 
-  // setup config.
-  let config = new Configuration(`
+  await stale(context, config)
+  expect(context.github.issues.createComment.mock.calls.length).toBe(1)
+})
+
+test('will create comment when configured and stale issues are found.', async () => {
+  let context = createMockContectWithIssueSetting([{number:1}])
+  let config = await Configuration.instanceWithContext(context)
+
+  await stale(context, config)
+  expect(context.github.issues.createComment.mock.calls.length).toBe(1)
+})
+
+test('will create comment when configured issues are found and multiple issues are found.', async () => {
+  let context = createMockContectWithIssueSetting([{number:1}, {number:2}])
+  let config = await Configuration.instanceWithContext(context)
+
+  await stale(context, config)
+  expect(context.github.issues.createComment.mock.calls.length).toBe(2)
+})
+
+test('will NOT create comment when configured and stale pulls are not found.', async () => {
+  let context = createMockContectWithIssueSetting([])
+  let config = await Configuration.instanceWithContext(context)
+  await stale(context, config)
+  expect(context.github.issues.createComment.mock.calls.length).toBe(0)
+})
+
+test('will NOT create comment when configured and stale issues are not found.', async () => {
+  let context = createMockContectWithPullsSetting([])
+  let config = await Configuration.instanceWithContext(context)
+
+  await stale(context, config)
+  expect(context.github.issues.createComment.mock.calls.length).toBe(0)
+})
+
+const createMockContectWithIssueSetting = (results) => {
+  let context = createMockContext(results)
+  Helper.mockConfigWithContext(context, `
+    mergeable:
+      issues:
+        stale:
+          days: 20
+    `)
+
+  return context
+}
+
+const createMockContectWithPullsSetting = (results) => {
+  let context = createMockContext(results)
+  Helper.mockConfigWithContext(context, `
     mergeable:
       pull_requests:
         stale:
           days: 20
-    `).settings.mergeable
+    `)
 
-  // call stale
-  stale(createMockContext({}), config)
-
-  // do expect.
-  // 1. setup mock
-  // 2. check that the createcomment is called.
-  fail()
-
-})
-
-test('will create comment when configured and stale issues are found.', async () => {
-  fail()
-})
-
-test('will NOT create comment when configured and stale pulls are not found.', async () => {
-  fail()
-})
-
-test('will NOT create comment when configured and stale issues are not found.', async () => {
-  fail()
-})
-
+  return context
+}
 
 const createMockContext = (results) => {
-  let context = helper.mockContext()
+  let context = Helper.mockContext()
 
-  context.github.search = jest.fn().mockReturnValue(results)
+  context.github.search = {
+    issues: jest.fn().mockReturnValue({
+      data: { items: results }
+    })
+  }
+
+  context.github.issues.createComment = jest.fn()
   return context
 }

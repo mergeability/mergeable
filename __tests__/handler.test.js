@@ -22,7 +22,7 @@ test('handleStale calls search.issues only when settings exists for days', async
   await Handler.handleStale(context)
   expect(context.github.search.issues.mock.calls.length).toBe(0)
   context.github.search.issues.mockClear()
-  
+
   // setup context with PR configuration.
   await expectMockCalls(`
     mergeable:
@@ -48,7 +48,7 @@ test('handleStale calls search.issues only when settings exists for days', async
       pull_requests:
         stale:
           days: 10
-  `, 1)
+  `, 2)
 })
 
 test('handlePullRequest when it is mergeable', async () => {

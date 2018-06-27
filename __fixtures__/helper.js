@@ -81,6 +81,14 @@ module.exports = {
       },
       status: 'completed'
     }
+  },
+
+  mockConfigWithContext: (context, configString) => {
+    context.github.repos.getContent = () => {
+      return Promise.resolve({ data: {
+        content: Buffer.from(configString).toString('base64') }
+      })
+    }
   }
 
 }

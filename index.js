@@ -19,6 +19,10 @@ module.exports = (robot) => {
     context => Handler.handleIssues(context)
   )
 
+  robot.on(['issues.opened'],
+   (context) => { Handler.handleIssuesOpened(context) }
+  )
+  
   // check every two seconds.
   scheduler(robot, { interval: 60 * 60 * 2 })
   robot.on('schedule.repository',
