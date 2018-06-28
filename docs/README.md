@@ -198,6 +198,7 @@ Here's an example configuration file for advanced settings and all of it's possi
           message: 'Custom message...'
         required:
           reviewers: [ user1, user2 ]   # list of github usernames required to review
+          owners: true | false # will read the file .github/CODEOWNER and make them required reviewers
           message: 'Custom message...'		
 
       description:

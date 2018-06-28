@@ -3,7 +3,7 @@ module.exports = {
     if (!options) options = {}
 
     return {
-      repo: () => { return { owner: 'owner', repo: 'repo' } },
+      repo: (properties) => { return Object.assign({ owner: 'owner', repo: 'repo' }, properties) },
       payload: {
         pull_request: {
           user: {
@@ -12,6 +12,10 @@ module.exports = {
           title: (options.title) ? options.title : 'title',
           body: (options.body) ? options.body : '',
           number: (options.number) ? options.number : 1,
+          base: {
+            ref: 'baseRef',
+            sha: 'sha2'
+          },
           head: {
             ref: 'test',
             sha: 'sha1',
@@ -24,11 +28,26 @@ module.exports = {
       github: {
         repos: {
           createStatus: () => {},
-          getContent: () => {
+          getContent: ({ path }) => {
+            return new Promise((resolve, reject) => {
+              if (path === '.github/mergeable.yml') {
+                let error = new Error('404 error')
+                error.code = 404
+                throw error
+              }
+
+              if (path === '.github/CODEOWNERS') {
+                return options.codeowners ? resolve({ data: {
+                  content: options.codeowners
+                }}) : resolve()
+              }
+            })
+          },
+          compareCommits: () => {
             return new Promise(resolve => {
-              let error = new Error('404 error')
-              error.code = 404
-              throw error
+              resolve({ data: {
+                files: options.compareCommits
+              }})
             })
           }
         },
