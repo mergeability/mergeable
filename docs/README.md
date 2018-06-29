@@ -145,11 +145,11 @@ Here's an example configuration file for advanced settings and all of it's possi
   mergeable:
     pull_requests:
       stale:
-        # number of days for a PR to be considered stale.  
+        # number of days for a PR to be considered stale. A comment is posted when it is stale.
         days: 20
         # Optional property. When not specified the default is used. The default message is:
         # There haven't been much activity here. This is stale. Is it still relevant? This is a friendly reminder to please resolve it. :-)
-        message: 'This is PR is stale. Please followup!'
+        message: 'This is PR is stale. Please follow up!'
       title:
         must_include:
           regex: `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
@@ -235,10 +235,10 @@ Here's an example configuration file for advanced settings and all of it's possi
     ###
     issues:
       stale:
-        # number of days for an issue to be considered stale.  
+        # number of days for an issue to be considered stale. A comment is posted when it is stale.  
         days: 20
         # Optional property. When not specified the default is used. The default message is used.
-        message: 'This is issue is stale. Please followup!'
+        message: 'This is issue is stale. Please follow up!'
       title:
         must_include:
           regex: `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`

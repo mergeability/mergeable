@@ -3,7 +3,7 @@ const stale = require('../lib/stale')
 const Configuration = require('../lib/configuration')
 
 test('will create comment when configured and stale pulls are found.', async () => {
-  let context = createMockContectWithPullsSetting([{number: 1}])
+  let context = createMockContextWithPullsSetting([{number: 1}])
   let config = await Configuration.instanceWithContext(context)
 
   await stale(context, config)
@@ -11,7 +11,7 @@ test('will create comment when configured and stale pulls are found.', async () 
 })
 
 test('will create comment when configured and stale issues are found.', async () => {
-  let context = createMockContectWithIssueSetting([{number: 1}])
+  let context = createMockContextWithIssueSetting([{number: 1}])
   let config = await Configuration.instanceWithContext(context)
 
   await stale(context, config)
@@ -19,7 +19,7 @@ test('will create comment when configured and stale issues are found.', async ()
 })
 
 test('will create comment when configured issues are found and multiple issues are found.', async () => {
-  let context = createMockContectWithIssueSetting([{number: 1}, {number: 2}])
+  let context = createMockContextWithIssueSetting([{number: 1}, {number: 2}])
   let config = await Configuration.instanceWithContext(context)
 
   await stale(context, config)
@@ -27,21 +27,21 @@ test('will create comment when configured issues are found and multiple issues a
 })
 
 test('will NOT create comment when configured and stale pulls are not found.', async () => {
-  let context = createMockContectWithIssueSetting([])
+  let context = createMockContextWithIssueSetting([])
   let config = await Configuration.instanceWithContext(context)
   await stale(context, config)
   expect(context.github.issues.createComment.mock.calls.length).toBe(0)
 })
 
 test('will NOT create comment when configured and stale issues are not found.', async () => {
-  let context = createMockContectWithPullsSetting([])
+  let context = createMockContextWithPullsSetting([])
   let config = await Configuration.instanceWithContext(context)
 
   await stale(context, config)
   expect(context.github.issues.createComment.mock.calls.length).toBe(0)
 })
 
-const createMockContectWithIssueSetting = (results) => {
+const createMockContextWithIssueSetting = (results) => {
   let context = createMockContext(results)
   Helper.mockConfigWithContext(context, `
     mergeable:
@@ -53,7 +53,7 @@ const createMockContectWithIssueSetting = (results) => {
   return context
 }
 
-const createMockContectWithPullsSetting = (results) => {
+const createMockContextWithPullsSetting = (results) => {
   let context = createMockContext(results)
   Helper.mockConfigWithContext(context, `
     mergeable:
