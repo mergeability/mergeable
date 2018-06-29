@@ -27,6 +27,10 @@
 
 ## Key Features
 
+- [Prevent pull requests to be merged](#pull-requests)  based on configured rulesets
+- [Notify author of failed guidelines when openning an issue](#issues) based on configured rulesets
+- [Detect stale issues and pull requests](#staleness) and notify author and collaborators.
+
 ### Pull Requests
 
 Validate pull requests for mergeability based on content and structure of your PR (title, labels, milestone, project, description, approvals, etc). The rule-sets are fully configurable. Here are a few examples of what you can do:
@@ -51,6 +55,10 @@ There may be certain formats and structure you want your Github issues to adhere
 
 Check the example configuration for [all the available features](#configuration). The Mergeable project is ongoing and there are a lot more that we are working on.
 
+### Staleness
+
+Detect stale issues and pull requests. Notify authors and collaborators by leaving a comment. Staleness is defined through [configuration](#configuration).
+
 ## Vision
 
 The Mergeable vision is to make the software development effort efficient so that everyone can focus on building software.  
@@ -71,7 +79,7 @@ There are several areas in which we wish to automate for efficiency: consistency
 
 - Kanban WIP limits. Limit the number of open Pull Requests by author.
 
-- Staleness and Reminders: create a comment on any *Issue* or *Pull Request* found to be stale such that the author and collaborators are notified. ![completed](https://img.shields.io/badge/IN-Progress-yellow.svg)
+- Staleness and Reminders: create a comment on any *Issue* or *Pull Request* found to be stale such that the author and collaborators are notified. ![completed](https://img.shields.io/badge/Status-completed-green.svg)
 
 - Projects WIP Limits by column in GitHub Projects.
 
@@ -136,7 +144,12 @@ Here's an example configuration file for advanced settings and all of it's possi
   ##############################
   mergeable:
     pull_requests:
-
+      stale:
+        # number of days for a PR to be considered stale. A comment is posted when it is stale.
+        days: 20
+        # Optional property. When not specified the default is used. The default message is:
+        # There haven't been much activity here. This is stale. Is it still relevant? This is a friendly reminder to please resolve it. :-)
+        message: 'This is PR is stale. Please follow up!'
       title:
         must_include:
           regex: `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
@@ -221,7 +234,11 @@ Here's an example configuration file for advanced settings and all of it's possi
     #  Advanced settings for issues. When any of the rules  below is not valid Mergeable will create a comment on that issue to let the author know.    
     ###
     issues:
-
+      stale:
+        # number of days for an issue to be considered stale. A comment is posted when it is stale.  
+        days: 20
+        # Optional property. When not specified the default is used. The default message is used.
+        message: 'This is issue is stale. Please follow up!'
       title:
         must_include:
           regex: `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`

@@ -13,7 +13,8 @@
     "js-yaml": "^3.11.0",
     "lodash": "^4.17.10",
     "node-fetch": "^2.1.2",
-    "probot": "^6.2.0"
+    "probot": "^6.2.0",
+    "probot-scheduler": "^1.1.0"
   },
   "devDependencies": {
     "jest": "^21.2.1",
