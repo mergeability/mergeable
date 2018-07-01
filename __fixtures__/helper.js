@@ -62,6 +62,9 @@ module.exports = {
           }
         },
         pullRequests: {
+          getFiles: () => {
+            return { data: options.files && options.files.map(file => ({filename: file, status: 'modified'})) }
+          },
           getReviews: () => {
             return { data: (options.reviews) ? options.reviews : [] }
           }
