@@ -20,9 +20,9 @@ test('that mergeable is false when only some of the dependent files are modified
 })
 
 test('test description is correct', async () => {
-  let defaultMessage = `One of the following file is modified, all the other files in the list must be modified as well 
-  -package.json,
-  -yarn.lock`
+  let defaultMessage = `One of the following file is modified, all the other files in the list must be modified as well:
+  - package.json,
+  - yarn.lock`
   let validation = await dependent(mockPR, createMockContext(['package.json']), config(['package.json', 'yarn.lock']))
   expect(validation.mergeable).toBe(false)
   expect(validation.description).toBe(defaultMessage)

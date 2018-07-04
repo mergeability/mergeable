@@ -231,7 +231,7 @@ Here's an example configuration file for advanced settings and all of it's possi
         message: 'Custom message...'
       
       dependent:
-        files: [] // list of files that all must be modified if one is modified
+        files: ['package.json', 'yarn.lock'] # list of files that all must be modified if one is modified
         message: 'Custom message...' 
 
     #####
