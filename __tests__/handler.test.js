@@ -59,9 +59,11 @@ test('handlePullRequest when it is mergeable', async () => {
 test('handlePullRequest when it is NOT mergeable', async () => {
   let context = mockContext('wip')
 
-  Handler.handlePullRequest(context).then(() => {
+  await Handler.handlePullRequest(context).then(() => {
+    let expected = Helper.expectedStatus('failure')
+    delete expected.output.summary
     expect(context.repo).toHaveBeenLastCalledWith(
-      expect.objectContaining(Helper.expectedStatus('failure', 'Title contains "wip|dnm|exp|poc"'))
+      expect.objectContaining(Helper.expectedStatus('failure', '## Mergeable has found the following failed checks\n - Title contains "wip|dnm|exp|poc"\n ___ \n **Please address the problems found above!**'))
     )
   })
 })
