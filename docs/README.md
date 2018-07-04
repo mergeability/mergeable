@@ -229,6 +229,10 @@ Here's an example configuration file for advanced settings and all of it's possi
         min: 1
         max: 1
         message: 'Custom message...'
+      
+      dependent:
+        files: ['package.json', 'yarn.lock'] # list of files that all must be modified if one is modified
+        message: 'Custom message...' 
 
     #####
     #  Advanced settings for issues. When any of the rules  below is not valid Mergeable will create a comment on that issue to let the author know.    
