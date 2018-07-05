@@ -36,7 +36,7 @@ test('test that custom message is correct', async () => {
 })
 
 const createMockContext = (files) => {
-  return Helper.mockContext({files: files})
+  return Helper.mockContext({files: files.map(name => ({name: name, status: 'modified'}))})
 }
 
 const config = (files, message) => {

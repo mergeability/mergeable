@@ -41,6 +41,13 @@ module.exports = {
                   content: options.codeowners
                 }}) : resolve()
               }
+
+              if (path.includes('test')) {
+                return (options.fileContents && options.fileContents[path]) ? resolve({ data: {
+                  content: Buffer.from(options.fileContents[path]).toString('base64'),
+                  path: path
+                }}) : resolve()
+              }
             })
           },
           compareCommits: () => {
@@ -63,7 +70,7 @@ module.exports = {
         },
         pullRequests: {
           getFiles: () => {
-            return { data: options.files && options.files.map(file => ({filename: file, status: 'modified'})) }
+            return { data: options.files && options.files.map(file => ({filename: file.name, status: file.status, contents_url: 'ref=123'})) }
           },
           getReviews: () => {
             return { data: (options.reviews) ? options.reviews : [] }

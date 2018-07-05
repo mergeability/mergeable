@@ -225,12 +225,13 @@ Here's an example configuration file for advanced settings and all of it's possi
           regex: 'DO NOT MERGE'
           message: 'Custom message...'
           
-      check_file:
+      files:
 		  # Check each modified file in the PR for the following starting at line 0.
 		  header: > 
 			   Entire license header.
-		  # only enforce it for these file patterns
-		  files: *.go      
+		  # only enforce it for these file patterns uses the same rules as CODEOWNER file
+		  pattern: *.go
+		  message: 'Custom message...'      
 
       assignee:
         min: 1
