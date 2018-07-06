@@ -1,5 +1,4 @@
 const Handler = require('./lib/handler')
-const scheduler = require('probot-scheduler')
 
 module.exports = (robot) => {
   robot.on(
@@ -25,7 +24,8 @@ module.exports = (robot) => {
 
   // By default scan check every one hour.
   // to debug locally you may want to change it to
-  // run on 2 sec interval like so: scheduler(robot, { interval: 60 * 60 * 2 })
+  // run on 2 sec interval like so:
+  // const scheduler = require('probot-scheduler'); scheduler(robot, { interval: 60 * 60 * 2 })
   robot.on('schedule.repository',
     context => Handler.handleStale(context)
   )
