@@ -23,8 +23,9 @@ module.exports = (robot) => {
     (context) => { Handler.handleIssuesOpened(context) }
   )
 
-  // check every two seconds.
-  scheduler(robot, { interval: 60 * 60 * 2 })
+  // By default scan check every one hour.
+  // to debug locally you may want to change it to
+  // run on 2 sec interval like so: scheduler(robot, { interval: 60 * 60 * 2 })
   robot.on('schedule.repository',
     context => Handler.handleStale(context)
   )
