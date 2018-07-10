@@ -15,6 +15,17 @@ test('that mergeable is true added file have proper header', async () => {
   expect(validation.mergeable).toBe(true)
 })
 
+test('that mergeable is false when header is the middle of the file', async () => {
+  let fileList = {
+    'test.js': `This is a Test File
+    Test Header
+    `
+  }
+
+  let validation = await files(mockPR, createMockContext(fileList), config())
+  expect(validation.mergeable).toBe(false)
+})
+
 test('that mergeable is true if added file doesn\'t match pattern', async () => {
   let fileList = {
     'test.go': `No Header
