@@ -11,7 +11,12 @@
   <a href="https://github.com/apps/mergeable">
     <img src="https://img.shields.io/badge/FREE-INSTALL-orange.svg" alt="Free Install">
   </a>
-  <a href="https://circleci.com/gh/jusx/mergeable"><img src="https://circleci.com/gh/jusx/mergeable.svg?style=shield"></a>
+  <a href="https://gitter.im/mergeable-bot/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge">
+    <img src="https://badges.gitter.im/mergeable-bot/Lobby.svg">
+  </a>
+  <a href="https://circleci.com/gh/jusx/mergeable">
+    <img src="https://circleci.com/gh/jusx/mergeable.svg?style=shield">
+  </a>  
 </p>
 
 <p align="center">
@@ -237,10 +242,10 @@ Here's an example configuration file for advanced settings and all of it's possi
         min: 1
         max: 1
         message: 'Custom message...'
-      
+
       dependent:
         files: ['package.json', 'yarn.lock'] # list of files that all must be modified if one is modified
-        message: 'Custom message...' 
+        message: 'Custom message...'
 
     #####
     #  Advanced settings for issues. When any of the rules  below is not valid Mergeable will create a comment on that issue to let the author know.    
