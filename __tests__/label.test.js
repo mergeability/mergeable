@@ -71,6 +71,40 @@ test('mergeable is false if must_exclude is one of the label', async () => {
   expect(validation.mergeable).toBe(true)
 })
 
+test('complex Logic test', async () => {
+  let config = new Configuration(`
+    mergeable:
+      label: 
+        or: 
+          - and: 
+            - must_include:
+                regex: 'release note: yes'
+                message: 'Please include release note: yes'
+            - must_include: 
+                regex: 'lang\\/core|lang\\/c\\+\\+|lang\\/c#'
+                message: 'Please include a language label'
+          - must_include: 
+              regex: 'release note: no'
+              message: 'Please include release note: no'
+  `).settings.mergeable
+
+  console.log(config.label.or[0].and)
+
+  let validation = await label(createMockPR(), createMockContext(['release note: no', 'experimental', 'xyz']), config)
+  expect(validation.mergeable).toBe(true)
+
+  validation = await label(createMockPR(), createMockContext(['release note: yes', '123', '456']), config)
+  expect(validation.mergeable).toBe(false)
+  expect(validation.description[0]).toBe('((Please include a language label)  ***OR***  Please include release note: no)')
+
+  validation = await label(createMockPR(), createMockContext(['lang/core', '456']), config)
+  console.log(validation)
+  expect(validation.description[0]).toBe('((Please include release note: yes)  ***OR***  Please include release note: no)')
+
+  validation = await label(createMockPR(), createMockContext(['release note: yes', 'lang/core', '456']), config)
+  expect(validation.mergeable).toBe(true)
+})
+
 const createMockContext = (labels) => {
   let labelArray = []
   if (Array.isArray(labels)) {
