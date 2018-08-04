@@ -6,6 +6,7 @@
   "license": "ISC",
   "repository": "https://github.com/jusx/mergeable.git",
   "scripts": {
+    "dev": "NODE_ENV=development npm start",
     "start": "probot run ./index.js",
     "test": "jest && standard"
   },
