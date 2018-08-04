@@ -28,7 +28,6 @@ module.exports = (robot) => {
   robot.on('schedule.repository',
     context => Handler.handleStale(context)
   )
-
 }
 
 const setup = (robot) => {
