@@ -1,7 +1,6 @@
 const consolidateResult = require('./processorOptions/lib/consolidateResults')
 const constructOupt = require('./processorOptions/lib/constructOutput')
 
-
 /**
  * Validation Processor
  * Process tests on the input based on the set of rules
@@ -56,21 +55,3 @@ const validationProcessor = (validatorContext, input, rules) => {
 }
 
 module.exports = validationProcessor
-
-const context = {
-  name: 'Description'
-}
-
-const input = 'TEST DESCRIPTION'
-
-const rules = [{
-  'must_exclude': {
-    regex: 'TEST'
-  }
-}, { 'must_include': {
-  regex: 'DESCRIPTIONS'
-}}, { 'wrong_option': {
-  regex: 'here'
-}}]
-
-console.log(validationProcessor(context, input, rules))

@@ -37,5 +37,3 @@ module.exports = (validatorContext, input, rule) => {
     description: isMergeable ? DEFAULT_SUCCESS_MESSAGE : description
   })
 }
-
-
