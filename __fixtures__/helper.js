@@ -1,9 +1,14 @@
+const log = (s)=> {
+  //if (s === )
+}
+
 module.exports = {
   mockContext: (options) => {
     if (!options) options = {}
 
     return {
       repo: (properties) => { return Object.assign({ owner: 'owner', repo: 'repo' }, properties) },
+      event: (options.event)? options.event : 'pull_request',
       payload: {
         pull_request: {
           user: {
@@ -24,6 +29,11 @@ module.exports = {
             }},
           assignees: (options.assignees) ? options.assignees : []
         }
+      },
+      log: {
+        debug: (s)=> console.log(`TEST[debug] > ${JSON.stringify(s)}`),
+        info: (s)=> console.log(`TEST[info] > ${JSON.stringify(s)}`),
+        warn: (s)=> console.log(`TEST[warn] > ${JSON.stringify(s)}`)
       },
       github: {
         repos: {
@@ -91,6 +101,7 @@ module.exports = {
       }
     }
   },
+
 
   expectedStatus: (status, description) => {
     return {

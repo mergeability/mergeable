@@ -3,6 +3,146 @@ const Handler = require('../lib/handler')
 const Configuration = require('../lib/configuration')
 Configuration.DEFAULTS.approvals = 0
 
+describe('#handleFlex', ()=> {
+  beforeEach(()=> {
+    process.env.MERGEABLE_VERSION = 'flex'
+  })
+
+  test('One When', async ()=> {
+    let context = mockContext('title')
+    mockConfigWithContext(context, `
+      version: flex
+      mergeable:
+        - when: pull_request.*
+          validate:
+            - do: title
+              regex: wip|work in progress|do not merge
+              message: 'a custom message'
+            - do: label
+              regex: wip|work in progress
+          pass:
+          fail:
+    `)
+
+    let registry = { validators: new Map(), actions: new Map() }
+    context.event = 'pull_request'
+    context.payload.action = 'opened'
+
+    await Handler.handleFlex(context, registry)
+    // test that the registry will register dynamicly.
+    expect(registry.validators.get('title')).toBeDefined()
+    expect(registry.validators.get('label')).toBeDefined()
+
+    let title = {
+      validate: jest.fn(),
+      isEventSupported: jest.fn().mockReturnValue(true)
+    }
+    registry.validators.set('title', title)
+    let label = {
+      validate: jest.fn(),
+      isEventSupported: jest.fn().mockReturnValue(true)
+    }
+    registry.validators.set('label', label)
+
+    registry.validators.set('title', title)
+    registry.validators.set('label', label)
+    await Handler.handleFlex(context, registry)
+
+    expect(title.validate).toHaveBeenCalledTimes(1)
+    expect(label.validate).toHaveBeenCalledTimes(1)
+
+  })
+
+  test('Comma seperated events', async ()=> {
+    let context = mockContext('title')
+    mockConfigWithContext(context, `
+      version: flex
+      mergeable:
+        - when: pull_request.opened, issues.opened
+          validate:
+            - do: title
+              regex: wip|work in progress|do not merge
+            - do: issueOnly
+          pass:
+          fail:
+    `)
+
+    let registry = { validators: new Map() }
+    let title = {
+      validate: jest.fn(),
+      isEventSupported: jest.fn().mockReturnValue(true)
+    }
+    registry.validators.set('title', title)
+    let issueOnly = {
+      validate: jest.fn(),
+      isEventSupported: jest.fn(event => { return (event === 'issues.opened') })
+    }
+    registry.validators.set('issueOnly', issueOnly)
+
+    context.event = 'pull_request'
+    context.payload.action = 'opened'
+    await Handler.handleFlex(context, registry)
+    expect(title.validate).toHaveBeenCalledTimes(1)
+    expect(title.isEventSupported).toHaveBeenCalledTimes(1)
+    expect(issueOnly.validate).toHaveBeenCalledTimes(0)
+    expect(issueOnly.isEventSupported).toHaveBeenCalledTimes(1)
+
+    context.event = 'issues'
+    context.payload.action = 'opened'
+    await Handler.handleFlex(context, registry)
+    expect(title.validate).toHaveBeenCalledTimes(2)
+    expect(title.isEventSupported).toHaveBeenCalledTimes(2)
+    expect(issueOnly.validate).toHaveBeenCalledTimes(1)
+    expect(issueOnly.isEventSupported).toHaveBeenCalledTimes(2)
+
+  })
+
+  test('Multiple Whens', async ()=> {
+    let context = mockContext('title')
+    mockConfigWithContext(context, `
+      version: flex
+      mergeable:
+        - when: pull_request.opened
+          validate:
+            - do: title
+              regex: 'wip'
+          pass:
+          fail:
+        - when: issues.opened
+          validate:
+            - do: label
+              regex: 'wip'
+            - do: title
+          pass:
+          fail:
+    `)
+
+    let registry = { validators: new Map() }
+    let title = {
+      validate: jest.fn(),
+      isEventSupported: jest.fn().mockReturnValue(true)
+    }
+    registry.validators.set('title', title)
+    let label = {
+      validate: jest.fn(),
+      isEventSupported: jest.fn().mockReturnValue(true)
+    }
+    registry.validators.set('label', label)
+
+    context.event = 'pull_request'
+    context.payload.action = 'opened'
+    await Handler.handleFlex(context, registry)
+    expect(title.validate).toHaveBeenCalledTimes(1)
+    expect(label.validate).toHaveBeenCalledTimes(0)
+
+    context.event = 'issues'
+    await Handler.handleFlex(context, registry)
+    expect(title.validate).toHaveBeenCalledTimes(2)
+    expect(label.validate).toHaveBeenCalledTimes(1)
+
+  })
+})
+
 test('handleStale calls search.issues only when settings exists for days', async () => {
   // setup context with no added configuration.
   let context = mockContext('title')
