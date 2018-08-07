@@ -1,4 +1,4 @@
-const Mergeable = require('./lib/mergeable')
+const { Mergeable } = require('./lib/mergeable')
 
 module.exports = (robot) => {
   let mergeable = new Mergeable(

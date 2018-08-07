@@ -1,7 +1,7 @@
 const Label = require('../../lib/validators/label')
 const Helper = require('../../__fixtures__/helper')
 
-test('validate returns correctly', async ()=> {
+test('validate returns correctly', async () => {
   let label = new Label()
 
   let settings = {
@@ -12,9 +12,8 @@ test('validate returns correctly', async ()=> {
   let results = await label.validate(createMockContext(['wip']), settings)
   expect(results.mergeable).toBe(false)
 
-  results = await label.validate(createMockContext(['a','b']), settings)
+  results = await label.validate(createMockContext(['a', 'b']), settings)
   expect(results.mergeable).toBe(true)
-
 })
 
 const createMockContext = (labels) => {

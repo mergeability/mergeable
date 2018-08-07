@@ -1,7 +1,7 @@
 const Title = require('../../lib/validators/title')
 const Helper = require('../../__fixtures__/helper')
 
-test('validate returns false', ()=> {
+test('validate returns false', () => {
   let title = new Title()
 
   let settings = {
@@ -12,7 +12,6 @@ test('validate returns false', ()=> {
 
   expect(title.validate(mockContext('wip'), settings).mergeable).toBe(false)
   expect(title.validate(mockContext('(feat) something else'), settings).mergeable).toBe(true)
-
 })
 
 const mockContext = title => {

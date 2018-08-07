@@ -1,21 +1,21 @@
 const Configuration = require('../lib/configuration')
 
 describe('with flex', () => {
-  beforeEach(()=> {
+  beforeEach(() => {
     process.env.MERGEABLE_VERSION = 'flex'
   })
 
-  test('it loads correctly without version', ()=> {
+  test('it loads correctly without version', () => {
     let config = new Configuration()
     expect(config.settings.mergeable).toBeDefined()
   })
 
-  test('it loads correctly with version specified with flex', ()=> {
-    let config = new Configuration(`version: flex`)
+  test('it loads correctly with version specified with flex', () => {
+    let config = new Configuration(`version: 2`)
     expect(config.settings.mergeable).toBe(undefined)
   })
 
-  test('it loads correctly with wrong version specified', ()=> {
+  test('it loads correctly with wrong version specified', () => {
     let config = new Configuration(`
       version: something
       mergeable:
@@ -24,15 +24,15 @@ describe('with flex', () => {
   })
 })
 
-describe('without flex', ()=> {
-  beforeEach(()=> {
+describe('without flex', () => {
+  beforeEach(() => {
     process.env.MERGEABLE_VERSION = ''
   })
 
   test('that Configuration validates root node in yml', () => {
     try {
       let config = new Configuration('nothing:')
-      console.log(config)
+      expect(config).toBeUndefined()
     } catch (e) {
       expect(e.message).toBe(Configuration.ERROR_INVALID_YML)
     }
