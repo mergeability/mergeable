@@ -44,10 +44,12 @@ describe('#processValidations', () => {
         - when: pull_request.*
           validate:
             - do: title
-              regex: wip|work in progress|do not merge
-              message: 'a custom message'
+              must_include:
+                regex: wip|work in progress|do not merge
+                message: 'a custom message'
             - do: label
-              regex: wip|work in progress
+              must_include:
+                regex: wip|work in progress
           pass:
           fail:
     `)
@@ -88,7 +90,8 @@ describe('#processValidations', () => {
         - when: pull_request.opened, issues.opened
           validate:
             - do: title
-              regex: wip|work in progress|do not merge
+              must_include:
+                regex: wip|work in progress|do not merge
             - do: issueOnly
           pass:
           fail:
@@ -131,13 +134,15 @@ describe('#processValidations', () => {
         - when: pull_request.opened
           validate:
             - do: title
-              regex: 'wip'
+              must_exclude:
+                regex: 'wip'
           pass:
           fail:
         - when: issues.opened
           validate:
             - do: label
-              regex: 'wip'
+              must_exclude:
+                regex: 'wip'
             - do: title
           pass:
           fail:
