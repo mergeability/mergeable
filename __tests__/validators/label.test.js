@@ -6,14 +6,16 @@ test('validate returns correctly', async () => {
 
   let settings = {
     do: 'label',
-    must_exclude: 'wip'
+    must_exclude: {
+      regex: 'wip'
+    }
   }
 
   let results = await label.validate(createMockContext(['wip']), settings)
-  expect(results.mergeable).toBe(false)
+  expect(results.status).toBe('fail')
 
   results = await label.validate(createMockContext(['a', 'b']), settings)
-  expect(results.mergeable).toBe(true)
+  expect(results.status).toBe('pass')
 })
 
 const createMockContext = (labels) => {

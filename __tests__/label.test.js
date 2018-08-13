@@ -23,7 +23,6 @@ test('mergeable is false if regex found or true if not when there is only one la
 
 test('mergeable is false if regex found or true if not when there are multiple labels', async () => {
   let config = (new Configuration()).settings.mergeable
-  console.log(config.settings)
   let validation = await label(createMockPR(), createMockContext(['abc', 'experimental', 'xyz']), config)
   expect(validation.mergeable).toBe(false)
 

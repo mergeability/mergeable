@@ -6,12 +6,18 @@ test('validate returns false', () => {
 
   let settings = {
     do: 'title',
-    must_include: '^\\(feat\\)|^\\(doc\\)|^\\(fix\\)',
-    must_exclude: 'wip'
+    must_include: {
+      regex: '^\\(feat\\)|^\\(doc\\)|^\\(fix\\)'
+    },
+    must_exclude: {
+      regex: 'wip'
+    }
   }
+  let result = title.validate(mockContext('wip'), settings)
+  expect(result.status).toBe('fail')
 
-  expect(title.validate(mockContext('wip'), settings).mergeable).toBe(false)
-  expect(title.validate(mockContext('(feat) something else'), settings).mergeable).toBe(true)
+  result = title.validate(mockContext('(feat) something else'), settings)
+  expect(result.status).toBe('pass')
 })
 
 const mockContext = title => {
