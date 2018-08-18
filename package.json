@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "NODE_ENV=development npm start",
     "start": "probot run ./index.js",
-    "test": "jest && standard"
+    "test": "jest && standard",
+    "lint": "standard --fix"
   },
   "dependencies": {
     "js-yaml": "^3.11.0",
