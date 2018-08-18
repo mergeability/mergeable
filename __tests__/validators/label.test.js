@@ -125,7 +125,7 @@ test('complex Logic test', async () => {
   let settings = {
     do: 'label',
     or: [{
-      and : [{
+      and: [{
         must_include: {
           regex: 'release note: yes',
           message: 'Please include release note: yes'

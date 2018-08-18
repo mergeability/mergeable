@@ -125,7 +125,7 @@ test('checks that it fail when include regex is in title', async () => {
   let settings = {
     do: 'title',
     must_include: {
-      regex: includeList,
+      regex: includeList
     },
     must_exclude: {
       regex: 'wip'
