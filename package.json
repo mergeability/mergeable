@@ -9,9 +9,11 @@
     "dev": "LOG_LEVEL=trace NODE_ENV=development nodemon --exec 'npm start'",
     "dev-flex": "MERGEABLE_VERSION=flex npm run dev",
     "start": "probot run ./index.js",
-    "test": "jest && standard"
+    "test": "jest && standard",
+    "lint": "standard --fix"
   },
   "dependencies": {
+    "handlebars": "^4.0.11",
     "js-yaml": "^3.11.0",
     "lodash": "^4.17.10",
     "node-fetch": "^2.1.2",
