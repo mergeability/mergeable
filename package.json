@@ -6,7 +6,8 @@
   "license": "ISC",
   "repository": "https://github.com/jusx/mergeable.git",
   "scripts": {
-    "dev": "NODE_ENV=development npm start",
+    "dev": "LOG_LEVEL=trace NODE_ENV=development nodemon --exec 'npm start'",
+    "dev-flex": "MERGEABLE_VERSION=flex npm run dev",
     "start": "probot run ./index.js",
     "test": "jest && standard"
   },
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "jest": "^21.2.1",
+    "nodemon": "^1.18.3",
     "smee-client": "^1.0.1",
     "standard": "^10.0.3"
   },
