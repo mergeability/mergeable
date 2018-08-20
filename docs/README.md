@@ -229,6 +229,15 @@ Here's an example configuration file for advanced settings and all of it's possi
         must_exclude:
           regex: 'DO NOT MERGE'
           message: 'Custom message...'
+          
+      files:
+        # Check each modified file in the PR for the following starting at line 0.
+        header: > 
+          Entire license header.
+        # only enforce it for these file patterns uses the same rules as CODEOWNER file
+        # see (https://git-scm.com/docs/gitignore#_pattern_format)
+        pattern: *.go
+        message: 'Custom message...'      
 
       assignee:
         min: 1
