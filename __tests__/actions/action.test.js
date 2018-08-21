@@ -1,6 +1,6 @@
 const { Action } = require('../../lib/actions/action')
 
-describe('Validator#isEventSupported', () => {
+describe('Action#isEventSupported', () => {
   let action = new Action()
 
   test('Returns correctly with one supported event', () => {
