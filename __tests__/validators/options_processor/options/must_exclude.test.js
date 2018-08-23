@@ -31,6 +31,10 @@ test('return fail if input does not meet the criteria', async () => {
 test('return error if inputs are not in expected format', async () => {
   const rule = {must_exclude: {count: 'test'}}
   const input = ['the test']
-  const res = mustExclude.process(validatorContext, input, rule)
-  expect(res.status).toBe('error')
+  try {
+    let config = mustExclude.process(validatorContext, input, rule)
+    expect(config).toBeUndefined()
+  } catch (e) {
+    expect(e.message).toBe(`Failed to run the test because 'regex' is not provided for 'must_exclude' option. Please check README for more information about configuration`)
+  }
 })

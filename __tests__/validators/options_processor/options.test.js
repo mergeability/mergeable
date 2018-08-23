@@ -17,7 +17,7 @@ test('return error if unsupported options are provided', async () => {
   const input = ['A']
   const res = options.process('label', input, rule)
   expect(res.status).toBe('error')
-  expect(res.validations[0].description).toBe('The \'must_be_include\' option is not supported for \'undefined\' validator, please see README for all available options')
+  expect(res.validations[0].description).toBe(`Cannot find module './options/must_be_include' from 'options.js'`)
 })
 
 test('return raw output if returnRawOutput is set to true', async () => {

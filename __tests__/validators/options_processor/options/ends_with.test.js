@@ -36,6 +36,10 @@ test('return fail if input does not meet the criteria', async () => {
 test('return error if inputs are not in expected format', async () => {
   const rule = {ends_with: {regex: 'test'}}
   const input = 'the test'
-  const res = endsWith.process(validatorContext, input, rule)
-  expect(res.status).toBe('error')
+  try {
+    let config = endsWith.process(validatorContext, input, rule)
+    expect(config).toBeUndefined()
+  } catch (e) {
+    expect(e.message).toBe(`Failed to run the test because 'match' is not provided for 'ends_with' option. Please check README for more information about configuration`)
+  }
 })

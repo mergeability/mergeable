@@ -31,6 +31,10 @@ test('return fail if input does not begins with the rule', async () => {
 test('return error if inputs are not in expected format', async () => {
   const rule = {and: {must_include: {regex: 'A'}}}
   const input = 'the test'
-  const res = and.process(validatorContext, input, rule)
-  expect(res.status).toBe('error')
+  try {
+    let config = and.process(validatorContext, input, rule)
+    expect(config).toBeUndefined()
+  } catch (e) {
+    expect(e.message).toBe('Input type invalid, expected array type as input')
+  }
 })
