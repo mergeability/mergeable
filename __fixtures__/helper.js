@@ -13,6 +13,7 @@ module.exports = {
           title: (options.title) ? options.title : 'title',
           body: (options.body) ? options.body : '',
           number: (options.number) ? options.number : 1,
+          milestone: (options.milestone) ? options.milestone : null,
           base: {
             ref: 'baseRef',
             sha: 'sha2'
@@ -91,7 +92,7 @@ module.exports = {
             return { data: (options.labels) ? options.labels : [] }
           },
           get: () => {
-            return {data: (options.milestone) ? {milestone: options.milestone} : {}}
+            return {data: (options.deepValidation) ? options.deepValidation : {}}
           }
         }
       }
