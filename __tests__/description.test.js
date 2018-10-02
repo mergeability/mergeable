@@ -19,6 +19,16 @@ test('isMergeable is false if the PR body is empty', async () => {
   expect(descriptionValidation.mergeable).toBe(true)
 })
 
+test('isMergeable is false if the PR body is undefined', async () => {
+  let config = new Configuration().settings.mergeable
+
+  let descriptionValidation = await description(createMockPR(undefined), null, config)
+  expect(descriptionValidation.mergeable).toBe(false)
+
+  descriptionValidation = await description(createMockPR('Some Description'), null, config)
+  expect(descriptionValidation.mergeable).toBe(true)
+})
+
 test('description is correct', async () => {
   let config = new Configuration().settings.mergeable
   let descriptionValidation = await description(createMockPR(''), null, config)
