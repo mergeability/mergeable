@@ -11,11 +11,6 @@ describe('with flex', () => {
     expect(config.settings.mergeable[0].validate).toBeDefined()
   })
 
-  test('it loads correctly with version specified with flex', () => {
-    let config = new Configuration(`version: 2`)
-    expect(config.settings.mergeable).toBe(undefined)
-  })
-
   test('it throw error correctly with wrong version specified', () => {
     try {
       let config = new Configuration(`
