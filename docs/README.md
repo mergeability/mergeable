@@ -33,7 +33,7 @@
 ## Key Features
 
 - [Prevent pull requests to be merged](#pull-requests)  based on configured rulesets
-- [Notify author of failed guidelines when openning an issue](#issues) based on configured rulesets
+- [Notify author of failed guidelines when opening an issue](#issues) based on configured rulesets
 - [Detect stale issues and pull requests](#staleness) and notify author and collaborators.
 
 ### Pull Requests
@@ -141,7 +141,7 @@ mergeable:
       label: 'wip|do not merge|experimental'
 ```
 
-Here's an example configuration file for advanced settings and all of it's possible options:
+Here's an example configuration file for advanced settings and all of its possible options:
 
 ```yml
   ##############################
@@ -153,7 +153,7 @@ Here's an example configuration file for advanced settings and all of it's possi
         # number of days for a PR to be considered stale. A comment is posted when it is stale.
         days: 20
         # Optional property. When not specified the default is used. The default message is:
-        # There haven't been much activity here. This is stale. Is it still relevant? This is a friendly reminder to please resolve it. :-)
+        # There hasn't been much activity here. This is stale. Is it still relevant? This is a friendly reminder to please resolve it. :-)
         message: 'This is PR is stale. Please follow up!'
       title:
         must_include:
@@ -247,7 +247,7 @@ Here's an example configuration file for advanced settings and all of it's possi
         # number of days for an issue to be considered stale. A comment is posted when it is stale.  
         days: 20
         # Optional property. When not specified the default is used. The default message is used.
-        message: 'This is issue is stale. Please follow up!'
+        message: 'This issue is stale. Please follow up!'
       title:
         must_include:
           regex: `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
@@ -386,7 +386,7 @@ A list of `advanced_option` for an advanced configuration file are as follows:
    - reviewers
    - message
 
-**Note**: Not all `advanced_option` works with all topics and `sub_options` must be provided for each advanced options.
+**Note**: Not all `advanced_option`s work with all topics and `sub_options` must be provided for each advanced option.
 
 
 ## Usage
@@ -432,4 +432,4 @@ If you would like to run your own instance of this plugin, you can do so by fork
 7. Do a test pull request to check if everything is working
 
 ## Contributions
- [Contribute](https://github.com/jusx/mergeable/blob/master/CONTRIBUTING.md) by creating a pull request or create a [new issue](https://github.com/jusx/mergeable/issues) to request for features.
+ [Contribute](https://github.com/jusx/mergeable/blob/master/CONTRIBUTING.md) by creating a pull request or create a [new issue](https://github.com/jusx/mergeable/issues) to request features.
