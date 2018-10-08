@@ -26,19 +26,20 @@ test('description should be correct', async () => {
 test('checks that deep validation works if it closes an issue with milestone requirement', async () => {
   let settings = createMockConfig('Version 1').settings.mergeable
   let validation = await milestone(createMockPR({body: 'closes #1'}), createMockContext(), settings)
+  console.log(validation)
   expect(validation.mergeable).toBe(true)
 })
 
 test('checks that deep validation works if it closes an issue with milestone requirement', async () => {
   let settings = createMockConfig('Version 1').settings.mergeable
-  let validation = await milestone(createMockPR({body: 'closes #2'}), createMockContext({title: 'Version 2'}), settings)
+  let validation = await milestone(createMockPR({body: 'closes #2'}), createMockContext({milestone: {title: 'Version 2'}}), settings)
   expect(validation.mergeable).toBe(false)
 })
 
 const createMockContext = (data) => {
-  if (!data) data = {title: 'Version 1'}
+  if (!data) data = {milestone: {title: 'Version 1'}}
 
-  return Helper.mockContext({milestone: data})
+  return Helper.mockContext({deepValidation: data})
 }
 
 const createMockConfig = (milestone) => {

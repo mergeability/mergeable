@@ -1,4 +1,4 @@
-const Configuration = require('../lib/configuration')
+const Configuration = require('../../lib/configuration/configuration')
 
 describe('with flex', () => {
   beforeEach(() => {
@@ -7,20 +7,20 @@ describe('with flex', () => {
 
   test('it loads correctly without version', () => {
     let config = new Configuration()
-    expect(config.settings.mergeable).toBeDefined()
+    expect(config.settings.mergeable[0].when).toBeDefined()
+    expect(config.settings.mergeable[0].validate).toBeDefined()
   })
 
-  test('it loads correctly with version specified with flex', () => {
-    let config = new Configuration(`version: 2`)
-    expect(config.settings.mergeable).toBe(undefined)
-  })
-
-  test('it loads correctly with wrong version specified', () => {
-    let config = new Configuration(`
+  test('it throw error correctly with wrong version specified', () => {
+    try {
+      let config = new Configuration(`
       version: something
       mergeable:
       `)
-    expect(config.settings.mergeable).toBeDefined()
+      expect(config).toBeUndefinded()
+    } catch (e) {
+      expect(e.message).toBe(Configuration.UNKNOWN_VERSION_ERROR)
+    }
   })
 })
 

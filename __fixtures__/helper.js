@@ -4,6 +4,7 @@ module.exports = {
 
     return {
       repo: (properties) => { return Object.assign({ owner: 'owner', repo: 'repo' }, properties) },
+      event: (options.event) ? options.event : 'pull_request',
       payload: {
         pull_request: {
           user: {
@@ -12,6 +13,7 @@ module.exports = {
           title: (options.title) ? options.title : 'title',
           body: options.body,
           number: (options.number) ? options.number : 1,
+          milestone: (options.milestone) ? options.milestone : null,
           base: {
             ref: 'baseRef',
             sha: 'sha2'
@@ -24,6 +26,11 @@ module.exports = {
             }},
           assignees: (options.assignees) ? options.assignees : []
         }
+      },
+      log: {
+        debug: (s) => console.log(`TEST[debug] > ${JSON.stringify(s)}`),
+        info: (s) => console.log(`TEST[info] > ${JSON.stringify(s)}`),
+        warn: (s) => console.log(`TEST[warn] > ${JSON.stringify(s)}`)
       },
       github: {
         repos: {
@@ -85,7 +92,7 @@ module.exports = {
             return { data: (options.labels) ? options.labels : [] }
           },
           get: () => {
-            return {data: (options.milestone) ? {milestone: options.milestone} : {}}
+            return {data: (options.deepValidation) ? options.deepValidation : {}}
           }
         }
       }

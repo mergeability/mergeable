@@ -7,7 +7,7 @@ test('handleStale calls search.issues only when settings exists for days', async
   // setup context with no added configuration.
   let context = mockContext('title')
   const expectMockCalls = async (config, expected) => {
-    mockConfigWithContext(context, config)
+    Helper.mockConfigWithContext(context, config)
     await Handler.handleStale(context)
     expect(context.github.search.issues.mock.calls.length).toBe(expected)
     context.github.search.issues.mockClear()
@@ -82,7 +82,7 @@ test('one exclude configuration will exclude the validation', async () => {
   let context = Helper.mockContext({ title: 'wip', body: 'body' })
   context.repo = mockRepo()
 
-  mockConfigWithContext(context, `
+  Helper.mockConfigWithContext(context, `
     mergeable:
       approvals: 0
       exclude: 'title'
@@ -95,7 +95,7 @@ test('more than one exclude configuration will exclude the validation', async ()
   let context = Helper.mockContext({ title: 'wip', label: ['proof of concept'], body: 'body' })
   context.repo = mockRepo()
 
-  mockConfigWithContext(context, `
+  Helper.mockConfigWithContext(context, `
     mergeable:
       exclude: 'approvals, title, label'
   `)
@@ -112,14 +112,6 @@ const expectSuccessStatus = async (context) => {
         expect.objectContaining(Helper.expectedStatus('success', 'Okay to merge.'))
       )
     })
-}
-
-const mockConfigWithContext = (context, configString) => {
-  context.github.repos.getContent = () => {
-    return Promise.resolve({ data: {
-      content: Buffer.from(configString).toString('base64') }
-    })
-  }
 }
 
 const mockContext = (title) => {
