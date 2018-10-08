@@ -5,5 +5,6 @@ module.exports = (robot) => {
     process.env.NODE_ENV,
     process.env.MERGEABLE_VERSION
   )
+
   mergeable.start(robot)
 }
