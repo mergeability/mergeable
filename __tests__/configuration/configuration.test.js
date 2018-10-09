@@ -7,8 +7,8 @@ describe('with flex', () => {
 
   test('it loads correctly without version', () => {
     let config = new Configuration()
-    expect(config.settings.mergeable[0].when).toBeDefined()
-    expect(config.settings.mergeable[0].validate).toBeDefined()
+    expect(config.settings[0].when).toBeDefined()
+    expect(config.settings[0].validate).toBeDefined()
   })
 
   test('it throw error correctly with wrong version specified', () => {
