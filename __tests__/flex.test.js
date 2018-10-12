@@ -43,11 +43,11 @@ describe('#executor', () => {
     expect(registry.validators.get('label')).toBeDefined()
 
     let title = {
-      validate: jest.fn(),
+      validate: jest.fn().mockReturnValue({status: 'pass'}),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     let label = {
-      validate: jest.fn(),
+      validate: jest.fn().mockReturnValue({status: 'pass'}),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.validators.set('title', title)
