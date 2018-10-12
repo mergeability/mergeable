@@ -95,12 +95,12 @@ describe('#executor', () => {
 
     let registry = { validators: new Map(), actions: new Map() }
     let title = {
-      validate: jest.fn(value => Promise.resolve(value)),
+      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.validators.set('title', title)
     let issueOnly = {
-      validate: jest.fn(value => Promise.resolve(value)),
+      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
       isEventSupported: jest.fn(event => { return (event === 'issues.opened') })
     }
     registry.validators.set('issueOnly', issueOnly)
@@ -177,12 +177,12 @@ describe('#executor', () => {
 
     let registry = { validators: new Map(), actions: new Map() }
     let title = {
-      validate: jest.fn(value => Promise.resolve(value)),
+      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.validators.set('title', title)
     let label = {
-      validate: jest.fn(value => Promise.resolve(value)),
+      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.validators.set('label', label)
