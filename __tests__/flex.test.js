@@ -43,22 +43,29 @@ describe('#executor', () => {
     expect(registry.validators.get('label')).toBeDefined()
 
     let title = {
-      validate: jest.fn(),
+      validate: jest.fn().mockReturnValue({status: 'pass'}),
+      isEventSupported: jest.fn().mockReturnValue(true)
+    }
+    let label = {
+      validate: jest.fn().mockReturnValue({status: 'pass'}),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.validators.set('title', title)
-    let label = {
-      validate: jest.fn(),
-      isEventSupported: jest.fn().mockReturnValue(true)
-    }
     registry.validators.set('label', label)
 
-    registry.validators.set('title', title)
-    registry.validators.set('label', label)
+    let checks = {
+      beforeValidate: jest.fn(),
+      afterValidate: jest.fn(),
+      isEventSupported: jest.fn().mockReturnValue(false)
+    }
+    registry.actions.set('checks', checks)
+
     await executor(context, registry)
 
     expect(title.validate).toHaveBeenCalledTimes(1)
     expect(label.validate).toHaveBeenCalledTimes(1)
+    expect(checks.beforeValidate).toHaveBeenCalledTimes(0)
+    expect(checks.afterValidate).toHaveBeenCalledTimes(0)
   })
 
   test('Comma seperated events', async () => {
@@ -88,15 +95,22 @@ describe('#executor', () => {
 
     let registry = { validators: new Map(), actions: new Map() }
     let title = {
-      validate: jest.fn(),
+      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.validators.set('title', title)
     let issueOnly = {
-      validate: jest.fn(),
+      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
       isEventSupported: jest.fn(event => { return (event === 'issues.opened') })
     }
     registry.validators.set('issueOnly', issueOnly)
+
+    let checks = {
+      beforeValidate: jest.fn(),
+      afterValidate: jest.fn(),
+      isEventSupported: jest.fn(event => { return (event === 'pull_request.opened') })
+    }
+    registry.actions.set('checks', checks)
 
     context.event = 'pull_request'
     context.payload.action = 'opened'
@@ -105,6 +119,8 @@ describe('#executor', () => {
     expect(title.isEventSupported).toHaveBeenCalledTimes(1)
     expect(issueOnly.validate).toHaveBeenCalledTimes(0)
     expect(issueOnly.isEventSupported).toHaveBeenCalledTimes(1)
+    expect(checks.beforeValidate).toHaveBeenCalledTimes(1)
+    expect(checks.afterValidate).toHaveBeenCalledTimes(1)
 
     context.event = 'issues'
     context.payload.action = 'opened'
@@ -113,6 +129,8 @@ describe('#executor', () => {
     expect(title.isEventSupported).toHaveBeenCalledTimes(2)
     expect(issueOnly.validate).toHaveBeenCalledTimes(1)
     expect(issueOnly.isEventSupported).toHaveBeenCalledTimes(2)
+    expect(checks.beforeValidate).toHaveBeenCalledTimes(1)
+    expect(checks.afterValidate).toHaveBeenCalledTimes(1)
   })
 
   test('Multiple Whens', async () => {
@@ -159,25 +177,35 @@ describe('#executor', () => {
 
     let registry = { validators: new Map(), actions: new Map() }
     let title = {
-      validate: jest.fn(),
+      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.validators.set('title', title)
     let label = {
-      validate: jest.fn(),
+      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.validators.set('label', label)
+    let checks = {
+      beforeValidate: jest.fn(),
+      afterValidate: jest.fn(),
+      isEventSupported: jest.fn().mockReturnValue(true)
+    }
+    registry.actions.set('checks', checks)
 
     context.event = 'pull_request'
     context.payload.action = 'opened'
     await executor(context, registry)
     expect(title.validate).toHaveBeenCalledTimes(1)
     expect(label.validate).toHaveBeenCalledTimes(0)
+    expect(checks.beforeValidate).toHaveBeenCalledTimes(1)
+    expect(checks.afterValidate).toHaveBeenCalledTimes(1)
 
     context.event = 'issues'
     await executor(context, registry)
     expect(title.validate).toHaveBeenCalledTimes(2)
     expect(label.validate).toHaveBeenCalledTimes(1)
+    expect(checks.beforeValidate).toHaveBeenCalledTimes(2)
+    expect(checks.afterValidate).toHaveBeenCalledTimes(2)
   })
 })
