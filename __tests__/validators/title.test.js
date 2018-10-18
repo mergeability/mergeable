@@ -112,7 +112,7 @@ test('checks that it fail when ends_with is not in title', async () => {
 
   let titleValidation = await title.validate(mockContext('include Title'), settings)
   expect(titleValidation.status).toBe('fail')
-  expect(titleValidation.validations[0].description).toBe(`title must ends with "${match}"`)
+  expect(titleValidation.validations[0].description).toBe(`title must end with "${match}"`)
 
   titleValidation = await title.validate(mockContext('WIP Title (test)'), settings)
   expect(titleValidation.status).toBe('pass')

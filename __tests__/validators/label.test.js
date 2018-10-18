@@ -119,6 +119,25 @@ test('mergeable is false if must_exclude is one of the label', async () => {
   expect(validation.status).toBe('pass')
 })
 
+test('that it validates ends_with correctly', async () => {
+  let label = new Label()
+  let match = 'test'
+
+  let settings = {
+    do: 'label',
+    ends_with: {
+      match: match
+    }
+  }
+
+  let labelValidation = await label.validate(createMockContext(['Some Label']), settings)
+  expect(labelValidation.status).toBe('fail')
+  expect(labelValidation.validations[0].description).toBe(`label must end with "${match}"`)
+
+  labelValidation = await label.validate(createMockContext(['Label test']), settings)
+  expect(labelValidation.status).toBe('pass')
+})
+
 test('complex Logic test', async () => {
   let label = new Label()
 
