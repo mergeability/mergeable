@@ -1,14 +1,14 @@
 const Configuration = require('../../lib/configuration/configuration')
 
-describe('with flex', () => {
+describe('with version 2', () => {
   beforeEach(() => {
     process.env.MERGEABLE_VERSION = 'flex'
   })
 
   test('it loads correctly without version', () => {
     let config = new Configuration()
-    expect(config.settings.mergeable[0].when).toBeDefined()
-    expect(config.settings.mergeable[0].validate).toBeDefined()
+    expect(config.settings[0].when).toBeDefined()
+    expect(config.settings[0].validate).toBeDefined()
   })
 
   test('it throw error correctly with wrong version specified', () => {
@@ -24,9 +24,9 @@ describe('with flex', () => {
   })
 })
 
-describe('without flex', () => {
+describe('with version 1', () => {
   beforeEach(() => {
-    process.env.MERGEABLE_VERSION = ''
+    process.env.MERGEABLE_VERSION = 'flex'
   })
 
   test('that Configuration validates root node in yml', () => {
@@ -47,21 +47,20 @@ describe('without flex', () => {
         title: 'title regex'
     `)
 
-    let mergeable = config.settings.mergeable
-    expect(mergeable.approvals).toBe(5)
-    expect(mergeable.title).toBe('title regex')
-    expect(mergeable.label).toBe('label regex')
+    let validate = config.settings[0].validate
+
+    expect(validate.find(e => e.do === 'approvals').min.count).toBe(5)
+    expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe('title regex')
+    expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('label regex')
   })
 
   test('that defaults load correctly when mergeable is null', () => {
     let config = new Configuration(`mergeable:`)
-    let mergeable = config.settings.mergeable
+    let validate = config.settings[0].validate
 
-    expect(mergeable.approvals).toBe(Configuration.DEFAULTS.approvals)
-    expect(mergeable.title).toBe(Configuration.DEFAULTS.title)
-    expect(mergeable.label).toBe(Configuration.DEFAULTS.label)
-    expect(mergeable.exclude).toBe(undefined)
-    expect(mergeable.stale).toBe(Configuration.DEFAULTS.stale)
+    expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe(Configuration.DEFAULTS.title)
+    expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe(Configuration.DEFAULTS.label)
+    expect(validate.find(e => e.do === 'stale').message).toBe(Configuration.DEFAULTS.stale.message)
   })
 
   test('that defaults load correctly when mergeable has partial properties defined', () => {
@@ -69,11 +68,10 @@ describe('without flex', () => {
       mergeable:
         approvals: 1
       `)
-
-    let mergeable = config.settings.mergeable
-    expect(mergeable.approvals).toBe(1)
-    expect(mergeable.title).toBe(Configuration.DEFAULTS.title)
-    expect(mergeable.label).toBe(Configuration.DEFAULTS.label)
+    let validate = config.settings[0].validate
+    expect(validate.find(e => e.do === 'approvals').min.count).toBe(1)
+    expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe(Configuration.DEFAULTS.title)
+    expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe(Configuration.DEFAULTS.label)
   })
 
   test('that instanceWithContext returns the right Configuration', async () => {
@@ -85,28 +83,27 @@ describe('without flex', () => {
     `)
 
     Configuration.instanceWithContext(context).then(config => {
-      let mergeable = config.settings.mergeable
-      expect(mergeable.approvals).toBe(5)
-      expect(mergeable.title).toBe('title regex')
-      expect(mergeable.label).toBe('label regex')
+      let validate = config.settings[0].validate
+      expect(validate.find(e => e.do === 'approvals').min.count).toBe(5)
+      expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe('title regex')
+      expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('label regex')
     })
     expect(context.github.repos.getContent.mock.calls.length).toBe(1)
   })
 
-  test('that instanceWithContext returns the right Configuration (pull_requrests)', async () => {
+  test('that instanceWithContext returns the right Configuration (pull_requests)', async () => {
     let context = createMockGhConfig(`
       mergeable:
         pull_requests:
-          label: 'label issue regex'
-          title: 'title issue regex'
+          label: 'label pull regex'
+          title: 'title pull regex'
     `)
 
     await Configuration.instanceWithContext(context).then(config => {
-      let mergeable = config.settings.mergeable
-      expect(mergeable.title).toBe(undefined)
-      expect(mergeable.label).toBe(undefined)
-      expect(mergeable.pull_requests.title).toBe('title issue regex')
-      expect(mergeable.pull_requests.label).toBe('label issue regex')
+      let validate = config.settings[0].validate
+      expect(config.settings[0].when).toBe('pull_request.*')
+      expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe('title pull regex')
+      expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('label pull regex')
     })
     expect(context.github.repos.getContent.mock.calls.length).toBe(1)
   })
@@ -120,11 +117,10 @@ describe('without flex', () => {
     `)
 
     await Configuration.instanceWithContext(context).then(config => {
-      let mergeable = config.settings.mergeable
-      expect(mergeable.title).toBe(undefined)
-      expect(mergeable.label).toBe(undefined)
-      expect(mergeable.issues.title).toBe('title issue regex')
-      expect(mergeable.issues.label).toBe('label issue regex')
+      let validate = config.settings[0].validate
+      expect(config.settings[0].when).toBe('issues.*')
+      expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe('title issue regex')
+      expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('label issue regex')
     })
     expect(context.github.repos.getContent.mock.calls.length).toBe(1)
   })
@@ -140,10 +136,10 @@ describe('without flex', () => {
     `)
 
     await Configuration.instanceWithContext(context).then(config => {
-      let mergeable = config.settings.mergeable
-      expect(mergeable.pull_requests.stale !== undefined).toBe(true)
-      expect(mergeable.pull_requests.stale.days).toBe(20)
-      expect(mergeable.pull_requests.stale.message).toBe(Configuration.DEFAULTS.stale.message)
+      let validate = config.settings[0].validate
+      expect(validate.find(e => e.do === 'stale') !== undefined).toBe(true)
+      expect(validate.find(e => e.do === 'stale').days).toBe(20)
+      expect(validate.find(e => e.do === 'stale').message).toBe(Configuration.DEFAULTS.stale.message)
     })
 
     context = createMockGhConfig(`
@@ -154,10 +150,10 @@ describe('without flex', () => {
     `)
 
     await Configuration.instanceWithContext(context).then(config => {
-      let mergeable = config.settings.mergeable
-      expect(mergeable.issues.stale !== undefined).toBe(true)
-      expect(mergeable.issues.stale.days).toBe(20)
-      expect(mergeable.issues.stale.message).toBe(Configuration.DEFAULTS.stale.message)
+      let validate = config.settings[0].validate
+      expect(validate.find(e => e.do === 'stale') !== undefined).toBe(true)
+      expect(validate.find(e => e.do === 'stale').days).toBe(20)
+      expect(validate.find(e => e.do === 'stale').message).toBe(Configuration.DEFAULTS.stale.message)
     })
 
     context = createMockGhConfig(`
@@ -173,11 +169,15 @@ describe('without flex', () => {
     `)
 
     await Configuration.instanceWithContext(context).then(config => {
-      let mergeable = config.settings.mergeable
-      expect(mergeable.issues.stale !== undefined).toBe(true)
-      expect(mergeable.issues.stale.days).toBe(20)
-      expect(mergeable.issues.stale.message).toBe('Issue test')
-      expect(mergeable.pull_requests.stale.message).toBe('PR test')
+      let issueValidate = config.settings[0].validate
+      let pullValidate = config.settings[1].validate
+
+      expect(config.settings[0].when).toBe('issues.*')
+      expect(config.settings[1].when).toBe('pull_request.*')
+      expect(issueValidate.find(e => e.do === 'stale') !== undefined).toBe(true)
+      expect(issueValidate.find(e => e.do === 'stale').days).toBe(20)
+      expect(issueValidate.find(e => e.do === 'stale').message).toBe('Issue test')
+      expect(pullValidate.find(e => e.do === 'stale').message).toBe('PR test')
     })
   })
 
@@ -206,10 +206,10 @@ describe('without flex', () => {
     }
 
     Configuration.instanceWithContext(context).then(config => {
-      let mergeable = config.settings.mergeable
-      expect(mergeable.approvals).toBe(Configuration.DEFAULTS.approvals)
-      expect(mergeable.title).toBe(Configuration.DEFAULTS.title)
-      expect(mergeable.label).toBe(Configuration.DEFAULTS.label)
+      let validate = config.settings[0].validate
+
+      expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe(Configuration.DEFAULTS.title)
+      expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe(Configuration.DEFAULTS.label)
     }).catch(err => {
       /* global fail */
       fail('Should handle error: ' + err)

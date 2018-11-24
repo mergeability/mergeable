@@ -24,6 +24,10 @@ test('return pass if input meets the criteria', async () => {
   input = ['A', 'B', 'the test']
   res = endsWith.process(validatorContext, input, rule)
   expect(res.status).toBe('pass')
+
+  input = ['the test']
+  res = endsWith.process(validatorContext, input, rule)
+  expect(res.status).toBe('pass')
 })
 
 test('return fail if input does not meet the criteria', async () => {
