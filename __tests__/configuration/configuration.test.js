@@ -1,5 +1,56 @@
 const Configuration = require('../../lib/configuration/configuration')
 
+describe('config file fetching', () => {
+  beforeEach(() => {
+    process.env.MERGEABLE_VERSION = 'flex'
+  })
+
+  test('fetch from main branch if event is not pull_request', async () => {
+    let configString = `
+          mergeable:
+            issues:
+              stale:
+                days: 20
+                message: Issue test
+            pull_requests:
+              stale:
+                days: 20
+                message: PR test
+        `
+
+    let context = createMockGhConfig(configString)
+    let file = await Configuration.fetchConfigFile(context)
+    const content = Buffer.from(file.data.content, 'base64').toString()
+    expect(content).toBe(configString)
+  })
+
+  test('fetch from head branch if the event is pull_request', async () => {
+    let configString = `
+          mergeable:
+            issues:
+              stale:
+                days: 20
+                message: Issue test
+            pull_requests:
+              stale:
+                days: 20
+                message: PR test
+        `
+    let prConfig = `
+          mergeable:
+            issues:
+              stale:
+                days: 20
+                message: Issue test
+        `
+    let context = createMockGhConfig(configString, prConfig)
+    context.event = 'pull_request'
+    let file = await Configuration.fetchConfigFile(context)
+    const content = Buffer.from(file.data.content, 'base64').toString()
+    expect(content).toBe(prConfig)
+  })
+})
+
 describe('with version 2', () => {
   beforeEach(() => {
     process.env.MERGEABLE_VERSION = 'flex'
@@ -219,7 +270,7 @@ describe('with version 1', () => {
 })
 
 // helper method to return mocked configiration.
-const createMockGhConfig = (json) => {
+const createMockGhConfig = (json, prConfig) => {
   return {
     repo: jest.fn().mockReturnValue({
       repo: '',
@@ -227,16 +278,19 @@ const createMockGhConfig = (json) => {
     }),
     payload: {
       pull_request: {
-        number: 1
+        number: 1,
+        head: {
+          ref: 1
+        }
       }
     },
     github: {
       repos: {
-        getContent: jest.fn().mockReturnValue(
-          Promise.resolve({
-            data: { content: Buffer.from(json).toString('base64') }
+        getContent: jest.fn(({ref}) => {
+          return Promise.resolve({
+            data: { content: ref ? Buffer.from(prConfig).toString('base64') : Buffer.from(json).toString('base64') }
           })
-        )
+        })
       }
     }
   }
