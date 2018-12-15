@@ -256,33 +256,9 @@ Here's an example configuration file for advanced settings and all of its possib
           match: '(feat)|(doc)|(fix)'
           message: 'Come message...'  
 
-      milestone:
-        must_include:
-          regex: `Release 1`
-          message: `Custom message...`
-        must_exclude:
-          regex: 'jibberish'
-          message: 'Custom message...'
-        begins_with:
-          match: 'Release'
-          message: 'Custom message...'
-        ends_with:
-          match: ''
-          message: 'Custom message...'  
+      milestone: 'Release 1'
 
-      project:
-        must_include:
-          regex: `Release 1`
-          message: `Custom message...`
-        must_exclude:
-          regex: 'jibberish'
-          message: 'Custom message...'
-        begins_with:
-          match: 'Release'
-          message: 'Custom message...'
-        ends_with:
-          match: ''
-          message: 'Custom message...'
+      project: 'Alpha'
 
       description:
         no_empty:
