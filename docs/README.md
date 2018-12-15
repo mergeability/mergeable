@@ -183,33 +183,13 @@ Here's an example configuration file for advanced settings and all of its possib
           match: '(feat)|(doc)|(fix)'
           message: 'Come message...'  
 
-      milestone:
-        must_include:
-          regex: `Release 1`
-          message: `Custom message...`
-        must_exclude:
-          regex: 'jibberish'
-          message: 'Custom message...'
-        begins_with:
-          match: 'Release'
-          message: 'Custom message...'
-        ends_with:
-          match: ''
-          message: 'Custom message...'
+      # Currently advanced configuration is not supported Milestone, however it is possible to specify regex below.
+      # for example if you want to ensure that a milestone is specified for your PR to be mergeable you would
+      # specify milestone:  '([^\s]*)'   
+      milestone: `Release 1`
 
-      project:
-        must_include:
-          regex: `Release 1`
-          message: `Custom message...`
-        must_exclude:
-          regex: 'jibberish'
-          message: 'Custom message...'
-        begins_with:
-          match: 'Release'
-          message: 'Custom message...'
-        ends_with:
-          match: ''
-          message: 'Custom message...'  
+      # Currently advanced configuration is not supported for Project, however it is possible to specify regex below.
+      project: `Alpha`
 
       approvals:
         min: 5
@@ -276,33 +256,9 @@ Here's an example configuration file for advanced settings and all of its possib
           match: '(feat)|(doc)|(fix)'
           message: 'Come message...'  
 
-      milestone:
-        must_include:
-          regex: `Release 1`
-          message: `Custom message...`
-        must_exclude:
-          regex: 'jibberish'
-          message: 'Custom message...'
-        begins_with:
-          match: 'Release'
-          message: 'Custom message...'
-        ends_with:
-          match: ''
-          message: 'Custom message...'  
+      milestone: 'Release 1'
 
-      project:
-        must_include:
-          regex: `Release 1`
-          message: `Custom message...`
-        must_exclude:
-          regex: 'jibberish'
-          message: 'Custom message...'
-        begins_with:
-          match: 'Release'
-          message: 'Custom message...'
-        ends_with:
-          match: ''
-          message: 'Custom message...'
+      project: 'Alpha'
 
       description:
         no_empty:
