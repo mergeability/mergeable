@@ -22,15 +22,18 @@
 </p>
 
 ## How it works
-![screenshot](screenshot.gif)
 
 1. [Install](https://github.com/apps/mergeable) the Mergeable GitHub App.
 2. [Configure](#configuration) your recipes. Here are some [examples](#examples).
 3. Commit and push the configuration to your repository at `.github/mergeable.yml`
 
+![screenshot](screenshot.gif)
+
 ## Vision
 
-This is an ambitious project. Our goal is to empower teams with the ability to automate the software development workflow through GitHub and other tools purely through configuration.
+Our goal is to empower teams with the ability to automate the software development workflow through GitHub and other tools purely through configuration.
+
+We want to make it really easy to automate and connect apps used in software development from Trello to GitHub to Slack and more!
 
 ## Examples
 
