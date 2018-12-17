@@ -5,7 +5,7 @@
   <p>Mergeable</p>
 </h1>
 
-<h1 align="center">🤖 Easily automate your GitHub workflow.</h1>
+<h2 align="center">🤖 Easily automate your GitHub workflow.</h2>
 <p align="center">
   <a href="https://github.com/apps/mergeable">
     <img src="https://img.shields.io/badge/FREE-INSTALL-orange.svg" alt="Free Install">
@@ -20,23 +20,28 @@
 
 > **Mergeable** automates your development process and increase efficiencies so that you can focus on shipping quality code faster.
 
-Stop doing repetitive tasks manually and start automating them. Mergeable lets you create rules to validate and execute actions based on the results. All with no programming required.
+Start automating your teams repetitive tasks and stop doing things manually. Mergeable lets you create recipes with rules to validate pull requests and issues and execute actions based on the results.
 
-## Key Features
+Automation is done purely through configuration. No programming required.
 
-- [Prevent pull requests to be merged](#pull-requests)  based on configured rulesets
-- [Notify author of failed guidelines when openning an issue](#issues) based on configured rulesets
+![screenshot](screenshot.gif)
+
+# What can you automate?
+
+- [Prevent pull requests to be merged](#pull-requests)  based on your recipes.
+- [Notify author of failed guidelines when opening an issue](#issues) based on your recipes.
 - [Detect stale issues and pull requests](#staleness) and notify author and collaborators.
+- And [more](#configuration)
 
 ### Pull Requests
 
 Validate pull requests for mergeability based on content and structure of your PR (title, labels, milestone, project, description, approvals, etc). The rule-sets are fully configurable. Here are a few examples of what you can do:
 
-- Prevent accidental merging of Pull Requests that are work in progress by labeling it `wip` or prefixing the title with the abbreviation.
+- Prevent accidental merging of Pull Requests that are work in progress by labeling it `wip` or prefixing the title with the abbreviation. [See recipe ↗️](recipes/pr-wip.md)
 
-- Ensure all Pull Requests have a description so that when you view through history you still have context.
+- Ensure all Pull Requests have a description so that when you view through history you still have context. [See recipe ↗️](recipes/pr-description.md)
 
-- Ensure that all Pull Requests are approved by a specific list of users. It is especially useful if one of the users is not a collaborator of your repository -- something GitHub does not already support.
+- Ensure that all Pull Requests are approved by a specific list of users. It is especially useful if one of the users is not an owner in your repository -- something GitHub does not already support.
 
 - Ensure that all Pull Requests merged are in a specific GitHub Project. Mergeable even detects when you are closing an issue that is associated with the right project. This is very useful when your process includes QA validation of stories.
 
@@ -56,19 +61,21 @@ Check the example configuration for [all the available features](#configuration)
 
 Detect stale issues and pull requests. Notify authors and collaborators by leaving a comment. Staleness is defined through [configuration](#configuration).
 
-## Usage
+# Usage
 
 1. [Install](https://github.com/apps/mergeable) the Mergeable GitHub App.
 2. [Configure](#configuration) your rules. Here are some [examples](#examples).
 3. Commit and push the configuration to your repository at `.github/mergeable.yml`
 
-![screenshot](screenshot.gif)
 
-## Vision
+# Vision
 
-The Mergeable vision is to make the software development effort efficient so that everyone can focus on building software.  
+The Mergeable vision is to increase the efficiency of teams and their software development process by automating as much of the workflow as possible.
 
-There are several areas in which we wish to automate for efficiency: consistency, workflow,  quality and statistics. The basic features for these areas are as follows:
+We want to make it really simple to create recipes for any automation without writing a single line of code.
+
+There are several areas that we wish to automate for efficiency:
+consistency, workflow, quality and statistics. The basic features for these areas are as follows:
 
 ### Consistency
 
@@ -76,9 +83,9 @@ There are several areas in which we wish to automate for efficiency: consistency
 
 - Notify by creating a comment in *Issues* that do not adhere to configured ruleset. ![completed](https://img.shields.io/badge/Status-completed-green.svg)
 
-- Ruleset across Repos. As a way to enforce and encourage standards in an organization or guide team members on the organizations' engineering best practises.
+- Ruleset across Repos. As a way to enforce and encourage standards in an organization or guide team members on the organizations' engineering best practices.
 
-- Repo(s) audit. Scan repo(s) for standards configured in rulesets including existance OWNERS file, or .github contains TEMPLATES. Notify through creation of an issue in the repo(s).
+- Repo(s) audit. Scan repo(s) for standards configured in rulesets including existence OWNERS file, or that `.github` contains TEMPLATES. Notify through creation of an issue in the repo(s).
 
 ### Workflow
 
@@ -88,11 +95,11 @@ There are several areas in which we wish to automate for efficiency: consistency
 
 - Projects WIP Limits by column in GitHub Projects.
 
-- Better GitHub Projects automation. i.e. When an issue is assigned, the card automatically moves from column 1 (i.e. `Backlog` if configured as such) to column 2 (i.e. `In Progress` if configured as such) in the kanban board.
+- Better GitHub Projects automation. i.e. When an issue is assigned, the card automatically moves from column 1 (i.e. `Backlog` if configured as such) to column 2 (i.e. `In Progress` if configured as such) in the Kanban board.
 
 - Improved Project Management Integrations (two way): Clubhouse, Pivotal Tracker, Jira, Trello
 
-- Slack Integration.
+- Notification integration with collaborative tools like Slack, email, and others.
 
 ### Quality
 
@@ -108,9 +115,9 @@ There are several areas in which we wish to automate for efficiency: consistency
 - Number of commits, comments, reviews.
 - Leaderboard.
 
-Our longer term vision is to bring this automation to GitLab and BitBucket as well.
+We are starting with GitHub but eventually hope to bring this to GitLab and BitBucket as well.
 
-## Configuration
+# Configuration
 
 Mergeable is highly configurable. You can configure mergeable by creating a `.github/mergeable.yml` file in your repository.
 
@@ -120,9 +127,9 @@ WIP:
 
  The old [version 1 format](version1.md) of configuration will continue to work.
 
-## Contributions
+# Contributions
  [Contribute](CONTRIBUTING.md) by creating a pull request or create a [new issue](https://github.com/jusx/mergeable/issues) to request for features.
 
-## Resources
+# Resources
 - [Deploy](deploy.md) your own
 - [Running it locally](deploy.md#running-locally) for development and testing.
