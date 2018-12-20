@@ -1,5 +1,5 @@
 const Helper = require('../../__fixtures__/helper')
-const Approval = require('../../lib/validators/approval')
+const Approval = require('../../lib/validators/approvals')
 
 test('that mergeable is false when less than minimum', async () => {
   const approval = new Approval()
