@@ -1,3 +1,9 @@
+const throwNotFound = () => {
+  let error = new Error('404 error')
+  error.code = 404
+  throw error
+}
+
 module.exports = {
   mockContext: (options) => {
     if (!options) options = {}
@@ -38,15 +44,13 @@ module.exports = {
           getContent: ({ path }) => {
             return new Promise((resolve, reject) => {
               if (path === '.github/mergeable.yml') {
-                let error = new Error('404 error')
-                error.code = 404
-                throw error
+                throwNotFound()
               }
 
               if (path === '.github/CODEOWNERS') {
                 return options.codeowners ? resolve({ data: {
                   content: options.codeowners
-                }}) : resolve()
+                }}) : throwNotFound()
               }
             })
           },
@@ -119,5 +123,4 @@ module.exports = {
       })
     }
   }
-
 }
