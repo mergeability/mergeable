@@ -103,8 +103,8 @@ test('only pass, fail defaults ignore recipes that are not for pull_requests', (
             message: 'This PR is work in progress.'
   `
   let transformed = V2Config.transform(yaml.safeLoad(config))
-  console.log(transformed)
+
   expect(transformed.mergeable[0].pass).toBeUndefined()
   expect(transformed.mergeable[0].fail).toBeUndefined()
-  expect(transformed.mergeable[0].error).toBeDefined()
+  expect(transformed.mergeable[0].error).toBeUndefined()
 })
