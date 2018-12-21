@@ -112,12 +112,16 @@ module.exports = {
     }
   },
 
-  mockConfigWithContext: (context, configString) => {
+  mockConfigWithContext: (context, configString, options) => {
     context.github.repos.getContent = () => {
       return Promise.resolve({ data: {
         content: Buffer.from(configString).toString('base64') }
       })
     }
+    context.github.pullRequests.getFiles = () => {
+      return Promise.resolve({
+        data: options && options.files ? options.files.map(file => ({ filename: file, status: 'modified' })) : []
+      })
+    }
   }
-
 }
