@@ -24,7 +24,7 @@ describe('config file fetching', () => {
     expect(content).toBe(configString)
   })
 
-  test('fetch from head branch if the event is pull_request', async () => {
+  test('fetch from main branch if the event is pull_request and file is not modified', async () => {
     let configString = `
           mergeable:
             issues:
@@ -43,7 +43,33 @@ describe('config file fetching', () => {
                 days: 20
                 message: Issue test
         `
-    let context = createMockGhConfig(configString, prConfig)
+    let context = createMockGhConfig(configString, prConfig, { files: ['someFile'] })
+    context.event = 'pull_request'
+    let file = await Configuration.fetchConfigFile(context)
+    const content = Buffer.from(file.data.content, 'base64').toString()
+    expect(content).toBe(configString)
+  })
+
+  test('fetch from head branch if the event is pull_request and file is modified', async () => {
+    let configString = `
+          mergeable:
+            issues:
+              stale:
+                days: 20
+                message: Issue test
+            pull_requests:
+              stale:
+                days: 20
+                message: PR test
+        `
+    let prConfig = `
+          mergeable:
+            issues:
+              stale:
+                days: 20
+                message: Issue test
+        `
+    let context = createMockGhConfig(configString, prConfig, { files: ['.github/mergeable.yml'] })
     context.event = 'pull_request'
     let file = await Configuration.fetchConfigFile(context)
     const content = Buffer.from(file.data.content, 'base64').toString()
@@ -270,7 +296,7 @@ describe('with version 1', () => {
 })
 
 // helper method to return mocked configiration.
-const createMockGhConfig = (json, prConfig) => {
+const createMockGhConfig = (json, prConfig, options) => {
   return {
     repo: jest.fn().mockReturnValue({
       repo: '',
@@ -291,6 +317,11 @@ const createMockGhConfig = (json, prConfig) => {
             data: { content: ref ? Buffer.from(prConfig).toString('base64') : Buffer.from(json).toString('base64') }
           })
         })
+      },
+      pullRequests: {
+        getFiles: () => {
+          return { data: options.files && options.files.map(file => ({filename: file, status: 'modified'})) }
+        }
       }
     }
   }
