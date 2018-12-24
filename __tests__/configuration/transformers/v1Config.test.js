@@ -57,7 +57,7 @@ test('check all the simple config is transformed accurately', async () => {
   `
   let res = v1Config.transform(yaml.safeLoad(config))
   const validate = res.mergeable
-  expect(validate.length).toBe(2)
+  expect(validate.length).toBe(3)
   const issues = (validate.filter(item => item.when.includes('issues')))[0].validate
   const pr = (validate.filter(item => item.when.includes('pull_request')))[0].validate
 
@@ -132,7 +132,7 @@ test('checks all advanced config is transformed accurately', async () => {
    `
   let res = v1Config.transform(yaml.safeLoad(config))
   const validate = res.mergeable
-  expect(validate.length).toBe(2)
+  expect(validate.length).toBe(3)
   const issues = (validate.filter(item => item.when.includes('issues')))[0].validate
   const pr = (validate.filter(item => item.when.includes('pull_request')))[0].validate
 
