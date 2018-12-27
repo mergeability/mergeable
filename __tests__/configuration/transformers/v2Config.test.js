@@ -104,7 +104,7 @@ test('only pass, fail defaults ignore recipes that are not for pull_requests', (
   `
   let transformed = V2Config.transform(yaml.safeLoad(config))
 
-  expect(transformed.mergeable[0].pass).toBeUndefined()
-  expect(transformed.mergeable[0].fail).toBeUndefined()
-  expect(transformed.mergeable[0].error).toBeUndefined()
+  expect(transformed.mergeable[0].pass.length).toBe(0)
+  expect(transformed.mergeable[0].fail.length).toBe(0)
+  expect(transformed.mergeable[0].error.length).toBe(0)
 })
