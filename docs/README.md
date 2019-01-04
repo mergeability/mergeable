@@ -32,9 +32,9 @@ No coding needed. Automate by creating recipes to:
 Validate pull requests for mergeability based on content and structure of your PR (title, labels, milestone, project, description, approvals, etc). Here are a few examples:
 
 - Prevent accidental merging of Pull Requests that are work in progress by labeling it `WIP` or prefixing the title with the abbreviation.
-<details>
-<summary>🔖 See Recipe</summary>
+<details><summary>🔖 See Recipe</summary>
   <p>
+    
   ```yml
   version: 2
   mergeable:
