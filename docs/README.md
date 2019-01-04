@@ -18,26 +18,38 @@
   </a>  
 </p>
 
-> **Mergeable** automates your development process and increase efficiencies so that you can focus on shipping quality code faster.
+> **Mergeable** automates your GitHub workflow to increase engineering efficiencies so that you can focus on shipping quality code faster.
 
-Start automating your teams repetitive tasks and stop doing things manually. Mergeable lets you create recipes with rules to validate pull requests and issues and execute actions based on the results.
+No coding needed. Automate by creating recipes to:
 
-Automation is done purely through configuration. No programming required.
-
-![screenshot](screenshot.gif)
-
-# What can you automate?
-
-- [Prevent pull requests to be merged](#pull-requests)  based on your recipes.
-- [Notify author of failed guidelines when opening an issue](#issues) based on your recipes.
+- Ensure Pull Requests follow conventions and [prevent accidental merging of Pull Requests](#pull-requests)  
+- [Notify author of failed guidelines](#issues) when opening an issue.
 - [Detect stale issues and pull requests](#staleness) and notify author and collaborators.
 - And [more](#configuration)
 
 ### Pull Requests
 
-Validate pull requests for mergeability based on content and structure of your PR (title, labels, milestone, project, description, approvals, etc). The rule-sets are fully configurable. Here are a few examples of what you can do:
+Validate pull requests for mergeability based on content and structure of your PR (title, labels, milestone, project, description, approvals, etc). Here are a few examples:
 
-- Prevent accidental merging of Pull Requests that are work in progress by labeling it `wip` or prefixing the title with the abbreviation. [See recipe ↗️](recipes/pr-wip.md)
+- Prevent accidental merging of Pull Requests that are work in progress by labeling it `WIP` or prefixing the title with the abbreviation.
+<details>
+<summary>🔖 See Recipe</summary>
+  <p>
+  ```yml
+  version: 2
+  mergeable:
+    - when: pull_request.*
+      validate:
+        - do: title
+          must_exclude:
+            regex: 'wip|work in progress'
+        - do: label
+          must_exclude:
+            regex: 'wip|work in progress'
+  ```
+  </p>
+</details>
+
 
 - Ensure all Pull Requests have a description so that when you view through history you still have context. [See recipe ↗️](recipes/pr-description.md)
 
