@@ -20,9 +20,9 @@
 
 > **Mergeable** automates your GitHub workflow to increase engineering efficiencies so that you can focus on shipping quality code faster.
 
-No coding needed. Automate by creating recipes to:
+Automate without coding by creating recipes to:
 
-- Ensure Pull Requests follow conventions and [prevent accidental merging of Pull Requests](#pull-requests)  
+- Ensure Pull Requests follow conventions and [prevent accidental merging of Pull Requests](#pull-requests)
 - [Notify author of failed guidelines](#issues) when opening an issue.
 - [Detect stale issues and pull requests](#staleness) and notify author and collaborators.
 - And [more](#configuration)
@@ -31,10 +31,10 @@ No coding needed. Automate by creating recipes to:
 
 Validate pull requests for mergeability based on content and structure of your PR (title, labels, milestone, project, description, approvals, etc). Here are a few examples:
 
-- Prevent accidental merging of Pull Requests that are work in progress by labeling it `WIP` or prefixing the title with the abbreviation.
+**Work In Progress**: Prevent accidental merging of Pull Requests that are work in progress by labeling it `WIP` or prefixing the title with the abbreviation.
 <details><summary>🔖 See Recipe</summary>
   <p>
-    
+
   ```yml
   version: 2
   mergeable:
@@ -42,22 +42,60 @@ Validate pull requests for mergeability based on content and structure of your P
       validate:
         - do: title
           must_exclude:
-            regex: 'wip|work in progress'
+            regex: ^\[WIP\]
         - do: label
           must_exclude:
-            regex: 'wip|work in progress'
+            regex: 'wip'
   ```
   </p>
 </details>
+<br>
+**Descriptions**: Ensure all Pull Requests have a description so that reviewers have context.
+<details><summary>🔖 See Recipe</summary>
+  <p>
 
+  ```yml
+  version: 2
+  mergeable:
+    - when: pull_request.*
+      validate:
+        - do: description
+          no_empty: true
+  ```
+  </p>
+</details>
+<br>
+**Dependent Files**: Certain files are related and you want to ensure that they are updated and part of the PR (i.e. if `package.json` is updated, so should `yarn.lock`)
+<details><summary>🔖 See Recipe</summary>
+  <p>
 
-- Ensure all Pull Requests have a description so that when you view through history you still have context. [See recipe ↗️](recipes/pr-description.md)
+  ```yml
+  version: 2
+  mergeable:
+    - when: pull_request.*
+      validate:
+        - do: description
+          no_empty: true
+  ```
+  </p>
+</details>
+<br>
+**Projects**: Ensure that all Pull Requests have a Project associated. Mergeable will also detect when you are [closing an issue](https://help.github.com/articles/closing-issues-using-keywords/) that is associated with the specified project. Useful when you want to make sure all issues and pull requests merged are visible on a [project board](https://help.github.com/articles/about-project-boards/).
+<details><summary>🔖 See Recipe</summary>
+  <p>
 
-- Ensure that all Pull Requests are approved by a specific list of users. It is especially useful if one of the users is not an owner in your repository -- something GitHub does not already support.
-
-- Ensure that all Pull Requests merged are in a specific GitHub Project. Mergeable even detects when you are closing an issue that is associated with the right project. This is very useful when your process includes QA validation of stories.
-
-- [And more](#configuration).
+  ```yml
+  version: 2
+  mergeable:
+    - when: pull_request.*
+      validate:
+        - do: description
+          no_empty: true
+  ```
+  </p>
+</details>
+<br>
+Read the [configuration options](#configuration) for other possibilities.
 
 ### Issues
 

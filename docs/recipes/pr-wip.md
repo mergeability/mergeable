@@ -1,11 +1,8 @@
-## Preventing accidental merging of Pull Requests that are work in progress.
+## Work In Progress
 
-Some times a pull request is opened before work is complete so that others may comment on the code. When this is the case, you may want to make sure that you clearly mark the pull request as `WIP`.
+Prevent accidental merging of Pull Requests that are work in progress by labeling it `WIP` or prefixing the title with the abbreviation.
 
-You also want to make sure that the pull request is not accidentally merged.
-
-Create a configuration with the following recipe:
-
+### Recipe
 ```yml
 version: 2
 mergeable:
@@ -32,4 +29,5 @@ mergeable:
             The following errors have occured {{#results}}- {{message.fail}} {{/results}}
 ```
 
+### Why
 With this recipe, mergeable will fail the pull request when the terms `wip` or `work in progress` is found in the title or label.
