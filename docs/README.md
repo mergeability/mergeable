@@ -50,7 +50,7 @@ Validate pull requests for mergeability based on content and structure of your P
   </p>
 </details>
 <br>
-**Descriptions**: Ensure all Pull Requests have a description so that reviewers have context.
+**Description**: Ensure all Pull Requests have a description so that reviewers have context.
 <details><summary>🔖 See Recipe</summary>
   <p>
 
@@ -60,7 +60,9 @@ Validate pull requests for mergeability based on content and structure of your P
     - when: pull_request.*
       validate:
         - do: description
-          no_empty: true
+          no_empty:
+            enabled: true
+            message: Description matter and should not be empty. Provide detail with **what** was changed, **why** it was changed, and **how** it was changed.
   ```
   </p>
 </details>
@@ -74,8 +76,8 @@ Validate pull requests for mergeability based on content and structure of your P
   mergeable:
     - when: pull_request.*
       validate:
-        - do: description
-          no_empty: true
+        - do: dependent
+          files: ['package.json', 'yarn.lock']
   ```
   </p>
 </details>
