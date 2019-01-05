@@ -1,3 +1,9 @@
+const throwNotFound = () => {
+  let error = new Error('404 error')
+  error.code = 404
+  throw error
+}
+
 module.exports = {
   mockContext: (options) => {
     if (!options) options = {}
@@ -38,15 +44,13 @@ module.exports = {
           getContent: ({ path }) => {
             return new Promise((resolve, reject) => {
               if (path === '.github/mergeable.yml') {
-                let error = new Error('404 error')
-                error.code = 404
-                throw error
+                throwNotFound()
               }
 
               if (path === '.github/CODEOWNERS') {
                 return options.codeowners ? resolve({ data: {
                   content: options.codeowners
-                }}) : resolve()
+                }}) : throwNotFound()
               }
             })
           },
@@ -112,12 +116,16 @@ module.exports = {
     }
   },
 
-  mockConfigWithContext: (context, configString) => {
+  mockConfigWithContext: (context, configString, options) => {
     context.github.repos.getContent = () => {
       return Promise.resolve({ data: {
         content: Buffer.from(configString).toString('base64') }
       })
     }
+    context.github.pullRequests.getFiles = () => {
+      return Promise.resolve({
+        data: options && options.files ? options.files.map(file => ({ filename: file, status: 'modified' })) : []
+      })
+    }
   }
-
 }

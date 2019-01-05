@@ -1,6 +1,18 @@
 const Helper = require('../../__fixtures__/helper')
 const Approval = require('../../lib/validators/approvals')
 
+test.only('that approvals work with no owners file', async () => {
+  const approval = new Approval()
+  const settings = {
+    do: 'approval',
+    min: {
+      count: 2
+    }
+  }
+  let validation = await approval.validate(createMockContext(1, null, null, null, true), settings)
+  expect(validation.status).toBe('fail')
+})
+
 test('that mergeable is false when less than minimum', async () => {
   const approval = new Approval()
   const settings = {
@@ -261,7 +273,7 @@ const createCommitDiffs = (diffs) => {
   }))
 }
 
-const createMockContext = (minimum, data, owners, commitDiffs) => {
+const createMockContext = (minimum, data, owners, commitDiffs, isOwnersNotFound = false) => {
   if (!data) {
     data = []
     for (let i = 0; i < minimum; i++) {
@@ -275,7 +287,8 @@ const createMockContext = (minimum, data, owners, commitDiffs) => {
     }
   }
 
-  return Helper.mockContext({reviews: data, codeowners: Buffer.from(`${owners}`).toString('base64'), compareCommits: commitDiffs})
+  let codeowners = (isOwnersNotFound) ? null : Buffer.from(`${owners}`).toString('base64')
+  return Helper.mockContext({reviews: data, codeowners: codeowners, compareCommits: commitDiffs})
 }
 
 const createReviewList = (reviewers) => {

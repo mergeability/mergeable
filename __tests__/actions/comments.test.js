@@ -12,7 +12,9 @@ test('check that comment created when doPostAction is called with proper paramet
     }]
   }
   const settings = {
-    body: `Your run has returned the following status: {{status}}`
+    payload: {
+      body: `Your run has returned the following status: {{status}}`
+    }
   }
   await comment.afterValidate(context, settings, result)
   expect(context.github.issues.createComment.mock.calls.length).toBe(1)
