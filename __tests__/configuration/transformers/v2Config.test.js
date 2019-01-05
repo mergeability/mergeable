@@ -1,4 +1,5 @@
 const V2Config = require('../../../lib/configuration/transformers/v2Config')
+const constants = require('../../../lib/configuration/lib/consts')
 const yaml = require('js-yaml')
 
 test('pass, fail, error defaults will load when pull_request event is specified.', () => {
@@ -13,10 +14,10 @@ test('pass, fail, error defaults will load when pull_request event is specified.
             message: 'This PR is work in progress.'
   `
   let transformed = V2Config.transform(yaml.safeLoad(config))
-  console.log(transformed)
-  expect(transformed.mergeable[0].pass).toBeDefined()
-  expect(transformed.mergeable[0].fail).toBeDefined()
-  expect(transformed.mergeable[0].error).toBeDefined()
+
+  expect(transformed.mergeable[0].pass).toEqual(constants.DEFAULT_PR_PASS)
+  expect(transformed.mergeable[0].fail).toEqual(constants.DEFAULT_PR_FAIL)
+  expect(transformed.mergeable[0].error).toEqual(constants.DEFAULT_PR_ERROR)
 })
 
 test('pass, fail, error defaults will load when pull_request event is specified and user specified configs are not overridden.', () => {
@@ -41,8 +42,8 @@ test('pass, fail, error defaults will load when pull_request event is specified 
 
   let transformed = V2Config.transform(yaml.safeLoad(config))
   expect(transformed.mergeable[0].pass[0].payload.title).toBe('a title')
-  expect(transformed.mergeable[0].fail).toBeDefined()
-  expect(transformed.mergeable[0].error).toBeDefined()
+  expect(transformed.mergeable[0].fail).toEqual(constants.DEFAULT_PR_FAIL)
+  expect(transformed.mergeable[0].error).toEqual(constants.DEFAULT_PR_ERROR)
 
   config = `
   ${config}
@@ -56,7 +57,7 @@ test('pass, fail, error defaults will load when pull_request event is specified 
   transformed = V2Config.transform(yaml.safeLoad(config))
   expect(transformed.mergeable[0].pass[0].payload.title).toBe('a title')
   expect(transformed.mergeable[0].fail[0].payload.title).toBe('a failed title')
-  expect(transformed.mergeable[0].error).toBeDefined()
+  expect(transformed.mergeable[0].error).toEqual(constants.DEFAULT_PR_ERROR)
 
   config = `
   ${config}
@@ -86,9 +87,9 @@ test('pass, fail, error defaults will load when pull_request is mixed with other
   `
   let transformed = V2Config.transform(yaml.safeLoad(config))
   console.log(transformed)
-  expect(transformed.mergeable[0].pass).toBeDefined()
-  expect(transformed.mergeable[0].fail).toBeDefined()
-  expect(transformed.mergeable[0].error).toBeDefined()
+  expect(transformed.mergeable[0].pass).toEqual(constants.DEFAULT_PR_PASS)
+  expect(transformed.mergeable[0].fail).toEqual(constants.DEFAULT_PR_FAIL)
+  expect(transformed.mergeable[0].error).toEqual(constants.DEFAULT_PR_ERROR)
 })
 
 test('only pass, fail defaults ignore recipes that are not for pull_requests', () => {
@@ -104,7 +105,7 @@ test('only pass, fail defaults ignore recipes that are not for pull_requests', (
   `
   let transformed = V2Config.transform(yaml.safeLoad(config))
 
-  expect(transformed.mergeable[0].pass.length).toBe(0)
-  expect(transformed.mergeable[0].fail.length).toBe(0)
-  expect(transformed.mergeable[0].error.length).toBe(0)
+  expect(transformed.mergeable[0].pass).toEqual([])
+  expect(transformed.mergeable[0].fail).toEqual([])
+  expect(transformed.mergeable[0].error).toEqual([])
 })
