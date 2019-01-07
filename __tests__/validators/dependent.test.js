@@ -72,7 +72,7 @@ test('test description is correct', async () => {
     files: ['package.json', 'yarn.lock']
   }
 
-  let defaultMessage = 'One or two files (yarn.lock) is missing from your pull request because they are dependent on the following: package.json'
+  let defaultMessage = 'One or more files (yarn.lock) are missing from your pull request because they are dependent on the following: package.json'
 
   let validation = await dependent.validate(createMockContext(['package.json']), settings)
   expect(validation.status).toBe('fail')
