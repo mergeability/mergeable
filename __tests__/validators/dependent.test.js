@@ -23,6 +23,37 @@ test('that mergeable is true if all of the dependent file is modified', async ()
   expect(validation.status).toBe('pass')
 })
 
+test('that mergeable is true if one of the dependent file is added', async () => {
+  const dependent = new Dependent()
+  const settings = {
+    do: 'dependent',
+    files: ['package.json', 'yarn.lock']
+  }
+
+  let validation = await dependent.validate(
+    createMockContext([
+      { filename: 'package.json', status: 'added' },
+      { filename: 'yarn.lock', status: 'modified' }
+    ]),
+    settings
+  )
+  expect(validation.status).toBe('pass')
+})
+
+test('that mergeable is false when only one of the dependent file is added', async () => {
+  const dependent = new Dependent()
+  const settings = {
+    do: 'dependent',
+    files: ['package.json', 'yarn.lock']
+  }
+
+  let validation = await dependent.validate(
+    createMockContext([{ filename: 'package.json', status: 'added' }]),
+      settings
+  )
+  expect(validation.status).toBe('fail')
+})
+
 test('that mergeable is false when only some of the dependent files are modified', async () => {
   const dependent = new Dependent()
   const settings = {
@@ -41,9 +72,7 @@ test('test description is correct', async () => {
     files: ['package.json', 'yarn.lock']
   }
 
-  let defaultMessage = `One of the following file is modified, all the other files in the list must be modified as well:
-  - package.json,
-  - yarn.lock`
+  let defaultMessage = 'One or more files (yarn.lock) are missing from your pull request because they are dependent on the following: package.json'
 
   let validation = await dependent.validate(createMockContext(['package.json']), settings)
   expect(validation.status).toBe('fail')

@@ -1,3 +1,5 @@
+const _ = require('lodash')
+
 const throwNotFound = () => {
   let error = new Error('404 error')
   error.code = 404
@@ -74,7 +76,11 @@ module.exports = {
         },
         pullRequests: {
           getFiles: () => {
-            return { data: options.files && options.files.map(file => ({filename: file, status: 'modified'})) }
+            if (_.isString(options.files && options.files[0])) {
+              return { data: options.files.map(file => ({filename: file, status: 'modified'})) }
+            } else {
+              return { data: options.files && options.files }
+            }
           },
           getReviews: () => {
             return { data: (options.reviews) ? options.reviews : [] }
