@@ -1,4 +1,4 @@
-const Comment = require('../../lib/actions/comments')
+const Comment = require('../../lib/actions/comment')
 const Helper = require('../../__fixtures__/helper')
 
 test('check that comment created when doPostAction is called with proper parameter', async () => {
