@@ -34,7 +34,7 @@ test('will set the issues and pulls appropriately when no type is set', async ()
   expect(results.schedule.pulls.length).toBe(1)
 })
 
-test('will set the issues and pulls even when unsupported type is set -- nothing', async () => {
+test('will set the issues and pulls even when unsupported type is set', async () => {
   let settings = { do: 'stale', days: 10, type: ['junk1', 'junk2'] }
 
   let stale = new Stale()
@@ -45,14 +45,13 @@ test('will set the issues and pulls even when unsupported type is set -- nothing
 
   let results = await stale.validate(context, settings)
   let callParam = context.github.search.issues.mock.calls
-  expect(callParam[0][0].type).toBeUndefined()
+  expect(callParam[0][0].q.includes('type')).toBeFalsy()
   expect(results.schedule.issues).toBeDefined()
   expect(results.schedule.pulls).toBeDefined()
 
   settings.type = ['junk', 'issues']
   results = await stale.validate(context, settings)
-
-  expect(callParam[1][0].type).toBeUndefined()
+  expect(callParam[1][0].q.includes('type:issues')).toBeTruthy()
   expect(results.schedule.issues).toBeDefined()
   expect(results.schedule.pulls).toBeDefined()
 })
