@@ -131,7 +131,7 @@ describe('with version 1', () => {
     expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('label regex')
   })
 
-  test.only('that defaults load correctly when mergeable is null', () => {
+  test('that defaults load correctly when mergeable is null', () => {
     let config = new Configuration(`mergeable:`)
     let validate = config.settings[0].validate
 
@@ -213,10 +213,11 @@ describe('with version 1', () => {
     `)
 
     await Configuration.instanceWithContext(context).then(config => {
-      let validate = config.settings[0].validate
-      expect(validate.find(e => e.do === 'stale') !== undefined).toBe(true)
-      expect(validate.find(e => e.do === 'stale').days).toBe(20)
-      expect(validate.find(e => e.do === 'stale').message).toBe(Configuration.DEFAULTS.stale.message)
+      let when = config.settings[2]
+      expect(when.validate[0].do).toBe('stale')
+      expect(when.validate[0].days).toBe(20)
+      expect(when.pass[0].do).toBe('comment')
+      expect(when.pass[0].payload.body).toBe(Configuration.DEFAULTS.stale.message)
     })
 
     context = createMockGhConfig(`
@@ -227,10 +228,11 @@ describe('with version 1', () => {
     `)
 
     await Configuration.instanceWithContext(context).then(config => {
-      let validate = config.settings[0].validate
-      expect(validate.find(e => e.do === 'stale') !== undefined).toBe(true)
-      expect(validate.find(e => e.do === 'stale').days).toBe(20)
-      expect(validate.find(e => e.do === 'stale').message).toBe(Configuration.DEFAULTS.stale.message)
+      let when = config.settings[1]
+      expect(when.validate[0].do).toBe('stale')
+      expect(when.validate[0].days).toBe(20)
+      expect(when.pass[0].do).toBe('comment')
+      expect(when.pass[0].payload.body).toBe(Configuration.DEFAULTS.stale.message)
     })
 
     context = createMockGhConfig(`
@@ -246,15 +248,19 @@ describe('with version 1', () => {
     `)
 
     await Configuration.instanceWithContext(context).then(config => {
-      let issueValidate = config.settings[0].validate
-      let pullValidate = config.settings[1].validate
+      let issueWhen = config.settings[1]
+      let pullWhen = config.settings[4]
 
-      expect(config.settings[0].when).toBe('issues.*')
-      expect(config.settings[1].when).toBe('pull_request.*')
-      expect(issueValidate.find(e => e.do === 'stale') !== undefined).toBe(true)
-      expect(issueValidate.find(e => e.do === 'stale').days).toBe(20)
-      expect(issueValidate.find(e => e.do === 'stale').message).toBe('Issue test')
-      expect(pullValidate.find(e => e.do === 'stale').message).toBe('PR test')
+      expect(issueWhen.when).toBe('schedule.repository')
+      expect(pullWhen.when).toBe('schedule.repository')
+      expect(issueWhen.validate[0].do).toBe('stale')
+      expect(issueWhen.validate[0].days).toBe(20)
+      expect(issueWhen.pass[0].do).toBe('comment')
+      expect(issueWhen.pass[0].payload.body).toBe('Issue test')
+      expect(pullWhen.validate[0].do).toBe('stale')
+      expect(pullWhen.validate[0].days).toBe(20)
+      expect(pullWhen.pass[0].do).toBe('comment')
+      expect(pullWhen.pass[0].payload.body).toBe('PR test')
     })
   })
 

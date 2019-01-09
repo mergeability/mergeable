@@ -34,8 +34,8 @@ test('will set the issues and pulls appropriately when no type is set', async ()
   expect(results.schedule.pulls.length).toBe(1)
 })
 
-test('will set the issues and pulls appropriately when unsupported type is set', async () => {
-  let settings = { do: 'stale', days: 10, types: ['junk1', 'junk2'] }
+test('will set the issues and pulls even when unsupported type is set -- nothing', async () => {
+  let settings = { do: 'stale', days: 10, type: ['junk1', 'junk2'] }
 
   let stale = new Stale()
   let context = createMockContext([
@@ -44,16 +44,20 @@ test('will set the issues and pulls appropriately when unsupported type is set',
   ])
 
   let results = await stale.validate(context, settings)
-  expect(results.schedule.issues.length).toBe(1)
-  expect(results.schedule.pulls.length).toBe(1)
+  let callParam = context.github.search.issues.mock.calls
+  expect(callParam[0][0].type).toBeUndefined()
+  expect(results.schedule.issues).toBeDefined()
+  expect(results.schedule.pulls).toBeDefined()
 
-  settings.types = ['issues', 'junk']
+  settings.type = ['junk', 'issues']
   results = await stale.validate(context, settings)
-  expect(results.schedule.issues.length).toBe(1)
-  expect(results.schedule.pulls.length).toBe(0)
+
+  expect(callParam[1][0].type).toBeUndefined()
+  expect(results.schedule.issues).toBeDefined()
+  expect(results.schedule.pulls).toBeDefined()
 })
 
-test.only('will set the issues and pulls correctly when type is issue only', async () => {
+test('will set the issues and pulls correctly when type is issue only', async () => {
   let settings = {
     do: 'stale',
     days: 10,
@@ -77,7 +81,7 @@ test('will set the issues and pulls correctly when type is pull_request only', a
   }
 
   let stale = new Stale()
-  let context = createMockContext([{ number: 1, pull_reqwuest: {} }])
+  let context = createMockContext([{ number: 1, pull_request: {} }])
 
   let res = await stale.validate(context, settings)
   expect(res.schedule.pulls.length).toBe(1)
@@ -92,5 +96,12 @@ const createMockContext = (results) => {
       data: { items: results }
     })
   }
+
+  // context.github.search = {
+  //   issues: jest.fn(p => {
+  //     return { data: { items: results } }
+  //   })
+  // }
+
   return context
 }
