@@ -131,13 +131,13 @@ describe('with version 1', () => {
     expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('label regex')
   })
 
-  test('that defaults load correctly when mergeable is null', () => {
+  test.only('that defaults load correctly when mergeable is null', () => {
     let config = new Configuration(`mergeable:`)
     let validate = config.settings[0].validate
 
     expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe(Configuration.DEFAULTS.title)
     expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe(Configuration.DEFAULTS.label)
-    expect(validate.find(e => e.do === 'stale').message).toBe(Configuration.DEFAULTS.stale.message)
+    expect(validate.find(e => e.do === 'stale')).toBeUndefined()
   })
 
   test('that defaults load correctly when mergeable has partial properties defined', () => {

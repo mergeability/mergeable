@@ -35,24 +35,24 @@ test('check all the simple config is transformed accurately', async () => {
     pull_requests:
       # Minimum of 5 approvals is needed.
       approvals: 5
-  
-      # Regular expression to be tested on the title. Not mergeable when true.  
+
+      # Regular expression to be tested on the title. Not mergeable when true.
       title: 'wip'
-  
+
       # Only mergeable when milestone is as specified below.
       milestone: 'version 1'
-  
+
       # Only mergeable when Project is as specified below
       project: 'Alpha'
-  
+
       # exclude any of the mergeable validation above. A comma separated list. For example, the following will exclude validations for approvals and label.
       exclude: 'title, label'
-  
+
     issues:
         # Regular expression. In this example, whenever a issues has a label with the word 'wip'
         label: 'wip|do not merge|experimental'
-        
-        # Regular expression to be tested on the title. Not mergeable when true.  
+
+        # Regular expression to be tested on the title. Not mergeable when true.
         title: 'wip'
   `
   let res = v1Config.transform(yaml.safeLoad(config))
@@ -94,9 +94,9 @@ test('checks all advanced config is transformed accurately', async () => {
           message: 'Custom message...'
 
       assignee:
-        min: 
+        min:
           count: 1
-        max: 
+        max:
           count: 3
         message: 'Custom message...'
 
@@ -104,9 +104,15 @@ test('checks all advanced config is transformed accurately', async () => {
         files: ['package.json', 'yarn.lock'] # list of files that all must be modified if one is modified
         message: 'Custom message...'
 
+      stale:
+        # number of days for an issue to be considered stale. A comment is posted when it is stale.
+        days: 20
+        # Optional property. When not specified the default is used. The default message is used.
+        message: 'This is issue is stale. Please follow up!'
+
     issues:
       stale:
-        # number of days for an issue to be considered stale. A comment is posted when it is stale.  
+        # number of days for an issue to be considered stale. A comment is posted when it is stale.
         days: 20
         # Optional property. When not specified the default is used. The default message is used.
         message: 'This is issue is stale. Please follow up!'
@@ -131,26 +137,26 @@ test('checks all advanced config is transformed accurately', async () => {
           message: 'Custom message...'
    `
   let res = v1Config.transform(yaml.safeLoad(config))
-  const validate = res.mergeable
-  expect(validate.length).toBe(3)
-  const issues = (validate.filter(item => item.when.includes('issues')))[0].validate
-  const pr = (validate.filter(item => item.when.includes('pull_request')))[0].validate
+  const events = res.mergeable
 
-  expect(issues.length).toBe(5)
-  expect(issues[0].do).toBe('stale')
-  expect(issues[0].days).toBe(20)
-  expect(issues[1].do).toBe('title')
-  expect(issues[1].ends_with).toBeDefined()
-  expect(issues[1].ends_with.match).toBe('(feat)|(doc)|(fix)')
-  expect(issues[2].do).toBe('label')
-  expect(issues[2].begins_with).toBeDefined()
-  expect(issues[2].begins_with.match).toBe('(feat)|(doc)|(fix)')
-  expect(issues[3].do).toBe('milestone')
-  expect(issues[3].must_include).toBeDefined()
-  expect(issues[3].must_include.regex).toBe('Release 1')
-  expect(issues[4].do).toBe('project')
-  expect(issues[4].must_exclude).toBeDefined()
-  expect(issues[4].must_exclude.regex).toBe('jibberish')
+  expect(events.length).toBe(5)
+  const issues = (events.filter(item => item.when.includes('issues')))[0].validate
+  const pr = (events.filter(item => item.when.includes('pull_request')))[0].validate
+  const schedule = (events.filter(item => item.when.includes('schedule')))
+
+  expect(issues.length).toBe(4)
+  expect(issues[0].do).toBe('title')
+  expect(issues[0].ends_with).toBeDefined()
+  expect(issues[0].ends_with.match).toBe('(feat)|(doc)|(fix)')
+  expect(issues[1].do).toBe('label')
+  expect(issues[1].begins_with).toBeDefined()
+  expect(issues[1].begins_with.match).toBe('(feat)|(doc)|(fix)')
+  expect(issues[2].do).toBe('milestone')
+  expect(issues[2].must_include).toBeDefined()
+  expect(issues[2].must_include.regex).toBe('Release 1')
+  expect(issues[3].do).toBe('project')
+  expect(issues[3].must_exclude).toBeDefined()
+  expect(issues[3].must_exclude.regex).toBe('jibberish')
   expect(pr.length).toBe(3)
   expect(pr[0].do).toBe('approvals')
   expect(pr[0].min).toBeDefined()
@@ -165,4 +171,14 @@ test('checks all advanced config is transformed accurately', async () => {
   expect(pr[2].do).toBe('dependent')
   expect(pr[2].files).toBeDefined()
   expect(pr[2].files.length).toBe(2)
+  expect(schedule.length).toBe(2)
+  expect(schedule[0].validate.length).toBe(1)
+  expect(schedule[0].validate[0].do).toBe('stale')
+  expect(schedule[0].validate[0].days).toBe(20)
+  expect(schedule[0].validate[0].type).toBe('issues')
+  expect(schedule[0].pass[0].payload.body).toBe('This is issue is stale. Please follow up!')
+  expect(schedule[1].validate[0].do).toBe('stale')
+  expect(schedule[1].validate[0].days).toBe(20)
+  expect(schedule[1].validate[0].type).toBe('pull_request')
+  expect(schedule[1].pass[0].payload.body).toBe('This is issue is stale. Please follow up!')
 })
