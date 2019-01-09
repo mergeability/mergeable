@@ -1,7 +1,6 @@
 const Comment = require('../../lib/actions/comment')
 const Helper = require('../../__fixtures__/helper')
 
-// TODO(stale): update tests to include scheduled context executions.
 const settings = {
   payload: {
     body: `Your run has returned the following status: {{status}}`
