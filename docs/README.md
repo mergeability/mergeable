@@ -1,11 +1,10 @@
 <h1 align="center">
   <br>
-  <img src="m.png" alt="Mergeable" width="197">
+  <img src="mergeable-flex.png" alt="Mergeable" width="197">
   <br>
   <p>Mergeable</p>
 </h1>
 
-<h2 align="center">🤖 Easily automate your GitHub workflow.</h2>
 <p align="center">
   <a href="https://github.com/apps/mergeable">
     <img src="https://img.shields.io/badge/FREE-INSTALL-orange.svg" alt="Free Install">
@@ -18,20 +17,326 @@
   </a>  
 </p>
 
-> **Mergeable** automates your GitHub workflow to increase engineering efficiencies so that you can focus on shipping quality code faster.
+> 🤖 **Mergeable** helps automate your team's GitHub workflow without a single line of code.
 
-Automate without coding by creating recipes to:
+Some examples of what you can do:
 
-- Ensure Pull Requests follow conventions and [prevent accidental merging of Pull Requests](#pull-requests)
+- Ensure Pull Requests follow conventions and [prevent merging of Pull Requests](#pull-requests).
 - [Notify author of failed guidelines](#issues) when opening an issue.
-- [Detect stale issues and pull requests](#staleness) and notify author and collaborators.
+- Schedule [detection stale issues and pull requests](#staleness) and notify author and collaborators.
 - And [more](#configuration)
+
+---
+<center>
+[Usage](#installation) ◦ [Configuration](#configuration) ◦ [Support](#support) ◦ [Vision](#vision) ◦ [Contributions](#contributions)
+</center>
+
+---
+
+# Usage
+
+1. [Install](https://github.com/apps/mergeable) the Mergeable GitHub App.
+2. [Create](#configuration) your recipe(s). Here are some [examples](#examples).
+3. Commit and push the recipes to your repository at `.github/mergeable.yml`
+
+> ☝ **NOTE:** You can also [deploy to your own server](deploy.md).
+
+# Configuration
+
+**Mergeable** is **highly** configurable.
+Define your recipes by creating a `.github/mergeable.yml` file in your repository.
+
+## Basics
+The configuration consists of any number of recipes. Recipes are created by tying [event](#events) with a set of [validators](#validators) and [actions](#actions) together:
+
+```yml
+version: 2
+mergeable:
+  - when: {{event}}, {{event}} # can be one or more
+    validate:
+      # list of validators. Specify one or more.
+      - do: {{validator}}
+        {{option}}: # name of an option supported by the validator.
+          regex: {{expression}} # where regex is a nested option
+    pass: # list of actions. Specify one or more. Omit this tag if no actions are needed.
+      - do: {{action}}   
+    fail: # list of actions. Specify one or more. Omit this tag if no actions are needed.
+      - do: {{action}}            
+    error: # list of actions. Specify one or more. Omit this tag if no actions are needed.
+      - do: {{action}}      
+```
+
+Take a look at some [example recipes](#examples).
+
+> ☝ **NOTE:** Earlier versions used a [different set of convention](version1.md#configuration). Don't worry, It is fully compatible.
+
+## Events
+Events are specified in the `when` tag like this:
+
+```yml
+- when: pull_request.opened
+```
+
+Multiple events for a recipe are declared comma delimited like this:
+
+```yml
+- when: pull_request.opened, issues.opened
+```
+
+Events supported for pull requests are as follows:
+`pull_request.opened`, `pull_request.edited`, `pull_request_review.submitted`, `pull_request_review.edited`, `pull_request_review.dismissed`, `pull_request.labeled`, `pull_request.unlabeled`, `pull_request.milestoned`, `pull_request.demilestoned`, `pull_request.assigned`, `pull_request.unassigned`, `pull_request.synchronize`,
+
+And for issues:
+`issues.opened`, `issues.edited`, `issues.labeled`, `issues.unlabeled`, `issues.milestoned`, `issues.demilestoned`, `issues.assigned`, `issues.unassigned`, `issues.synchronize`
+
+>  ☝ **NOTE:** More details about events can be found on the [GitHub events page](https://developer.github.com/v3/activity/events).
+
+For convenience, wildcards can be used: `pull_request.*`, `issues.*`, `pull_request_review.*`
+
+
+> ☝ **NOTE:**  Each `validator` and `action` declares it's own supported events. Read the [validator](#validators) and [action](#actions) sections to find out which events are supported respectively.
+
+## Validators
+
+### approvals
+
+```yml
+- do: approvals
+  min:
+    count: 2 # Number of minimum reviewers. In this case 2.
+    message: 'Custom message...'
+  required:
+    reviewers: [ user1, user2 ]   # list of github usernames required to review
+    owners: true # accepts boolean. When true,  the file .github/CODEOWNER is read and owners made required reviewers
+    message: 'Custom message...'
+```
+
+Supported events:
+
+```js
+'pull_request.*', 'pull_request_review.*'
+```
+
+### assignee
+
+```yml
+- do: assignee
+  max:
+    count: 2 # maximum number of assignees
+    message: 'test string'
+  min:  
+    count: 2 # min number of assignees
+    message: 'test string'
+```
+
+Supported events:
+
+```js
+'pull_request.*', 'pull_request_review.*', 'issues.*'
+```
+
+### dependent
+```yml
+
+  - do: dependent
+    files: ['package.json', 'yarn.lock'] # list of files that are dependent to one another and must all be together part of the added or modified file list in a PR.
+    message: 'Custom message...'
+```
+Supported events:
+
+```js
+'pull_request.*', 'pull_request_review.*'
+```
+
+### description
+```yml
+
+  - do: description
+    no_empty:
+       enabled: false # Cannot be empty when true.
+       message: 'Custom message...'
+    must_include:
+       regex: '### Goals|### Changes'
+       message: >
+        Please describe the goals (why) and changes (what) of the PR.
+    must_exclude:
+       regex: 'DO NOT MERGE'
+       message: 'Custom message...'
+    begins_with:
+       match: '### Goals' # or comma delimited list of strings
+       message: 'Some message...'
+    ends_with:
+       match: 'Any last sentence' # or comma delimited list of strings
+       message: 'Come message...'     
+```
+Supported events:
+
+```js
+'pull_request.*', 'pull_request_review.*', 'issues.*'
+```
+
+### label
+```yml
+
+  - do: label
+    no_empty:
+       enabled: false # Cannot be empty when true.
+       message: 'Custom message...'
+    must_include:
+       regex: 'type|chore|wont'
+       message: 'Custom message...'
+    must_exclude:
+       regex: 'DO NOT MERGE'
+       message: 'Custom message...'
+    begins_with:
+       match: 'A String' # or comma delimited list of strings
+       message: 'Some message...'
+    ends_with:
+       match: 'A String' # or comma delimited list of strings
+       message: 'Come message...'
+```
+Supported events:
+
+```js
+'pull_request.*', 'pull_request_review.*', 'issues.*'
+```
+
+### milestone
+```yml
+
+- do: milestone
+  no_empty:
+     enabled: true # Cannot be empty when true.
+     message: 'Custom message...'
+  must_include:
+     regex: 'type|chore|wont'
+     message: 'Custom message...'
+  must_exclude:
+     regex: 'DO NOT MERGE'
+     message: 'Custom message...'
+  begins_with:
+     match: 'A String' # or comma delimited list of strings
+     message: 'Some message...'
+  ends_with:
+     match: 'A String' # or comma delimited list of strings
+     message: 'Come message...'
+```
+> ☝ **NOTE:** When a [closing keyword](https://help.github.com/articles/closing-issues-using-keywords/) is used in the description of a pull request. The annotated issue will be validated against the conditions as well.
+
+Supported events:
+
+```js
+'pull_request.*', 'pull_request_review.*', 'issues.*'
+```
+
+### project
+```yml
+
+- do: project
+  no_empty:
+     enabled: true # Cannot be empty when true.
+     message: 'Custom message...'
+  must_include:
+     regex: 'type|chore|wont'
+     message: 'Custom message...'
+  must_exclude:
+     regex: 'DO NOT MERGE'
+     message: 'Custom message...'
+  begins_with:
+     match: 'A String' # or comma delimited list of strings
+     message: 'Some message...'
+  ends_with:
+     match: 'A String' # or comma delimited list of strings
+     message: 'Come message...'
+```
+> ☝ **NOTE:** When a [closing keyword](https://help.github.com/articles/closing-issues-using-keywords/) is used in the description of a pull request. The annotated issue will be validated against the conditions as well.
+
+Supported events:
+
+```js
+'pull_request.*', 'pull_request_review.*', 'issues.*'
+```
+
+### stale
+
+```yml
+  - do: stale
+    days: 20 # number of days ago.
+    type: pull_request, issues # what items to search for.
+```
+
+Supported events:
+```js
+'schedule.repository'
+
+```
+ > ☝ **NOTE:** This is a special use case. The schedule event runs on an interval. When used with `stale`, it will search for issues and/or pull request that are n days old. [See a full example &raquo;](#stale)
+
+### title
+```yml
+
+- do: title
+  no_empty:
+     enabled: true # Cannot be empty when true. A bit redundant in this case since GitHub don't really allow it. :-)
+     message: 'Custom message...'
+  must_include:
+     regex: 'doc|feat|fix|chore'
+     message: 'Custom message...'
+  must_exclude:
+     regex: 'DO NOT MERGE|WIP'
+     message: 'Custom message...'
+  begins_with:
+     match: 'doc','feat','fix','chore'  
+     message: 'Some message...'
+  ends_with:
+     match: 'A String' # or comma delimited list of strings
+     message: 'Come message...'
+```
+
+## Advanced Logic
+
+## Actions
+
+Actions are listed for execution at the `pass`, `fail` and `error` tags for a recipe based on the results of the [validation](#validators).
+
+### comment
+Creates comments in issues and/or pull requests depending on the event specified in the `when` tag.
+
+```yml
+- do: comment
+  payload:
+    body: >
+      Your very long comment can go here.
+```
+
+Supported events:
+```js
+'schedule.repository', 'pull_request.*', 'issues.*'
+
+```
+### checks
+
+```yml
+- do: checks,
+  status: 'success' # Can be: success, failure, neutral, cancelled, timed_out, or action_required
+  payload:
+    title: 'Mergeable Run have been Completed!'
+    summary: `All the validators have return 'pass'! \n Here are some stats of the run: \n {{validationCount}} validations were ran`
+```
+
+Supported events:
+```js
+'pull_request.*', 'pull_request_review.*'
+
+```
+## Examples
 
 ### Pull Requests
 
 Validate pull requests for mergeability based on content and structure of your PR (title, labels, milestone, project, description, approvals, etc). Here are a few examples:
 
 **Work In Progress**: Prevent accidental merging of Pull Requests that are work in progress by labeling it `WIP` or prefixing the title with the abbreviation.
+
 <details><summary>🔖 See Recipe</summary>
   <p>
 
@@ -51,6 +356,7 @@ Validate pull requests for mergeability based on content and structure of your P
 </details>
 <br>
 **Description**: Ensure all Pull Requests have a description so that reviewers have context.
+
 <details><summary>🔖 See Recipe</summary>
   <p>
 
@@ -67,7 +373,8 @@ Validate pull requests for mergeability based on content and structure of your P
   </p>
 </details>
 <br>
-**Dependent Files**: Certain files are related and you want to ensure that they are updated and part of the PR (i.e. if `package.json` is updated, so should `yarn.lock`)
+**Dependent Files**: Certain files are related and you want to ensure that they are updated as part of the PR (i.e. if `package.json` is updated, so should `yarn.lock`)
+
 <details><summary>🔖 See Recipe</summary>
   <p>
 
@@ -82,7 +389,8 @@ Validate pull requests for mergeability based on content and structure of your P
   </p>
 </details>
 <br>
-**Projects**: Ensure that all Pull Requests have a Project associated. Mergeable will also detect when you are [closing an issue](https://help.github.com/articles/closing-issues-using-keywords/) that is associated with the specified project. Useful when you want to make sure all issues and pull requests merged are visible on a [project board](https://help.github.com/articles/about-project-boards/).
+**Milestone**: Ensure that all Pull Requests have a milestone associated. Mergeable will also detect when you are [closing an issue](https://help.github.com/articles/closing-issues-using-keywords/) that is associated with the specified milestone.
+
 <details><summary>🔖 See Recipe</summary>
   <p>
 
@@ -91,97 +399,108 @@ Validate pull requests for mergeability based on content and structure of your P
   mergeable:
     - when: pull_request.*
       validate:
-        - do: description
-          no_empty: true
+        - do: milestone
+          must_include:
+            regex: Release 1
   ```
   </p>
 </details>
+
+<!-- **Projects**: Ensure that all Pull Requests have a Project associated. Mergeable will also detect when you are [closing an issue](https://help.github.com/articles/closing-issues-using-keywords/) that is associated with the specified project. Useful when you want to make sure all issues and pull requests merged are visible on a [project board](https://help.github.com/articles/about-project-boards/).
+<details><summary>🔖 See Recipe</summary>
+  <p>
+
+  ```yml
+  version: 2
+  mergeable:
+    - when: pull_request.*
+      validate:
+        - do: project
+          must_include: MVP
+  ```
+  </p>
+</details> -->
 <br>
-Read the [configuration options](#configuration) for other possibilities.
+Read the [configuration options](#configuration) for more options.
 
 ### Issues
+Automatically create a comment when a new issue is `openened` to remind the author when the title does not follow conventions or is missing a label.
 
-There may be certain formats and structure you want your Github issues to adhere to. Mergeable allows you to configure this and will create a comment with a list of suggested improvements to your Issue.
+<details><summary>🔖 See Recipe</summary>
+  <p>
 
-- Notify the author and collaborators when an issues does not adhere to certain formats in the title.
+  ```yml
+  version: 2
+  mergeable:
+    - when: issues.opened
+      validate:
+        - do: title
+          begins_with:
+            match: AUTH|SOCIAL|CORE
+        - do: label
+          must_include:
+            regex: bug|enhancement
+      fail:
+        - do: comment
+          payload:
+            body: >
+              The following problems were found with this issue:
+                - Title must begin with `AUTH`, `SOCIAL` or `CORE`
+                - The issue should either be labeled `bug` or `enhancement`
+  ```
+  </p>
+</details>
 
-- Notify when projects and milestones are not associated.
-
-Check the example configuration for [all the available features](#configuration). The Mergeable project is ongoing and there are a lot more that we are working on.
+<br>
+Read the [configuration options](#configuration) for more options.
 
 ### Staleness
 
-Detect stale issues and pull requests. Notify authors and collaborators by leaving a comment. Staleness is defined through [configuration](#configuration).
+Detect issues and pull requests that are `n` days old (stale) and notify authors and collaborators by creating a comment.
 
-# Usage
+<details><summary>🔖 See Recipe</summary>
+  <p>
 
-1. [Install](https://github.com/apps/mergeable) the Mergeable GitHub App.
-2. [Configure](#configuration) your rules. Here are some [examples](#examples).
-3. Commit and push the configuration to your repository at `.github/mergeable.yml`
+  ```yml
+  version: 2
+  mergeable:
+    - when: schedule.repository
+      validate:
+        - do: stale
+          days: 20
+          type: pull_request, issues
+      pass:
+        - do: comment
+          payload:
+            body: This is old. Is it still relevant?
+  ```
+  </p>
+</details>
 
+# Roadmap
 
-# Vision
+- Additional actions like `label` and `assign`
+- Potentially, integration with external tools like pivotal tracker, slack and trello.
+-  More likely [coveralls](https://coveralls.io/) or [sonarqube](https://www.sonarqube.org/).
 
-The Mergeable vision is to increase the efficiency of teams and their software development process by automating as much of the workflow as possible.
+# Support
+Found a bug? Have a question? Or just want to chat?
 
-We want to make it really simple to create recipes for any automation without writing a single line of code.
-
-There are several areas that we wish to automate for efficiency:
-consistency, workflow, quality and statistics. The basic features for these areas are as follows:
-
-### Consistency
-
-- *Pull Request* validation for standards based on configured rulesets. ![completed](https://img.shields.io/badge/Status-completed-green.svg)
-
-- Notify by creating a comment in *Issues* that do not adhere to configured ruleset. ![completed](https://img.shields.io/badge/Status-completed-green.svg)
-
-- Ruleset across Repos. As a way to enforce and encourage standards in an organization or guide team members on the organizations' engineering best practices.
-
-- Repo(s) audit. Scan repo(s) for standards configured in rulesets including existence OWNERS file, or that `.github` contains TEMPLATES. Notify through creation of an issue in the repo(s).
-
-### Workflow
-
-- Kanban WIP limits. Limit the number of open Pull Requests by author.
-
-- Staleness and Reminders: create a comment on any *Issue* or *Pull Request* found to be stale such that the author and collaborators are notified. ![completed](https://img.shields.io/badge/Status-completed-green.svg)
-
-- Projects WIP Limits by column in GitHub Projects.
-
-- Better GitHub Projects automation. i.e. When an issue is assigned, the card automatically moves from column 1 (i.e. `Backlog` if configured as such) to column 2 (i.e. `In Progress` if configured as such) in the Kanban board.
-
-- Improved Project Management Integrations (two way): Clubhouse, Pivotal Tracker, Jira, Trello
-
-- Notification integration with collaborative tools like Slack, email, and others.
-
-### Quality
-
-- Detect language and/or testing framework in a repos -- For example: ensure coverage must be greater than 80% or based on config. Suggest testing frameworks if none exists (display configured guideline by creating an issue etc.).
-- Suggest (by creating an issue in the repo) testing frameworks if none exists.
-- Linting standard. Automatically run linter based on tech stack.
-- Security analysis.
-
-### Statistics
-
-- Top contributor across repos.
-- Pull Request Merged.
-- Number of commits, comments, reviews.
-- Leaderboard.
-
-We are starting with GitHub but eventually hope to bring this to GitLab and BitBucket as well.
-
-# Configuration
-
-Mergeable is highly configurable. You can configure mergeable by creating a `.github/mergeable.yml` file in your repository.
-
-WIP:
-<!-- - Validators
-- Actions -->
-
- The old [version 1 format](version1.md) of configuration will continue to work.
+- Find us on [Gitter](https://gitter.im/mergeable-bot/Lobby).
+- Create an [Issue](https://github.com/jusx/mergeable/issues/new).
 
 # Contributions
- [Contribute](CONTRIBUTING.md) by creating a pull request or create a [new issue](https://github.com/jusx/mergeable/issues) to request for features.
+We need your help:
 
-# Resources
-- [Deploy](deploy.md) your own
-- [Running it locally](deploy.md#running-locally) for development and testing.
+- Have an **💡idea** for a **new feature**? Please [create a new issue](https://github.com/jusx/mergeable/issues) and tell us!
+- **Fix a bug**, implement a new **validator** or **action** and [open a pull request](docs/CONTRIBUTING.md)!
+
+> ☝️ **NOTE:** For development and testing. You'll want to [read about how to run it locally](deploy.md#running-locally).
+
+
+# Authors
+  - Originally created by [@jusx](https://twitter.com/jusx) 👉 follow him on [Twitter](https://twitter.com/jusx).
+  - Co-authored by [@shine2lay](https://github.com/shine2lay)
+  - Logo by [@minap0lis](https://www.instagram.com/minap0lis/)  👉  follow her on [Instagram](https://www.instagram.com/minap0lis/).
+---
+[AGPL](LICENSE), Copyright (c) 2019 [Justin Law](https://github.com/jusx) & [Shine Lee](https://github.com/shine2lay)
