@@ -455,8 +455,8 @@ Automatically create a comment when a new issue is `openened` to remind the auth
   ```
   </p>
 </details>
-
 <br>
+
 Read the [configuration options](#configuration) for more options.
 
 ### Staleness
@@ -509,4 +509,4 @@ We need your help:
   - Co-authored by [@shine2lay](https://github.com/shine2lay)
   - Logo by [@minap0lis](https://www.instagram.com/minap0lis/)  👉  follow her on [Instagram](https://www.instagram.com/minap0lis/).
 ---
-[AGPL](../LICENSE), Copyright (c) 2019 [Justin Law](https://github.com/jusx) & [Shine Lee](https://github.com/shine2lay)
+AGPL, Copyright (c) 2019 [Justin Law](https://github.com/jusx) & [Shine Lee](https://github.com/shine2lay)
