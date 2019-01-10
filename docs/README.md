@@ -27,12 +27,7 @@ Some examples of what you can do:
 - And [more](#configuration)
 
 ---
-<p align="center">
-
-[Usage](#installation) ◦ [Configuration](#configuration) ◦ [Roadmap](#roadmap) ◦ [Support](#support) ◦ [Contributions](#contributions)
-
-</p>
-
+[Usage](#usage) ◦ [Configuration](#configuration) ◦ [Roadmap](#roadmap) ◦ [Support](#support) ◦ [Contributions](#contributions)
 ---
 
 
@@ -492,6 +487,7 @@ Detect issues and pull requests that are `n` days old (stale) and notify authors
 - Additional actions like `label` and `assign`
 - Potentially, integration with external tools like pivotal tracker, slack and trello.
 -  More likely [coveralls](https://coveralls.io/) or [sonarqube](https://www.sonarqube.org/).
+- Able to prevent merging based on the size of pull request.
 
 # Support
 Found a bug? Have a question? Or just want to chat?
@@ -513,4 +509,4 @@ We need your help:
   - Co-authored by [@shine2lay](https://github.com/shine2lay)
   - Logo by [@minap0lis](https://www.instagram.com/minap0lis/)  👉  follow her on [Instagram](https://www.instagram.com/minap0lis/).
 ---
-[AGPL](LICENSE), Copyright (c) 2019 [Justin Law](https://github.com/jusx) & [Shine Lee](https://github.com/shine2lay)
+[AGPL](../LICENSE), Copyright (c) 2019 [Justin Law](https://github.com/jusx) & [Shine Lee](https://github.com/shine2lay)
