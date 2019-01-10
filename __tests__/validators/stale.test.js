@@ -95,12 +95,5 @@ const createMockContext = (results) => {
       data: { items: results }
     })
   }
-
-  // context.github.search = {
-  //   issues: jest.fn(p => {
-  //     return { data: { items: results } }
-  //   })
-  // }
-
   return context
 }
