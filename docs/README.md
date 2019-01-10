@@ -27,11 +27,14 @@ Some examples of what you can do:
 - And [more](#configuration)
 
 ---
-<center>
-[Usage](#installation) ◦ [Configuration](#configuration) ◦ [Support](#support) ◦ [Vision](#vision) ◦ [Contributions](#contributions)
-</center>
+<p align="center">
+
+[Usage](#installation) ◦ [Configuration](#configuration) ◦ [Roadmap](#roadmap) ◦ [Support](#support) ◦ [Contributions](#contributions)
+
+</p>
 
 ---
+
 
 # Usage
 
@@ -47,7 +50,7 @@ Some examples of what you can do:
 Define your recipes by creating a `.github/mergeable.yml` file in your repository.
 
 ## Basics
-The configuration consists of any number of recipes. Recipes are created by tying [event](#events) with a set of [validators](#validators) and [actions](#actions) together:
+The configuration consists of any number of recipes. Recipes are created by tying [events](#events) with a set of [validators](#validators) and [actions](#actions) together:
 
 ```yml
 version: 2
@@ -293,7 +296,10 @@ Supported events:
      message: 'Come message...'
 ```
 
-## Advanced Logic
+### Advanced Logic
+Validators can be grouped together with `AND` and `OR` operators:
+
+TODO: Show examples.
 
 ## Actions
 
@@ -355,6 +361,7 @@ Validate pull requests for mergeability based on content and structure of your P
   </p>
 </details>
 <br>
+
 **Description**: Ensure all Pull Requests have a description so that reviewers have context.
 
 <details><summary>🔖 See Recipe</summary>
@@ -373,6 +380,7 @@ Validate pull requests for mergeability based on content and structure of your P
   </p>
 </details>
 <br>
+
 **Dependent Files**: Certain files are related and you want to ensure that they are updated as part of the PR (i.e. if `package.json` is updated, so should `yarn.lock`)
 
 <details><summary>🔖 See Recipe</summary>
@@ -389,6 +397,7 @@ Validate pull requests for mergeability based on content and structure of your P
   </p>
 </details>
 <br>
+
 **Milestone**: Ensure that all Pull Requests have a milestone associated. Mergeable will also detect when you are [closing an issue](https://help.github.com/articles/closing-issues-using-keywords/) that is associated with the specified milestone.
 
 <details><summary>🔖 See Recipe</summary>
@@ -421,6 +430,7 @@ Validate pull requests for mergeability based on content and structure of your P
   </p>
 </details> -->
 <br>
+
 Read the [configuration options](#configuration) for more options.
 
 ### Issues
