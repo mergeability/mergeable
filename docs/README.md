@@ -27,7 +27,9 @@ Some examples of what you can do:
 - And [more](#configuration)
 
 ---
-[Usage](#usage) ◦ [Configuration](#configuration) ◦ [Roadmap](#roadmap) ◦ [Support](#support) ◦ [Contributions](#contributions)
+
+**📖 Contents:** [Usage](#usage) ◦ [Configuration](#configuration) ◦ [Roadmap](#roadmap) ◦ [Support](#support) ◦ [Contributions](#contributions) ◦ [Authors](#authors)
+
 ---
 
 
