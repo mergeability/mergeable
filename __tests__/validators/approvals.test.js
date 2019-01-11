@@ -1,7 +1,7 @@
 const Helper = require('../../__fixtures__/helper')
 const Approval = require('../../lib/validators/approvals')
 
-test.only('that approvals work with no owners file', async () => {
+test('that approvals work with no owners file', async () => {
   const approval = new Approval()
   const settings = {
     do: 'approval',
@@ -287,7 +287,7 @@ const createMockContext = (minimum, data, owners, commitDiffs, isOwnersNotFound 
     }
   }
 
-  let codeowners = (isOwnersNotFound) ? null : Buffer.from(`${owners}`).toString('base64')
+  let codeowners = (isOwnersNotFound || !owners) ? null : Buffer.from(`${owners}`).toString('base64')
   return Helper.mockContext({reviews: data, codeowners: codeowners, compareCommits: commitDiffs})
 }
 
