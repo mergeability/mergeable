@@ -23,7 +23,7 @@ Some examples of what you can do:
 
 - Ensure Pull Requests follow conventions and [prevent merging of Pull Requests](#pull-requests).
 - [Notify author of failed guidelines](#issues) when opening an issue.
-- Schedule [detection stale issues and pull requests](#staleness) and notify author and collaborators.
+- Schedule [detection for obsolete (stale) issues and pull requests](#staleness) and notify author and collaborators.
 - And [more](#configuration)
 
 ---
@@ -57,8 +57,8 @@ mergeable:
       # list of validators. Specify one or more.
       - do: {{validator}}
         {{option}}: # name of an option supported by the validator.
-          {{sub-option}}: {{value}} # an option can have have one or more sub-options.
-    pass: # list of actions to be excuted if all validaton passes. Specify one or more. Omit this tag if no actions are needed.
+          {{sub-option}}: {{value}} # an option will have one or more sub-options.
+    pass: # list of actions to be executed if all validation passes. Specify one or more. Omit this tag if no actions are needed.
       - do: {{action}}   
     fail: # list of actions to be executed when at least one validation fails. Specify one or more. Omit this tag if no actions are needed.
       - do: {{action}}            
@@ -68,7 +68,7 @@ mergeable:
 
 Take a look at some [example recipes](#examples).
 
-> ☝ **NOTE:** Earlier versions used a [different set of convention](version1.md#configuration). It will be supported in the forseable future but will eventually be phased out.
+> ☝ **NOTE:** Earlier versions used a [different set of convention](version1.md#configuration). It will be supported in the foreseeable future but will eventually be phased out.
 
 ## Events
 Events are specified in the `when` tag like this:
