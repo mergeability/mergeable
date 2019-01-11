@@ -17,6 +17,7 @@ If you would like to run your own instance of this plugin, you can do so by fork
 - Commit Statuses - **Read & Write**
 - Single File - **Read-only**
   - Path: `.github/mergeable.yml`
+- Repository Contents - **Read-Only**  
 
 **And subscription to the following events:**
 - [x] Pull request

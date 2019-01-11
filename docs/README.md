@@ -57,18 +57,18 @@ mergeable:
       # list of validators. Specify one or more.
       - do: {{validator}}
         {{option}}: # name of an option supported by the validator.
-          regex: {{expression}} # where regex is a nested option
-    pass: # list of actions. Specify one or more. Omit this tag if no actions are needed.
+          {{sub-option}}: {{value}} # an option can have have one or more sub-options.
+    pass: # list of actions to be excuted if all validaton passes. Specify one or more. Omit this tag if no actions are needed.
       - do: {{action}}   
-    fail: # list of actions. Specify one or more. Omit this tag if no actions are needed.
+    fail: # list of actions to be executed when at least one validation fails. Specify one or more. Omit this tag if no actions are needed.
       - do: {{action}}            
-    error: # list of actions. Specify one or more. Omit this tag if no actions are needed.
+    error: # list of actions to be executed when at least one validator throws an error. Specify one or more. Omit this tag if no actions are needed.
       - do: {{action}}      
 ```
 
 Take a look at some [example recipes](#examples).
 
-> ☝ **NOTE:** Earlier versions used a [different set of convention](version1.md#configuration). Don't worry, It is fully compatible.
+> ☝ **NOTE:** Earlier versions used a [different set of convention](version1.md#configuration). It will be supported in the forseable future but will eventually be phased out.
 
 ## Events
 Events are specified in the `when` tag like this:
@@ -122,11 +122,11 @@ Supported events:
 ```yml
 - do: assignee
   max:
-    count: 2 # maximum number of assignees
-    message: 'test string'
+    count: 2 # There should not be more than 2 assignees
+    message: 'test string' # this is optional
   min:  
     count: 2 # min number of assignees
-    message: 'test string'
+    message: 'test string' # this is optional
 ```
 
 Supported events:
@@ -140,7 +140,7 @@ Supported events:
 
   - do: dependent
     files: ['package.json', 'yarn.lock'] # list of files that are dependent to one another and must all be together part of the added or modified file list in a PR.
-    message: 'Custom message...'
+    message: 'Custom message...' # this is optional, a default message is used when not specified.
 ```
 Supported events:
 
@@ -154,20 +154,21 @@ Supported events:
   - do: description
     no_empty:
        enabled: false # Cannot be empty when true.
-       message: 'Custom message...'
+       message: 'Custom message...' # this is optional, a default message is used when not specified.
     must_include:
        regex: '### Goals|### Changes'
        message: >
         Please describe the goals (why) and changes (what) of the PR.
+      # message is is optional, a default message is used when not specified.
     must_exclude:
        regex: 'DO NOT MERGE'
-       message: 'Custom message...'
+       message: 'Custom message...' # optional
     begins_with:
        match: '### Goals' # or comma delimited list of strings
-       message: 'Some message...'
+       message: 'Some message...' #optional
     ends_with:
        match: 'Any last sentence' # or comma delimited list of strings
-       message: 'Come message...'     
+       message: 'Come message...' # optional    
 ```
 Supported events:
 
@@ -194,6 +195,7 @@ Supported events:
     ends_with:
        match: 'A String' # or comma delimited list of strings
        message: 'Come message...'
+    # all of the message sub-option is optional   
 ```
 Supported events:
 
@@ -220,6 +222,7 @@ Supported events:
   ends_with:
      match: 'A String' # or comma delimited list of strings
      message: 'Come message...'
+  # all of the message sub-option is optional   
 ```
 > ☝ **NOTE:** When a [closing keyword](https://help.github.com/articles/closing-issues-using-keywords/) is used in the description of a pull request. The annotated issue will be validated against the conditions as well.
 
@@ -248,6 +251,7 @@ Supported events:
   ends_with:
      match: 'A String' # or comma delimited list of strings
      message: 'Come message...'
+     # all of the message sub-option is optional
 ```
 > ☝ **NOTE:** When a [closing keyword](https://help.github.com/articles/closing-issues-using-keywords/) is used in the description of a pull request. The annotated issue will be validated against the conditions as well.
 
@@ -291,6 +295,7 @@ Supported events:
   ends_with:
      match: 'A String' # or comma delimited list of strings
      message: 'Come message...'
+     # all of the message sub-option is optional   
 ```
 
 ### Advanced Logic
