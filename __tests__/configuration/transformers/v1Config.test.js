@@ -182,3 +182,39 @@ test('checks all advanced config is transformed accurately', async () => {
   expect(schedule[1].validate[0].type).toBe('pull_request')
   expect(schedule[1].pass[0].payload.body).toBe('This is issue is stale. Please follow up!')
 })
+
+test('check that and/or logic is transformed correctly', async () => {
+  let config = `
+  mergeable:
+    label:
+      or:
+        - and:
+          - must_include:
+              regex: 'release note: yes'
+              message: 'Please include release note: yes'
+          - must_include:
+              regex: 'lang\\\\/core|lang\\\\/c\\\\+\\\\+|lang\\\\/c#'
+              message: 'Please include a language label'
+        - must_include:
+            regex: 'release note: no'
+            message: 'Please include release note: no'
+  `
+  let res = v1Config.transform(yaml.safeLoad(config))
+  const validate = res.mergeable
+  expect(validate.length).toBe(2)
+  const pr = (validate.filter(item => item.when.includes('pull_request')))[0].validate
+  console.log(pr)
+  expect(pr.length).toBe(1)
+  expect(pr[0].do).toBe('label')
+  expect(pr[0].or).toBeDefined()
+  expect(pr[0].or.length).toBe(2)
+  expect(pr[0].or[0].and).toBeDefined()
+  expect(pr[0].or[0].and.length).toBe(2)
+  expect(pr[0].or[0].and[0].must_include).toBeDefined()
+  expect(pr[0].or[0].and[0].must_include.regex).toBe('release note: yes')
+  expect(pr[0].or[0].and[0].must_include.message).toBe('Please include release note: yes')
+  expect(pr[0].or[0].and[1].must_include).toBeDefined()
+  expect(pr[0].or[0].and[1].must_include.regex).toBe('lang\\\\/core|lang\\\\/c\\\\+\\\\+|lang\\\\/c#')
+  expect(pr[0].or[1].must_include).toBeDefined()
+  expect(pr[0].or[1].must_include.regex).toBe('release note: no')
+})
