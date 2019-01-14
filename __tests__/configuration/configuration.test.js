@@ -299,6 +299,20 @@ describe('with version 1', () => {
     })
     expect(context.github.repos.getContent.mock.calls.length).toBe(1)
   })
+
+  test('that if pass, fail or error is undefined in v2 config, the config will not break', async () => {
+    let settings = `
+    mergeable:
+      issues:
+        stale:
+          days: 30
+          message: 'There has not been any activity in the past month. Is there anything to follow-up?'`
+
+    const config = new Configuration(settings)
+    const registry = {validators: new Map(), actions: new Map()}
+    await config.registerValidatorsAndActions(registry)
+    expect(registry.actions.has('comment')).toBe(true)
+  })
 })
 
 // helper method to return mocked configiration.
