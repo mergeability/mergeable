@@ -1,6 +1,61 @@
 const v1Config = require('../../../lib/configuration/transformers/v1Config')
 const yaml = require('js-yaml')
 
+describe('Tests for description no empty scenarios transformations', () => {
+  const verify = (config) => {
+    let res = v1Config.transform(yaml.safeLoad(config))
+    let dv = res.mergeable[0].validate[0]
+    expect(res.mergeable[0].when).toBeDefined()
+    expect(dv.do).toBe('description')
+    expect(dv.no_empty).toBeDefined()
+    expect(dv.no_empty.enabled).toBeTruthy()
+  }
+
+  test('no_empty using simple config ', () => {
+    let config = `
+    mergeable:
+      pull_requests:
+        description:
+          no_empty: true
+    `
+
+    verify(config)
+  })
+
+  test('no_empty using advanced config ', () => {
+    let config = `
+    mergeable:
+      pull_requests:
+        description:
+          no_empty:
+            enabled: true
+    `
+    verify(config)
+  })
+
+  test('no-empty using simple config ', () => {
+    let config = `
+    mergeable:
+      pull_requests:
+        description:
+          no-empty: true
+    `
+
+    verify(config)
+  })
+
+  test('no-empty using advanced config ', () => {
+    let config = `
+    mergeable:
+      pull_requests:
+        description:
+          no-empty:
+            enabled: true
+    `
+    verify(config)
+  })
+})
+
 test('check that proper format is returned, including default pass, fail and error', async () => {
   let config = `
   mergeable:
