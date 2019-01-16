@@ -24,7 +24,7 @@ describe('config file fetching', () => {
     expect(content).toBe(configString)
   })
 
-  test('fetch from main branch if the event is pull_request and file is not modified', async () => {
+  test('fetch from main branch if the event is PR relevant and file is not modified or added', async () => {
     let configString = `
           mergeable:
             issues:
@@ -43,14 +43,24 @@ describe('config file fetching', () => {
                 days: 20
                 message: Issue test
         `
-    let context = createMockGhConfig(configString, prConfig, { files: ['someFile'] })
+    let context = createMockGhConfig(
+      configString,
+      prConfig,
+      { files: [ { filename: 'someFile', status: 'modified' } ] }
+    )
+
     context.event = 'pull_request'
     let file = await Configuration.fetchConfigFile(context)
-    const content = Buffer.from(file.data.content, 'base64').toString()
+    let content = Buffer.from(file.data.content, 'base64').toString()
+    expect(content).toBe(configString)
+
+    context.event = 'pull_request_review'
+    file = await Configuration.fetchConfigFile(context)
+    content = Buffer.from(file.data.content, 'base64').toString()
     expect(content).toBe(configString)
   })
 
-  test('fetch from head branch if the event is pull_request and file is modified', async () => {
+  test('fetch from head branch if the event is relevant to PR and file is modified or added', async () => {
     let configString = `
           mergeable:
             issues:
@@ -60,19 +70,35 @@ describe('config file fetching', () => {
             pull_requests:
               stale:
                 days: 20
-                message: PR test
+                message: from HEAD
         `
     let prConfig = `
           mergeable:
             issues:
               stale:
                 days: 20
-                message: Issue test
+                message: From PR Config
         `
-    let context = createMockGhConfig(configString, prConfig, { files: ['.github/mergeable.yml'] })
+    let files = {files: [
+      { filename: '.github/mergeable.yml', status: 'modified' }
+    ]}
+    let context = createMockGhConfig(configString, prConfig, files)
     context.event = 'pull_request'
     let file = await Configuration.fetchConfigFile(context)
-    const content = Buffer.from(file.data.content, 'base64').toString()
+    let content = Buffer.from(file.data.content, 'base64').toString()
+    expect(content).toBe(prConfig)
+
+    context.event = 'pull_request_review'
+    file = await Configuration.fetchConfigFile(context)
+    content = Buffer.from(file.data.content, 'base64').toString()
+    expect(content).toBe(prConfig)
+
+    files = {files: [
+      { file: '.github/mergeable.yml', status: 'added' }
+    ]}
+    context = createMockGhConfig(configString, prConfig, files)
+    context.event = 'pull_request'
+    content = Buffer.from(file.data.content, 'base64').toString()
     expect(content).toBe(prConfig)
   })
 })
@@ -340,7 +366,7 @@ const createMockGhConfig = (json, prConfig, options) => {
       },
       pullRequests: {
         getFiles: () => {
-          return { data: options.files && options.files.map(file => ({filename: file, status: 'modified'})) }
+          return { data: options.files }
         }
       }
     }
