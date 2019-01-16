@@ -5,10 +5,11 @@ describe('Tests for description no empty scenarios transformations', () => {
   const verify = (config) => {
     let res = v1Config.transform(yaml.safeLoad(config))
     let dv = res.mergeable[0].validate[0]
+
     expect(res.mergeable[0].when).toBeDefined()
     expect(dv.do).toBe('description')
     expect(dv.no_empty).toBeDefined()
-    expect(dv.no_empty.enabled).toBeTruthy()
+    expect(dv.no_empty.enabled).toBe(true)
   }
 
   test('no_empty using simple config ', () => {
