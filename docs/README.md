@@ -288,7 +288,7 @@ By default if the configuration file does not exist, the following is the defaul
       label: 'work in progress|do not merge|experimental|proof of concept'
       title: 'wip|dnm|exp|poc'
       description:
-        no-empty: true
+        no_empty: true
 ```
 The configuration file follows a certain format. It is in the general following structure:
 
@@ -335,7 +335,7 @@ A list of `advanced_option` for an advanced configuration file are as follows:
 - max
    - count
    - message
-- no-empty
+- no_empty
    - enabled
    - message
 - required
