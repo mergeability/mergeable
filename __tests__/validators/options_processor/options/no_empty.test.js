@@ -14,26 +14,24 @@ const validatorContext = {
     'no_empty',
     'required']
 }
-test('return pass if input meets the criteria', async () => {
-  const rule = {no_empty: {enabled: true}}
-  let input = 'NOT EMPTY'
-  let res = noEmpty.process(validatorContext, input, rule)
-  expect(res.status).toBe('pass')
 
-  input = ['']
-  res = noEmpty.process(validatorContext, input, rule)
-  expect(res.status).toBe('pass')
+const verify = (enabled, input, inputArr, result) => {
+  const rule = {no_empty: {enabled: enabled}}
+  let res = noEmpty.process(validatorContext, input, rule)
+  expect(res.status).toBe(result)
+
+  res = noEmpty.process(validatorContext, inputArr, rule)
+  expect(res.status).toBe(result)
+}
+
+test('return pass if input meets the criteria', () => {
+  verify(true, 'NOT EMPTY', [''], 'pass')
+  verify(false, 'NOT EMPTY', [''], 'pass')
 })
 
-test('return fail if input does not meet the criteria', async () => {
-  const rule = {no_empty: {enabled: true}}
-  let input = ''
-  let res = noEmpty.process(validatorContext, input, rule)
-  expect(res.status).toBe('fail')
-
-  input = []
-  res = noEmpty.process(validatorContext, input, rule)
-  expect(res.status).toBe('fail')
+test('return fail if input does not meet the criteria', () => {
+  verify(true, '', [], 'fail')
+  verify(false, '', [''], 'pass')
 })
 
 test('return error if inputs are not in expected format', async () => {
