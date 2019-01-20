@@ -1,9 +1,18 @@
+const _ = require('lodash')
+
+const throwNotFound = () => {
+  let error = new Error('404 error')
+  error.code = 404
+  throw error
+}
+
 module.exports = {
   mockContext: (options) => {
     if (!options) options = {}
 
     return {
       repo: (properties) => { return Object.assign({ owner: 'owner', repo: 'repo' }, properties) },
+      event: (options.event) ? options.event : 'pull_request',
       payload: {
         pull_request: {
           user: {
@@ -12,6 +21,7 @@ module.exports = {
           title: (options.title) ? options.title : 'title',
           body: options.body,
           number: (options.number) ? options.number : 1,
+          milestone: (options.milestone) ? options.milestone : null,
           base: {
             ref: 'baseRef',
             sha: 'sha2'
@@ -25,21 +35,24 @@ module.exports = {
           assignees: (options.assignees) ? options.assignees : []
         }
       },
+      log: {
+        debug: (s) => console.log(`TEST[debug] > ${JSON.stringify(s)}`),
+        info: (s) => console.log(`TEST[info] > ${JSON.stringify(s)}`),
+        warn: (s) => console.log(`TEST[warn] > ${JSON.stringify(s)}`)
+      },
       github: {
         repos: {
           createStatus: () => {},
           getContent: ({ path }) => {
             return new Promise((resolve, reject) => {
               if (path === '.github/mergeable.yml') {
-                let error = new Error('404 error')
-                error.code = 404
-                throw error
+                throwNotFound()
               }
 
               if (path === '.github/CODEOWNERS') {
                 return options.codeowners ? resolve({ data: {
                   content: options.codeowners
-                }}) : resolve()
+                }}) : throwNotFound()
               }
             })
           },
@@ -63,7 +76,11 @@ module.exports = {
         },
         pullRequests: {
           getFiles: () => {
-            return { data: options.files && options.files.map(file => ({filename: file, status: 'modified'})) }
+            if (_.isString(options.files && options.files[0])) {
+              return { data: options.files.map(file => ({filename: file, status: 'modified'})) }
+            } else {
+              return { data: options.files && options.files }
+            }
           },
           getReviews: () => {
             return { data: (options.reviews) ? options.reviews : [] }
@@ -85,7 +102,7 @@ module.exports = {
             return { data: (options.labels) ? options.labels : [] }
           },
           get: () => {
-            return {data: (options.milestone) ? {milestone: options.milestone} : {}}
+            return {data: (options.deepValidation) ? options.deepValidation : {}}
           }
         }
       }
@@ -105,12 +122,16 @@ module.exports = {
     }
   },
 
-  mockConfigWithContext: (context, configString) => {
+  mockConfigWithContext: (context, configString, options) => {
     context.github.repos.getContent = () => {
       return Promise.resolve({ data: {
         content: Buffer.from(configString).toString('base64') }
       })
     }
+    context.github.pullRequests.getFiles = () => {
+      return Promise.resolve({
+        data: options && options.files ? options.files.map(file => ({ filename: file, status: 'modified' })) : []
+      })
+    }
   }
-
 }

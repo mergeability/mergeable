@@ -2,23 +2,27 @@
   "name": "mergeable",
   "version": "1.0.0",
   "description": "",
-  "author": "Justin Law <hello@justinlaw.org> (https://github.io/jusx/mergeable)",
+  "author": "Justin Law <hello@justinlaw.org> (https://github.io/jusx/mergeable), Shine Lee <aungshine@gmail.com>",
   "license": "ISC",
   "repository": "https://github.com/jusx/mergeable.git",
   "scripts": {
-    "dev": "NODE_ENV=development npm start",
+    "dev": "LOG_LEVEL=trace NODE_ENV=development nodemon --exec 'npm start'",
+    "dev-flex": "MERGEABLE_VERSION=flex npm run dev",
     "start": "probot run ./index.js",
-    "test": "jest && standard"
+    "test": "jest && standard",
+    "lint": "standard --fix"
   },
   "dependencies": {
     "js-yaml": "^3.11.0",
     "lodash": "^4.17.10",
     "node-fetch": "^2.1.2",
     "probot": "^6.2.0",
-    "probot-scheduler": "^1.1.0"
+    "probot-scheduler": "^1.1.0",
+    "colors": "^1.3.2"
   },
   "devDependencies": {
     "jest": "^21.2.1",
+    "nodemon": "^1.18.3",
     "smee-client": "^1.0.1",
     "standard": "^10.0.3"
   },

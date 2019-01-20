@@ -23,7 +23,7 @@ test('mergeable is false if regex found or true if not when there is only one la
 
 test('mergeable is false if regex found or true if not when there are multiple labels', async () => {
   let config = (new Configuration()).settings.mergeable
-
+  console.log(config.settings)
   let validation = await label(createMockPR(), createMockContext(['abc', 'experimental', 'xyz']), config)
   expect(validation.mergeable).toBe(false)
 
@@ -46,7 +46,7 @@ test('description is correct', async () => {
 test('mergeable is true if must_include is one of the label', async () => {
   let config = new Configuration(`
     mergeable:
-      label: 
+      label:
         must_include: 'abc'
   `).settings.mergeable
 
@@ -60,7 +60,7 @@ test('mergeable is true if must_include is one of the label', async () => {
 test('mergeable is false if must_exclude is one of the label', async () => {
   let config = new Configuration(`
     mergeable:
-      label: 
+      label:
         must_exclude: 'xyz'
   `).settings.mergeable
 
@@ -74,16 +74,16 @@ test('mergeable is false if must_exclude is one of the label', async () => {
 test('complex Logic test', async () => {
   let config = new Configuration(`
     mergeable:
-      label: 
-        or: 
-          - and: 
+      label:
+        or:
+          - and:
             - must_include:
                 regex: 'release note: yes'
                 message: 'Please include release note: yes'
-            - must_include: 
+            - must_include:
                 regex: 'lang\\/core|lang\\/c\\+\\+|lang\\/c#'
                 message: 'Please include a language label'
-          - must_include: 
+          - must_include:
               regex: 'release note: no'
               message: 'Please include release note: no'
   `).settings.mergeable
