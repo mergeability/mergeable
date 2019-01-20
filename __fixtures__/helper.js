@@ -19,7 +19,7 @@ module.exports = {
             login: 'creator'
           },
           title: (options.title) ? options.title : 'title',
-          body: (options.body) ? options.body : '',
+          body: options.body,
           number: (options.number) ? options.number : 1,
           milestone: (options.milestone) ? options.milestone : null,
           base: {
