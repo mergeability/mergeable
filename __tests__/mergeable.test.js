@@ -31,6 +31,7 @@ describe('Mergeable', () => {
 })
 
 const startMergeable = (mode, version) => {
+  process.env.MERGEABLE_SCHEDULER = true
   let mergeable = new Mergeable(mode, version)
   mergeable.schedule = jest.fn()
   mergeable.flex = jest.fn()
