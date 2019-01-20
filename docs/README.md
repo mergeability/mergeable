@@ -21,7 +21,7 @@
 
 Some examples of what you can do:
 
-- Ensure Pull Requests follow conventions and [prevent merging of Pull Requests](#pull-requests).
+- Ensure pull requests follow conventions and [prevent merging](#pull-requests) when it is not followed.
 - [Notify author of failed guidelines](#issues) when opening an issue.
 - Schedule [detection for obsolete (stale) issues and pull requests](#staleness) and notify author and collaborators.
 - And [more](#configuration)
