@@ -1,2 +1,20 @@
+version: 2
 mergeable:
-  approvals: 1  
+  - when: pull_request.*
+    validate:
+      - do: title
+        must_exclude:
+          regex: ^\[WIP\]
+        must_include: # enforce semantic release convention.
+          regex: ^(feat|docs|chore|fix|refactor|test|style|perf)(\(\w+\))?:.+$
+      - do: label
+        must_exclude:
+          regex: 'wip'
+      - do: approvals
+        min:
+          count: 1
+        required:
+          reviewers: [ jusx, shine2lay ]
+      - do: milestone
+        must_include:
+          regex: version 1.2
