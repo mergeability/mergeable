@@ -21,6 +21,7 @@ test('will set the issues and pulls appropriately when both types are specified'
   expect(isParamsNoType(context)).toBe(true) // it includes both types.
   expect(results.schedule.issues.length).toBe(1)
   expect(results.schedule.pulls.length).toBe(1)
+  expect(results.status).toBe('pass')
 })
 
 test('will set the issues and pulls appropriately when no type is set', async () => {
@@ -37,6 +38,7 @@ test('will set the issues and pulls appropriately when no type is set', async ()
   expect(isParamsNoType(context)).toBe(true)
   expect(results.schedule.issues.length).toBe(1)
   expect(results.schedule.pulls.length).toBe(1)
+  expect(results.status).toBe('pass')
 })
 
 test('will set the issues and pulls even when unsupported type is set', async () => {
@@ -75,6 +77,12 @@ test('will set the issues and pulls correctly when type is issue only', async ()
   expect(getFilteredParams(context, 'type:pr').length).toBe(0)
   expect(res.schedule.issues.length).toBe(1)
   expect(res.schedule.pulls.length).toBe(0)
+  expect(res.status).toBe('pass')
+
+  // no issues came back.
+  context = createMockContext([])
+  res = await stale.validate(context, settings)
+  expect(res.status).toBe('fail')
 })
 
 test('will set the issues and pulls correctly when type is pull_request only', async () => {
@@ -92,6 +100,12 @@ test('will set the issues and pulls correctly when type is pull_request only', a
   expect(getFilteredParams(context, 'type:pr').length).toBe(1)
   expect(res.schedule.pulls.length).toBe(1)
   expect(res.schedule.issues.length).toBe(0)
+  expect(res.status).toBe('pass')
+
+  // no prs came back
+  context = createMockContext([])
+  res = await stale.validate(context, settings)
+  expect(res.status).toBe('fail')
 })
 
 const getFilteredParams = (context, filter = '', days = 10) => {
