@@ -83,6 +83,7 @@ describe('Stale scenarios', () => {
           message: 'This is issue is stale. Please follow up!'
     `, 1)
     expect(whenSchedule[0].validate[0].type).toBe('pull_request')
+    expect(whenSchedule.length).toBe(1)
   })
 
   test('Configuration in issues only', () => {
@@ -94,6 +95,7 @@ describe('Stale scenarios', () => {
     `, 1)
 
     expect(whenSchedule[0].validate[0].type).toBe('issues')
+    expect(whenSchedule.length).toBe(1)
   })
 
   test('Configuration in both pull and issues', () => {
