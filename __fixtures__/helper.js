@@ -7,13 +7,14 @@ const throwNotFound = () => {
 }
 
 module.exports = {
-  mockContext: (options) => {
-    if (!options) options = {}
-
+  mockContext: (options = {}) => {
     return {
       repo: (properties) => { return Object.assign({ owner: 'owner', repo: 'repo' }, properties) },
       event: (options.event) ? options.event : 'pull_request',
       payload: {
+        repository: {
+          full_name: 'name'
+        },
         pull_request: {
           user: {
             login: 'creator'
@@ -36,9 +37,13 @@ module.exports = {
         }
       },
       log: {
-        debug: (s) => console.log(`TEST[debug] > ${JSON.stringify(s)}`),
-        info: (s) => console.log(`TEST[info] > ${JSON.stringify(s)}`),
-        warn: (s) => console.log(`TEST[warn] > ${JSON.stringify(s)}`)
+        child: (s) => {
+          return {
+            debug: (s) => console.log(`TEST[debug] > ${JSON.stringify(s)}`),
+            info: (s) => console.log(`TEST[info] > ${JSON.stringify(s)}`),
+            warn: (s) => console.log(`TEST[warn] > ${JSON.stringify(s)}`)
+          }
+        }
       },
       github: {
         repos: {
