@@ -43,7 +43,11 @@ const startMergeable = (mode, version) => {
 const mockRobot = {
   on: jest.fn(),
   log: {
-    warn: jest.fn(),
-    info: jest.fn()
+    child: () => {
+      return {
+        debug: jest.fn(),
+        info: jest.fn()
+      }
+    }
   }
 }
