@@ -6,6 +6,29 @@ describe('#executor', () => {
     process.env.MERGEABLE_VERSION = 'flex'
   })
 
+  test('Bad YML', async () => {
+    let context = Helper.mockContext('title')
+    Helper.mockConfigWithContext(context, `
+      version: 2
+      mergeable:
+    when: pull_request.*
+    `)
+
+    context.event = 'pull_request'
+    context.payload.action = 'opened'
+    context.github.checks.create = jest.fn()
+    context.github.checks.update = jest.fn()
+
+    await executor(context, { validators: new Map(), actions: new Map() })
+    expect(context.github.checks.update.mock.calls.length).toBe(0)
+    expect(context.github.checks.create.mock.calls.length).toBe(1)
+
+    const theCall = context.github.checks.create.mock.calls[0][0]
+    expect(theCall.status).toBe('completed')
+    expect(theCall.conclusion).toBe('cancelled')
+    console.log(context.github.checks.create.mock.calls[0][0])
+  })
+
   test('One When', async () => {
     let context = Helper.mockContext('title')
     Helper.mockConfigWithContext(context, `

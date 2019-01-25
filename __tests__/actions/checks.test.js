@@ -1,6 +1,13 @@
 const Checks = require('../../lib/actions/checks')
 const Helper = require('../../__fixtures__/helper')
 
+test('run', async () => {
+  const checks = new Checks()
+  const context = createMockContext()
+  await checks.run({ context, payload: {} })
+  expect(context.github.checks.create.mock.calls.length).toBe(1)
+})
+
 test('check that checks created when doPostAction is called with proper parameter', async () => {
   const checks = new Checks()
   const context = createMockContext()
