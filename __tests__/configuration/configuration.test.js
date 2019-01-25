@@ -29,7 +29,7 @@ describe('Loading bad configuration', () => {
     mergeable:
     `)
     expect(config.errors.size).toBe(1)
-    expect(config.errors.has(Configuration.ERROR_CODES.WRONG_VERSION)).toBe(true)
+    expect(config.errors.has(Configuration.ERROR_CODES.UNKOWN_VERSION)).toBe(true)
   })
 
   test('missing mergeable node', () => {
@@ -164,6 +164,7 @@ describe('with version 2', () => {
     let config = new Configuration()
     expect(config.settings[0].when).toBeDefined()
     expect(config.settings[0].validate).toBeDefined()
+    expect(config.hasErrors()).toBe(false)
   })
 })
 
