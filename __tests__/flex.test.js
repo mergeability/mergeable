@@ -26,7 +26,6 @@ describe('#executor', () => {
     const theCall = context.github.checks.create.mock.calls[0][0]
     expect(theCall.status).toBe('completed')
     expect(theCall.conclusion).toBe('cancelled')
-    console.log(context.github.checks.create.mock.calls[0][0])
   })
 
   test('One When', async () => {
