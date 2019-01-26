@@ -1,7 +1,7 @@
 const v1Config = require('../../../lib/configuration/transformers/v1Config')
 const yaml = require('js-yaml')
 
-describe('Tests for description no empty scenarios transformations', () => {
+describe('Description no empty scenarios transformations', () => {
   const verify = (config) => {
     let res = v1Config.transform(yaml.safeLoad(config))
     let dv = res.mergeable[0].validate[0]
@@ -54,6 +54,62 @@ describe('Tests for description no empty scenarios transformations', () => {
             enabled: true
     `
     verify(config)
+  })
+}) // END: Description no empty scenarios transformations
+
+describe('Stale scenarios', () => {
+  const loadWith = (moreConfig = '', expectedLength = 0) => {
+    let config = `
+    mergeable:
+      pull_requests:
+        title: 'wip'
+    ${moreConfig}
+    `
+
+    let res = v1Config.transform(yaml.safeLoad(config))
+    let whenSchedule = res.mergeable.filter(recipe => recipe.when === 'schedule.repository')
+    expect(whenSchedule.length).toBe(expectedLength)
+    return whenSchedule
+  }
+
+  test('No stale configuration', () => {
+    loadWith()
+  })
+
+  test('Configuration in pulls only.', () => {
+    let whenSchedule = loadWith(`
+        stale:
+          days: 20
+          message: 'This is issue is stale. Please follow up!'
+    `, 1)
+    expect(whenSchedule[0].validate[0].type).toBe('pull_request')
+    expect(whenSchedule.length).toBe(1)
+  })
+
+  test('Configuration in issues only', () => {
+    let whenSchedule = loadWith(`
+      issues:
+        stale:
+          days: 20
+          message: 'This is issue is stale. Please follow up!'
+    `, 1)
+
+    expect(whenSchedule[0].validate[0].type).toBe('issues')
+    expect(whenSchedule.length).toBe(1)
+  })
+
+  test('Configuration in both pull and issues', () => {
+    let whenSchedule = loadWith(`
+        stale:
+          days: 20
+      issues:
+        stale:
+          days: 20
+          message: 'This is issue is stale. Please follow up!'
+    `, 2)
+
+    expect(whenSchedule[0].validate[0].type).toBe('issues')
+    expect(whenSchedule[1].validate[0].type).toBe('pull_request')
   })
 })
 
