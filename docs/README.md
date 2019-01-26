@@ -301,7 +301,35 @@ Supported events:
 ### Advanced Logic
 Validators can be grouped together with `AND` and `OR` operators:
 
-TODO: Show examples.
+```yml
+- do: description
+  and:
+    - must_include:
+        regex: 'Test Plan'
+        message: 'Test plan must be included'
+    - must_include:
+        regex: 'Goal'
+        message: 'Please include the goal of the PR'                 
+```
+
+`AND` and `OR` operators can also be nested
+
+```yml
+- do: label
+ or:
+   - and:
+     - must_include:
+         regex: 'release notes: yes'
+         message: 'Please include release note: yes'
+     - must_include:
+         regex: '^lang\/'
+         message: 'Please include a language label'
+   - must_include:
+       regex: 'release notes: no'
+       message: 'Please include release note: no'
+```
+
+*Note* : `AND` and `OR` are not validators
 
 ## Actions
 
