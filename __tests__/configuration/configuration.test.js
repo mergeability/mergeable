@@ -1,4 +1,56 @@
 const Configuration = require('../../lib/configuration/configuration')
+const helper = require('../../__fixtures__/helper')
+
+describe('Loading bad configuration', () => {
+  beforeEach(() => {
+    process.env.MERGEABLE_VERSION = 'flex'
+  })
+
+  test('bad YML', () => {
+    let config = new Configuration(`
+    version: 2
+    mergeable:
+      when: pull_request.*
+      - do: label:
+    `)
+    expect(config.errors.size).toBe(1)
+    expect(config.errors.has(Configuration.ERROR_CODES.BAD_YML)).toBe(true)
+  })
+
+  test('No YML found', async () => {
+    let config = await Configuration.instanceWithContext(helper.mockContext({ files: [] }))
+    expect(config.warnings.size).toBe(1)
+    expect(config.warnings.has(Configuration.WARNING_CODES.CONFIG_NOT_FOUND)).toBe(true)
+  })
+
+  test('wrong version', () => {
+    let config = new Configuration(`
+    version: not a number
+    mergeable:
+    `)
+    expect(config.errors.size).toBe(1)
+    expect(config.errors.has(Configuration.ERROR_CODES.UNKOWN_VERSION)).toBe(true)
+  })
+
+  test('missing mergeable node', () => {
+    let config = new Configuration(`
+    version: 2
+
+    `)
+    expect(config.errors.size).toBe(1)
+    expect(config.errors.has(Configuration.ERROR_CODES.MISSING_MERGEABLE_NODE)).toBe(true)
+  })
+
+  test('multiple errors', () => {
+    let yml = `
+    version: foo
+    mergeably:
+      when: bar
+    `
+    let config = new Configuration(yml)
+    expect(config.errors.size).toBe(2)
+  })
+})
 
 describe('config file fetching', () => {
   beforeEach(() => {
@@ -112,33 +164,13 @@ describe('with version 2', () => {
     let config = new Configuration()
     expect(config.settings[0].when).toBeDefined()
     expect(config.settings[0].validate).toBeDefined()
-  })
-
-  test('it throw error correctly with wrong version specified', () => {
-    try {
-      let config = new Configuration(`
-      version: something
-      mergeable:
-      `)
-      expect(config).toBeUndefinded()
-    } catch (e) {
-      expect(e.message).toBe(Configuration.UNKNOWN_VERSION_ERROR)
-    }
+    expect(config.hasErrors()).toBe(false)
   })
 })
 
 describe('with version 1', () => {
   beforeEach(() => {
     process.env.MERGEABLE_VERSION = 'flex'
-  })
-
-  test('that Configuration validates root node in yml', () => {
-    try {
-      let config = new Configuration('nothing:')
-      expect(config).toBeUndefined()
-    } catch (e) {
-      expect(e.message).toBe(Configuration.ERROR_INVALID_YML)
-    }
   })
 
   // write test to test for bad yml
