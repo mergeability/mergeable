@@ -316,17 +316,17 @@ Validators can be grouped together with `AND` and `OR` operators:
 
 ```yml
 - do: label
- or:
-   - and:
-     - must_include:
-         regex: 'release notes: yes'
-         message: 'Please include release note: yes'
-     - must_include:
-         regex: '^lang\/'
-         message: 'Please include a language label'
-   - must_include:
-       regex: 'release notes: no'
-       message: 'Please include release note: no'
+  or:
+    - and:
+      - must_include:
+          regex: 'release notes: yes'
+          message: 'Please include release note: yes'
+      - must_include:
+          regex: '^lang\/'
+           message: 'Please include a language label'
+    - must_include:
+        regex: 'release notes: no'
+        message: 'Please include release note: no'
 ```
 
 *Note* : `AND` and `OR` are not validators
