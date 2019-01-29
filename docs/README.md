@@ -164,10 +164,10 @@ Supported events:
        regex: 'DO NOT MERGE'
        message: 'Custom message...' # optional
     begins_with:
-       match: '### Goals' # or comma delimited list of strings
+       match: '### Goals' # or array of strings
        message: 'Some message...' #optional
     ends_with:
-       match: 'Any last sentence' # or comma delimited list of strings
+       match: 'Any last sentence' # array of strings
        message: 'Come message...' # optional    
 ```
 Supported events:
@@ -190,10 +190,10 @@ Supported events:
        regex: 'DO NOT MERGE'
        message: 'Custom message...'
     begins_with:
-       match: 'A String' # or comma delimited list of strings
+       match: 'A String' # or array of strings
        message: 'Some message...'
     ends_with:
-       match: 'A String' # or comma delimited list of strings
+       match: 'A String' # or array of strings
        message: 'Come message...'
     # all of the message sub-option is optional   
 ```
@@ -217,10 +217,10 @@ Supported events:
      regex: 'DO NOT MERGE'
      message: 'Custom message...'
   begins_with:
-     match: 'A String' # or comma delimited list of strings
+     match: 'A String' # array of strings
      message: 'Some message...'
   ends_with:
-     match: 'A String' # or comma delimited list of strings
+     match: 'A String' # array list of strings
      message: 'Come message...'
   # all of the message sub-option is optional   
 ```
@@ -246,10 +246,10 @@ Supported events:
      regex: 'DO NOT MERGE'
      message: 'Custom message...'
   begins_with:
-     match: 'A String' # or comma delimited list of strings
+     match: 'A String' # array of strings
      message: 'Some message...'
   ends_with:
-     match: 'A String' # or comma delimited list of strings
+     match: 'A String' # array of strings
      message: 'Come message...'
      # all of the message sub-option is optional
 ```
@@ -290,10 +290,10 @@ Supported events:
      regex: 'DO NOT MERGE|WIP'
      message: 'Custom message...'
   begins_with:
-     match: 'doc','feat','fix','chore'  
+     match: ['doc','feat','fix','chore']  
      message: 'Some message...'
   ends_with:
-     match: 'A String' # or comma delimited list of strings
+     match: 'A String' # or array of strings
      message: 'Come message...'
      # all of the message sub-option is optional   
 ```
@@ -476,7 +476,7 @@ Automatically create a comment when a new issue is `openened` to remind the auth
       validate:
         - do: title
           begins_with:
-            match: AUTH|SOCIAL|CORE
+            match: ['AUTH', 'SOCIAL', 'CORE']
         - do: label
           must_include:
             regex: bug|enhancement
