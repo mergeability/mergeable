@@ -80,42 +80,78 @@ test('checks that advance setting of must_include works', async () => {
   expect(titleValidation.status).toBe('fail')
 })
 
-test('checks that it fail when begins_with is not in title', async () => {
-  let title = new Title()
-  let match = '(test)'
-
-  let settings = {
-    do: 'title',
-    begins_with: {
-      match: match
+describe('begins_with', () => {
+  const mockMatch = (match) => {
+    return {
+      do: 'title',
+      begins_with: {
+        match: match
+      }
     }
   }
 
-  let titleValidation = await title.validate(mockContext('include Title'), settings)
-  expect(titleValidation.status).toBe('fail')
-  expect(titleValidation.validations[0].description).toBe(`title must begins with "${match}"`)
+  test('checks that it fail when begins_with is not in title', async () => {
+    let title = new Title()
+    let match = '(test)'
 
-  titleValidation = await title.validate(mockContext('(test) WIP Title'), settings)
-  expect(titleValidation.status).toBe('pass')
+    let titleValidation = await title.validate(mockContext('include Title'), mockMatch(match))
+    expect(titleValidation.status).toBe('fail')
+    expect(titleValidation.validations[0].description).toBe(`title must begins with "${match}"`)
+
+    titleValidation = await title.validate(mockContext('(test) WIP Title'), mockMatch(match))
+    expect(titleValidation.status).toBe('pass')
+  })
+
+  test('with match as arrays', async () => {
+    let title = new Title()
+    let match = ['test1', 'test2']
+
+    let titleValidation = await title.validate(mockContext('include Title'), mockMatch(match))
+    expect(titleValidation.status).toBe('fail')
+    expect(titleValidation.validations[0].description).toBe(`title must begins with "${match}"`)
+
+    titleValidation = await title.validate(mockContext('test1 WIP Title'), mockMatch(match))
+    expect(titleValidation.status).toBe('pass')
+    titleValidation = await title.validate(mockContext('test2 WIP Title'), mockMatch(match))
+    expect(titleValidation.status).toBe('pass')
+  })
 })
 
-test('checks that it fail when ends_with is not in title', async () => {
-  let title = new Title()
-  let match = '(test)'
-
-  let settings = {
-    do: 'title',
-    ends_with: {
-      match: match
+describe('ends_with', () => {
+  const mockMatch = (match) => {
+    return {
+      do: 'title',
+      ends_with: {
+        match: match
+      }
     }
   }
 
-  let titleValidation = await title.validate(mockContext('include Title'), settings)
-  expect(titleValidation.status).toBe('fail')
-  expect(titleValidation.validations[0].description).toBe(`title must end with "${match}"`)
+  test('checks that it fail when ends_with is not in title', async () => {
+    let title = new Title()
+    let match = '(test)'
 
-  titleValidation = await title.validate(mockContext('WIP Title (test)'), settings)
-  expect(titleValidation.status).toBe('pass')
+    let titleValidation = await title.validate(mockContext('include Title'), mockMatch(match))
+    expect(titleValidation.status).toBe('fail')
+    expect(titleValidation.validations[0].description).toBe(`title must end with "${match}"`)
+
+    titleValidation = await title.validate(mockContext('WIP Title (test)'), mockMatch(match))
+    expect(titleValidation.status).toBe('pass')
+  })
+
+  test('with array', async () => {
+    let title = new Title()
+    let match = ['test', 'test2']
+
+    let titleValidation = await title.validate(mockContext('include Title'), mockMatch(match))
+    expect(titleValidation.status).toBe('fail')
+    expect(titleValidation.validations[0].description).toBe(`title must end with "${match}"`)
+
+    titleValidation = await title.validate(mockContext('WIP Title test'), mockMatch(match))
+    expect(titleValidation.status).toBe('pass')
+    titleValidation = await title.validate(mockContext('WIP Title test2'), mockMatch(match))
+    expect(titleValidation.status).toBe('pass')
+  })
 })
 
 test('checks that it fail when include regex is in title', async () => {

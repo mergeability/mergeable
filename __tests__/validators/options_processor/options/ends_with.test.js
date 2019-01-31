@@ -15,26 +15,24 @@ const validatorContext = {
     'required']
 }
 
+test('return pass if input ends with the rule and matches is an array', async () => {
+  const match = ['end1', 'end2']
+
+  expectMatchToBe(match, 'the test end1', 'pass')
+  expectMatchToBe(match, 'the test end2', 'pass')
+  expectMatchToBe(match, 'some title', 'fail')
+})
+
 test('return pass if input meets the criteria', async () => {
-  const rule = {ends_with: {match: 'test'}}
-  let input = 'the test'
-  let res = endsWith.process(validatorContext, input, rule)
-  expect(res.status).toBe('pass')
+  const match = 'test'
 
-  input = ['A', 'B', 'the test']
-  res = endsWith.process(validatorContext, input, rule)
-  expect(res.status).toBe('pass')
-
-  input = ['the test']
-  res = endsWith.process(validatorContext, input, rule)
-  expect(res.status).toBe('pass')
+  expectMatchToBe(match, 'the test', 'pass')
+  expectMatchToBe(match, ['A', 'B', 'the test'], 'pass')
+  expectMatchToBe(match, ['the test'], 'pass')
 })
 
 test('return fail if input does not meet the criteria', async () => {
-  const rule = {ends_with: {match: 'test'}}
-  const input = 'test the'
-  const res = endsWith.process(validatorContext, input, rule)
-  expect(res.status).toBe('fail')
+  expectMatchToBe('test', 'test the', 'fail')
 })
 
 test('return error if inputs are not in expected format', async () => {
@@ -47,3 +45,9 @@ test('return error if inputs are not in expected format', async () => {
     expect(e.message).toBe(`Failed to run the test because 'match' is not provided for 'ends_with' option. Please check README for more information about configuration`)
   }
 })
+
+const expectMatchToBe = (match, input, result) => {
+  let rule = {ends_with: { match: match }}
+  const res = endsWith.process(validatorContext, input, rule)
+  expect(res.status).toBe(result)
+}
