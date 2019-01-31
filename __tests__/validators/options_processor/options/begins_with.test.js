@@ -15,22 +15,22 @@ const validatorContext = {
     'required']
 }
 
-test('return pass if input begins with the rule', async () => {
-  const rule = {begins_with: {match: 'the'}}
-  let input = 'the test'
-  let res = beginsWith.process(validatorContext, input, rule)
-  expect(res.status).toBe('pass')
+test('return pass if input begins with the rule and matches is an array', () => {
+  const match = ['feat', 'core']
+  expectMatchToBe(match, 'feat: the test', 'pass')
+  expectMatchToBe(match, 'core: the test', 'pass')
+  expectMatchToBe(match, 'some title', 'fail')
+})
 
-  input = ['A', 'B', 'the test']
-  res = beginsWith.process(validatorContext, input, rule)
-  expect(res.status).toBe('pass')
+test('return pass if input begins with the rule', () => {
+  const match = 'the'
+  expectMatchToBe(match, 'the test', 'pass')
+  expectMatchToBe(match, ['A', 'B', 'the test'], 'pass')
 })
 
 test('return fail if input does not begins with the rule', async () => {
-  const rule = {begins_with: {match: 'the'}}
-  const input = 'test the'
-  const res = beginsWith.process(validatorContext, input, rule)
-  expect(res.status).toBe('fail')
+  const match = 'the'
+  expectMatchToBe(match, 'test the', 'fail')
 })
 
 test('return error if inputs are not in expected format', async () => {
@@ -43,3 +43,9 @@ test('return error if inputs are not in expected format', async () => {
     expect(e.message).toBe(`Failed to run the test because 'match' is not provided for 'begins_with' option. Please check README for more information about configuration`)
   }
 })
+
+const expectMatchToBe = (match, input, result) => {
+  let rule = {begins_with: { match: match }}
+  const res = beginsWith.process(validatorContext, input, rule)
+  expect(res.status).toBe(result)
+}
