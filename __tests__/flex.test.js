@@ -6,23 +6,31 @@ describe('Test beforeValidate and afterValidate invocations', async () => {
   let context
   let registry = { validators: new Map(), actions: new Map() }
   let action
+  let config = `
+    version: 2
+    mergeable:
+      - when: pull_request.*
+        validate:
+          - do: title
+            must_exclude:
+              regex: wip|work in progress|do not merge
+              message: 'a custom message'
+          - do: label
+            must_exclude:
+              regex: wip|work in progress
+  `
+  let configWithMultiple = config + `
+      - when: pull_request_review.submitted
+        validate:
+          - do: milestone
+            no_empty:
+              enabled: true
+  `
 
   beforeEach(() => {
     process.env.MERGEABLE_VERSION = 'flex'
     context = Helper.mockContext('title')
-    Helper.mockConfigWithContext(context, `
-      version: 2
-      mergeable:
-        - when: pull_request.*
-          validate:
-            - do: title
-              must_include:
-                regex: wip|work in progress|do not merge
-                message: 'a custom message'
-            - do: label
-              must_include:
-                regex: wip|work in progress
-    `)
+    Helper.mockConfigWithContext(context, config)
 
     action = new Action()
     action.beforeValidate = jest.fn()
@@ -42,6 +50,24 @@ describe('Test beforeValidate and afterValidate invocations', async () => {
   test('when event is not in configuration', async () => {
     context.event = 'pull_request_review'
     context.payload.action = 'submitted'
+    await executor(context, registry)
+    expect(action.beforeValidate.mock.calls.length).toBe(0)
+    expect(action.afterValidate.mock.calls.length).toBe(0)
+  })
+
+  test('when event is in configuration with multiple whens', async () => {
+    Helper.mockConfigWithContext(context, configWithMultiple)
+    context.event = 'pull_request_review'
+    context.payload.action = 'submitted'
+    await executor(context, registry)
+    expect(action.beforeValidate.mock.calls.length).toBe(1)
+    expect(action.afterValidate.mock.calls.length).toBe(1)
+  })
+
+  test('when event is NOT in configuration with multiple whens', async () => {
+    Helper.mockConfigWithContext(context, configWithMultiple)
+    context.event = 'pull_request_review'
+    context.payload.action = 'commented'
     await executor(context, registry)
     expect(action.beforeValidate.mock.calls.length).toBe(0)
     expect(action.afterValidate.mock.calls.length).toBe(0)
