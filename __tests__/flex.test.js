@@ -1,5 +1,52 @@
 const executor = require('../lib/flex')
 const Helper = require('../__fixtures__/helper')
+const { Action } = require('../lib/actions/action')
+
+describe('Test beforeValidate and afterValidate invocations', async () => {
+  let context
+  let registry = { validators: new Map(), actions: new Map() }
+  let action
+
+  beforeEach(() => {
+    process.env.MERGEABLE_VERSION = 'flex'
+    context = Helper.mockContext('title')
+    Helper.mockConfigWithContext(context, `
+      version: 2
+      mergeable:
+        - when: pull_request.*
+          validate:
+            - do: title
+              must_include:
+                regex: wip|work in progress|do not merge
+                message: 'a custom message'
+            - do: label
+              must_include:
+                regex: wip|work in progress
+    `)
+
+    action = new Action()
+    action.beforeValidate = jest.fn()
+    action.afterValidate = jest.fn()
+    action.supportedEvents = ['pull_request.opened', 'pull_request.edited', 'pull_request_review.submitted']
+    registry.actions.set('checks', action)
+  })
+
+  test('when event is in configuration', async () => {
+    context.event = 'pull_request'
+    context.payload.action = 'opened'
+    await executor(context, registry)
+    expect(action.beforeValidate.mock.calls.length).toBe(1)
+    expect(action.afterValidate.mock.calls.length).toBe(1)
+  })
+
+  test('when event is not in configuration', async () => {
+    context.event = 'pull_request_review'
+    context.payload.action = 'submitted'
+    await executor(context, registry)
+    expect(action.beforeValidate.mock.calls.length).toBe(0)
+    expect(action.afterValidate.mock.calls.length).toBe(0)
+  })
+})
 
 describe('#executor', () => {
   beforeEach(() => {
