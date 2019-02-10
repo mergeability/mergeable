@@ -23,6 +23,7 @@ module.exports = {
           body: options.body,
           number: (options.number) ? options.number : 1,
           milestone: (options.milestone) ? options.milestone : null,
+          requested_reviewers: options.requestedReviewers ? options.requestedReviewers : [],
           base: {
             ref: 'baseRef',
             sha: 'sha2'
