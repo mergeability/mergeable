@@ -267,6 +267,46 @@ test('that ownersEnabled will check owner file and is mergeable when approval is
   expect(validations.status).toBe('pass')
 })
 
+test('that ownersEnabled will call fetch OWNERS file', async () => {
+  const approval = new Approval()
+  const settings = {
+    do: 'approval',
+    required: {
+      owners: true
+    }
+  }
+
+  const codeowner = `*.go @bob`
+  let commitDiffs = createCommitDiffs(['first/second/third/dir/test.go'])
+
+  const context = createMockContext(0, [], codeowner, commitDiffs)
+  context.github.repos.getContent = jest.fn().mockReturnValue(new Promise((resolve) => resolve({ data: {
+    content: codeowner
+  }})))
+
+  await approval.validate(context, settings)
+  expect(context.github.repos.getContent.mock.calls[0][0].path).toBe('.github/CODEOWNERS')
+})
+
+test('that ownersDisabled will call NOT fetch OWNERS file', async () => {
+  const approval = new Approval()
+  const settings = {
+    do: 'approval'
+  }
+
+  const codeowner = `*.go @bob`
+  let commitDiffs = createCommitDiffs(['first/second/third/dir/test.go'])
+
+  const context = createMockContext(0, [], codeowner, commitDiffs)
+  context.github.repos.getContent = jest.fn().mockReturnValue(
+    new Promise((resolve) => resolve({ data: {
+      content: codeowner
+    }})))
+
+  await approval.validate(context, settings)
+  expect(context.github.repos.getContent.mock.calls.length).toBe(0)
+})
+
 const createCommitDiffs = (diffs) => {
   return diffs.map(diff => ({
     filename: diff
