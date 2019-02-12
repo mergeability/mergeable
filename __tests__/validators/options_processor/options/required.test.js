@@ -27,3 +27,10 @@ test('return fail if input does not meet the criteria', async () => {
   const res = required.process(validatorContext, input, rule)
   expect(res.status).toBe('fail')
 })
+
+test('return pass when reviewers list not provided', () => {
+  const rule = {required: {owners: true}}
+  const input = ['jusx']
+  const res = required.process(validatorContext, input, rule)
+  expect(res.status).toBe('pass')
+})
