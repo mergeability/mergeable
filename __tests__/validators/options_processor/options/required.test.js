@@ -34,3 +34,4 @@ test('return pass when reviewers list not provided', () => {
   const res = required.process(validatorContext, input, rule)
   expect(res.status).toBe('pass')
 })
+
