@@ -11,7 +11,7 @@
     "start": "probot run ./index.js",
     "test": "jest && standard",
     "test-watch": "jest --watch",
-    "test-coverage": "npm test && codecov",
+    "test-coverage": "standard && jest --collectCoverage && codecov",
     "lint": "standard --fix"
   },
   "dependencies": {
@@ -40,7 +40,6 @@
   },
   "jest": {
     "coverageDirectory": "./coverage/",
-    "collectCoverage": true,
     "collectCoverageFrom": ["lib/**/*.js"]
   }
 }
