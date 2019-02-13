@@ -144,12 +144,12 @@ test('validate correctly when one required user approved but followed up with co
   const reviewList = [
     {
       user: { login: 'userA' },
-      state: 'COMMENT',
+      state: 'COMMENTED',
       submitted_at: Date.now() - 5000
     },
     {
       user: { login: 'userB' },
-      state: 'COMMENT',
+      state: 'COMMENTED',
       submitted_at: Date.now() - 4000
     },
     {
@@ -159,7 +159,7 @@ test('validate correctly when one required user approved but followed up with co
     },
     {
       user: { login: 'userB' },
-      state: 'COMMENT',
+      state: 'COMMENTED',
       submitted_at: Date.now() - 2000
     },
     {
@@ -169,12 +169,12 @@ test('validate correctly when one required user approved but followed up with co
     },
     {
       user: { login: 'userA' },
-      state: 'COMMENT',
+      state: 'COMMENTED',
       submitted_at: Date.now()
     },
     {
       user: { login: 'userC' },
-      state: 'COMMENT',
+      state: 'COMMENTED',
       submitted_at: Date.now()
     }
   ]
@@ -194,12 +194,12 @@ test('validate correctly when one required user approved but followed up with RE
   const reviewList = [
     {
       user: { login: 'userA' },
-      state: 'COMMENT',
+      state: 'COMMENTED',
       submitted_at: Date.now() - 5000
     },
     {
       user: { login: 'userB' },
-      state: 'COMMENT',
+      state: 'COMMENTED',
       submitted_at: Date.now() - 4000
     },
     {
@@ -209,7 +209,7 @@ test('validate correctly when one required user approved but followed up with RE
     },
     {
       user: { login: 'userB' },
-      state: 'COMMENT',
+      state: 'COMMENTED',
       submitted_at: Date.now() - 2000
     },
     {
@@ -219,7 +219,7 @@ test('validate correctly when one required user approved but followed up with RE
     },
     {
       user: { login: 'userA' },
-      state: 'REQUEST_CHANGES',
+      state: 'CHANGES_REQUESTED',
       submitted_at: Date.now() - 500
     },
     {
