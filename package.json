@@ -7,7 +7,6 @@
   "repository": "https://github.com/jusx/mergeable.git",
   "scripts": {
     "dev": "LOG_LEVEL=trace NODE_ENV=development nodemon --exec 'npm start'",
-    "dev-flex": "MERGEABLE_VERSION=flex npm run dev",
     "start": "probot run ./index.js",
     "test": "jest && standard",
     "test-watch": "jest --watch",
