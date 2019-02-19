@@ -360,7 +360,7 @@ Supported events:
   status: 'success' # Can be: success, failure, neutral, cancelled, timed_out, or action_required
   payload:
     title: 'Mergeable Run have been Completed!'
-    summary: `All the validators have return 'pass'! \n Here are some stats of the run: \n {{validationCount}} validations were ran`
+    summary: `All the validators have returned 'pass'! \n Here are some stats of the run: \n {{validationCount}} validations were ran`
 ```
 
 Supported events:
