@@ -147,7 +147,7 @@ Supported events:
     message: 'Custom message...' # this is optional, a default message is used when not specified.
 ```
 
-Alternately, to validate dependent files only when a specific file is part of the pull request, use the `changed` option:
+Alternatively, to validate dependent files only when a specific file is part of the pull request, use the `changed` option:
 
 ```yml
   - do: dependent
