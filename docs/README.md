@@ -139,14 +139,27 @@ Supported events:
 ```
 
 ### dependent
-```yml
+`dependent` validates that the files specified are all part of a pull request (added or modified).
 
+```yml
   - do: dependent
-    files: ['package.json', 'yarn.lock'] # list of files that are dependent to one another and must all be together part of the added or modified file list in a PR.
+    files: ['package.json', 'yarn.lock'] # list of files that are dependent on one another and must all be part of the changes in a PR.
     message: 'Custom message...' # this is optional, a default message is used when not specified.
 ```
-Supported events:
 
+Alternatively, to validate dependent files only when a specific file is part of the pull request, use the `changed` option:
+
+```yml
+  - do: dependent
+    changed:
+      file: package.json
+      files: ['package-lock.json', 'yarn.lock']
+    message: 'Custom message...' # this is optional, a default message is used when not specified.
+```
+
+The above will validate that both the files `package-lock.json` and `yarn.lock` is part of the modified or added files if and only if `package.json` is part of the PR.
+
+#### Supported events
 ```js
 'pull_request.*', 'pull_request_review.*'
 ```
@@ -414,7 +427,7 @@ Validate pull requests for mergeability based on content and structure of your P
 </details>
 <br>
 
-**Dependent Files**: Certain files are related and you want to ensure that they are updated as part of the PR (i.e. if `package.json` is updated, so should `yarn.lock`)
+**Dependent Files**: Certain files are related and you want to ensure that they are updated as part of the PR (i.e. if `package.json` is updated, so should `yarn.lock` and `package-lock.json`)
 
 <details><summary>🔖 See Recipe</summary>
   <p>
@@ -425,7 +438,9 @@ Validate pull requests for mergeability based on content and structure of your P
     - when: pull_request.*
       validate:
         - do: dependent
-          files: ['package.json', 'yarn.lock']
+          changed:
+            file: 'package.json'
+            files: ['package-lock.json', 'yarn.lock']
   ```
   </p>
 </details>
