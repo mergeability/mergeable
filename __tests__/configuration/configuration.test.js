@@ -2,10 +2,6 @@ const Configuration = require('../../lib/configuration/configuration')
 const helper = require('../../__fixtures__/helper')
 
 describe('Loading bad configuration', () => {
-  beforeEach(() => {
-    process.env.MERGEABLE_VERSION = 'flex'
-  })
-
   test('bad YML', () => {
     let config = new Configuration(`
     version: 2
@@ -53,10 +49,6 @@ describe('Loading bad configuration', () => {
 })
 
 describe('config file fetching', () => {
-  beforeEach(() => {
-    process.env.MERGEABLE_VERSION = 'flex'
-  })
-
   test('fetch from main branch if event is not pull_request', async () => {
     let configString = `
           mergeable:
@@ -156,10 +148,6 @@ describe('config file fetching', () => {
 })
 
 describe('with version 2', () => {
-  beforeEach(() => {
-    process.env.MERGEABLE_VERSION = 'flex'
-  })
-
   test('it loads correctly without version', () => {
     let config = new Configuration()
     expect(config.settings[0].when).toBeDefined()
@@ -169,10 +157,6 @@ describe('with version 2', () => {
 })
 
 describe('with version 1', () => {
-  beforeEach(() => {
-    process.env.MERGEABLE_VERSION = 'flex'
-  })
-
   // write test to test for bad yml
   test('that constructor loads settings correctly', () => {
     let config = new Configuration(`

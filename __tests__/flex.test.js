@@ -28,7 +28,6 @@ describe('Test beforeValidate and afterValidate invocations', async () => {
   `
 
   beforeEach(() => {
-    process.env.MERGEABLE_VERSION = 'flex'
     context = Helper.mockContext('title')
     Helper.mockConfigWithContext(context, config)
 
@@ -75,10 +74,6 @@ describe('Test beforeValidate and afterValidate invocations', async () => {
 })
 
 describe('#executor', () => {
-  beforeEach(() => {
-    process.env.MERGEABLE_VERSION = 'flex'
-  })
-
   test('Bad YML', async () => {
     let context = Helper.mockContext('title')
     Helper.mockConfigWithContext(context, `
