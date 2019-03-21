@@ -1,6 +1,58 @@
 const Helper = require('../../__fixtures__/helper')
 const Dependent = require('../../lib/validators/dependent')
 
+describe('dependent files with modified', () => {
+  test('changed file exists and files found', async () => {
+    const dependent = new Dependent()
+    const settings = {
+      do: 'dependent',
+      changed: {
+        file: 'package.json',
+        files: ['package-lock.json', 'yarn.lock']
+      }
+
+    }
+
+    let validation = await dependent.validate(createMockContext(['package-lock.json', 'yarn.lock', 'package.json', 'a.js']), settings)
+    expect(validation.status).toBe('pass')
+
+    // test with only requiring one dependent file.
+    settings.changed.files = ['package-lock.json']
+    validation = await dependent.validate(createMockContext(['package-lock.json', 'yarn.lock', 'package.json', 'a.js']), settings)
+    expect(validation.status).toBe('pass')
+  })
+
+  test('changed file exist and file(s) not found', async () => {
+    const dependent = new Dependent()
+    const settings = {
+      do: 'dependent',
+      changed: {
+        file: 'package.json',
+        files: ['package-lock.json']
+      }
+
+    }
+
+    let validation = await dependent.validate(createMockContext(['package.json', 'a.js', 'b.js']), settings)
+    expect(validation.status).toBe('fail')
+  })
+
+  test('modified does not exist and file(s) not found', async () => {
+    const dependent = new Dependent()
+    const settings = {
+      do: 'dependent',
+      changed: {
+        file: 'package.json',
+        files: ['package-lock.json']
+      }
+
+    }
+
+    let validation = await dependent.validate(createMockContext([]), settings)
+    expect(validation.status).toBe('pass')
+  })
+})
+
 test('that mergeable is true if none of the dependent file is modified', async () => {
   const dependent = new Dependent()
   const settings = {
@@ -19,7 +71,7 @@ test('that mergeable is true if all of the dependent file is modified', async ()
     files: ['package.json', 'yarn.lock']
   }
 
-  let validation = await dependent.validate(createMockContext(['package.json', 'yarn.lock']), settings)
+  let validation = await dependent.validate(createMockContext(['package.json', 'yarn.lock', 'a.js']), settings)
   expect(validation.status).toBe('pass')
 })
 
@@ -61,7 +113,7 @@ test('that mergeable is false when only some of the dependent files are modified
     files: ['package.json', 'yarn.lock']
   }
 
-  let validation = await dependent.validate(createMockContext(['package.json']), settings)
+  let validation = await dependent.validate(createMockContext(['package.json', 'a.js', 'b.js']), settings)
   expect(validation.status).toBe('fail')
 })
 

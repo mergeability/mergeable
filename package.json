@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "author": "Justin Law <hello@justinlaw.org> (https://github.io/jusx/mergeable), Shine Lee <aungshine@gmail.com>",
-  "license": "ISC",
+  "license": "AGPL-3.0-only",
   "repository": "https://github.com/jusx/mergeable.git",
   "scripts": {
     "dev": "LOG_LEVEL=trace NODE_ENV=development nodemon --exec 'npm start'",

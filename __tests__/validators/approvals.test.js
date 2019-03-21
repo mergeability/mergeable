@@ -144,12 +144,12 @@ test('validate correctly when one required user approved but followed up with co
   const reviewList = [
     {
       user: { login: 'userA' },
-      state: 'COMMENT',
+      state: 'COMMENTED',
       submitted_at: Date.now() - 5000
     },
     {
       user: { login: 'userB' },
-      state: 'COMMENT',
+      state: 'COMMENTED',
       submitted_at: Date.now() - 4000
     },
     {
@@ -159,7 +159,7 @@ test('validate correctly when one required user approved but followed up with co
     },
     {
       user: { login: 'userB' },
-      state: 'COMMENT',
+      state: 'COMMENTED',
       submitted_at: Date.now() - 2000
     },
     {
@@ -169,12 +169,12 @@ test('validate correctly when one required user approved but followed up with co
     },
     {
       user: { login: 'userA' },
-      state: 'COMMENT',
+      state: 'COMMENTED',
       submitted_at: Date.now()
     },
     {
       user: { login: 'userC' },
-      state: 'COMMENT',
+      state: 'COMMENTED',
       submitted_at: Date.now()
     }
   ]
@@ -194,12 +194,12 @@ test('validate correctly when one required user approved but followed up with RE
   const reviewList = [
     {
       user: { login: 'userA' },
-      state: 'COMMENT',
+      state: 'COMMENTED',
       submitted_at: Date.now() - 5000
     },
     {
       user: { login: 'userB' },
-      state: 'COMMENT',
+      state: 'COMMENTED',
       submitted_at: Date.now() - 4000
     },
     {
@@ -209,7 +209,7 @@ test('validate correctly when one required user approved but followed up with RE
     },
     {
       user: { login: 'userB' },
-      state: 'COMMENT',
+      state: 'COMMENTED',
       submitted_at: Date.now() - 2000
     },
     {
@@ -219,7 +219,7 @@ test('validate correctly when one required user approved but followed up with RE
     },
     {
       user: { login: 'userA' },
-      state: 'REQUEST_CHANGES',
+      state: 'CHANGES_REQUESTED',
       submitted_at: Date.now() - 500
     },
     {
@@ -247,6 +247,44 @@ test('validate correctly when one required user approved but followed up with RE
     }
   })
   expect(validation.status).toBe('fail')
+})
+
+test('validate correctly with reviews more than 30.', async () => {
+  const approval = new Approval()
+  const reviewList = [
+    {
+      user: { login: 'user1' },
+      state: 'APPROVED',
+      submitted_at: Date.now() - 5000
+    }]
+
+  for (let i = 0; i < 40; i++) {
+    reviewList.push({
+      user: {
+        login: `user${i}`
+      },
+      state: 'COMMENTED',
+      submitted_at: Date.now() + i
+    })
+  }
+  reviewList.push({
+    user: {
+      login: `user2`
+    },
+    state: 'APPROVED',
+    submitted_at: Date.now() + 1000
+  })
+  let context = createMockContext(5, reviewList)
+  let validation = await approval.validate(context, {
+    do: 'approval',
+    required: {
+      reviewers: ['user1', 'user2']
+    }
+  })
+  expect(validation.validations[0].details.input).toEqual(['user2', 'user1'])
+  expect(validation.status).toBe('pass')
+  // ensure paginate was called
+  expect(context.github.paginate.mock.calls.length).toBe(1)
 })
 
 test('pr creator is removed from required reviewer list', async () => {

@@ -87,10 +87,13 @@ module.exports = {
               return { data: options.files && options.files }
             }
           },
-          getReviews: () => {
+          getReviews: async () => {
             return { data: (options.reviews) ? options.reviews : [] }
           }
         },
+        paginate: jest.fn(async (fn, cb) => {
+          return fn.then(cb)
+        }),
         projects: {
           getRepoProjects: () => {
             return { data: (options.repoProjects) ? options.repoProjects : [] }
