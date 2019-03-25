@@ -19,8 +19,11 @@ mergeable:
       - do: approvals
         min:
           count: 1
-        required:
-          reviewers: [ jusx, shine2lay ]
+        or:
+          required:
+            reviewers: [ jusx ]
+          required:
+            reviewers: [ shine2lay ]
         # Must be marked with the correct milestone.
       - do: milestone
         must_include:
