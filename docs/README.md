@@ -159,6 +159,36 @@ Alternatively, to validate dependent files only when a specific file is part of 
 
 The above will validate that both the files `package-lock.json` and `yarn.lock` is part of the modified or added files if and only if `package.json` is part of the PR.
 
+### Size
+
+`size` validates that the size of changes in the pull request conform to a
+specified limit. Currently this only lets you validate that the total number of
+changed lines is below a certain amount using the `max` option:
+
+```yml
+  - do: size
+    lines:
+      max:
+        count: 500
+        message: Change is very large. Should be under 10 lines of addtions and deletions.
+```
+
+It also supports an `ignore` setting to allow excluding certain files from the
+total size (e.g. for ignoring automatically generated files that increase the
+size a lot):
+
+```yml
+  - do: size
+    ignore: ['package-lock.json']
+    lines:
+      max:
+        count: 500
+        message: Change is very large. Should be under 10 lines of addtions and deletions.
+```
+
+The `size` validator currently excludes from the size count any files that were
+completely deleted in the PR.
+
 #### Supported events
 ```js
 'pull_request.*', 'pull_request_review.*'
@@ -464,10 +494,8 @@ Validate pull requests for mergeability based on content and structure of your P
 </details>
 <br>
 
-**Size**: Ensure that PRs don't exceed a certain size (in terms of lines changed). Currently this just
-checks the combined total of additions and deletions across all files that were added or modified.
-It ignores files that were completely deleted. You can specify a list of files to
-ignore with `ignore`.
+**Size**: Ensure that PRs don't exceed a certain size in terms of lines changed
+(excluding files specified with `ignore`).
 
 <details><summary>🔖 See Recipe</summary>
   <p>
