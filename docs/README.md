@@ -170,7 +170,7 @@ changed lines is below a certain amount using the `max` option:
     lines:
       max:
         count: 500
-        message: Change is very large. Should be under 10 lines of addtions and deletions.
+        message: Change is very large. Should be under 500 lines of addtions and deletions.
 ```
 
 It also supports an `ignore` setting to allow excluding certain files from the
@@ -183,7 +183,7 @@ size a lot):
     lines:
       max:
         count: 500
-        message: Change is very large. Should be under 10 lines of addtions and deletions.
+        message: Change is very large. Should be under 500 lines of addtions and deletions.
 ```
 
 The `size` validator currently excludes from the size count any files that were
