@@ -14,7 +14,7 @@
   </a>
   <a href="https://circleci.com/gh/jusx/mergeable">
     <img src="https://circleci.com/gh/jusx/mergeable.svg?style=shield">
-  </a>  
+  </a>
   <a href="https://codecov.io/gh/jusx/mergeable">
     <img src="https://codecov.io/gh/jusx/mergeable/branch/master/graph/badge.svg">
   </a>
@@ -62,11 +62,11 @@ mergeable:
         {{option}}: # name of an option supported by the validator.
           {{sub-option}}: {{value}} # an option will have one or more sub-options.
     pass: # list of actions to be executed if all validation passes. Specify one or more. Omit this tag if no actions are needed.
-      - do: {{action}}   
+      - do: {{action}}
     fail: # list of actions to be executed when at least one validation fails. Specify one or more. Omit this tag if no actions are needed.
-      - do: {{action}}            
+      - do: {{action}}
     error: # list of actions to be executed when at least one validator throws an error. Specify one or more. Omit this tag if no actions are needed.
-      - do: {{action}}      
+      - do: {{action}}
 ```
 
 Take a look at some [example recipes](#examples).
@@ -127,7 +127,7 @@ Supported events:
   max:
     count: 2 # There should not be more than 2 assignees
     message: 'test string' # this is optional
-  min:  
+  min:
     count: 2 # min number of assignees
     message: 'test string' # this is optional
 ```
@@ -159,6 +159,36 @@ Alternatively, to validate dependent files only when a specific file is part of 
 
 The above will validate that both the files `package-lock.json` and `yarn.lock` is part of the modified or added files if and only if `package.json` is part of the PR.
 
+### Size
+
+`size` validates that the size of changes in the pull request conform to a
+specified limit. Currently this only lets you validate that the total number of
+changed lines is below a certain amount using the `max` option:
+
+```yml
+  - do: size
+    lines:
+      max:
+        count: 500
+        message: Change is very large. Should be under 500 lines of addtions and deletions.
+```
+
+It also supports an `ignore` setting to allow excluding certain files from the
+total size (e.g. for ignoring automatically generated files that increase the
+size a lot):
+
+```yml
+  - do: size
+    ignore: ['package-lock.json']
+    lines:
+      max:
+        count: 500
+        message: Change is very large. Should be under 500 lines of addtions and deletions.
+```
+
+The `size` validator currently excludes from the size count any files that were
+completely deleted in the PR.
+
 #### Supported events
 ```js
 'pull_request.*', 'pull_request_review.*'
@@ -184,7 +214,7 @@ The above will validate that both the files `package-lock.json` and `yarn.lock` 
        message: 'Some message...' #optional
     ends_with:
        match: 'Any last sentence' # array of strings
-       message: 'Come message...' # optional    
+       message: 'Come message...' # optional
 ```
 Supported events:
 
@@ -211,7 +241,7 @@ Supported events:
     ends_with:
        match: 'A String' # or array of strings
        message: 'Come message...'
-    # all of the message sub-option is optional   
+    # all of the message sub-option is optional
 ```
 Supported events:
 
@@ -238,7 +268,7 @@ Supported events:
   ends_with:
      match: 'A String' # array list of strings
      message: 'Come message...'
-  # all of the message sub-option is optional   
+  # all of the message sub-option is optional
 ```
 > ☝ **NOTE:** When a [closing keyword](https://help.github.com/articles/closing-issues-using-keywords/) is used in the description of a pull request. The annotated issue will be validated against the conditions as well.
 
@@ -306,12 +336,12 @@ Supported events:
      regex: 'DO NOT MERGE|WIP'
      message: 'Custom message...'
   begins_with:
-     match: ['doc','feat','fix','chore']  
+     match: ['doc','feat','fix','chore']
      message: 'Some message...'
   ends_with:
      match: 'A String' # or array of strings
      message: 'Come message...'
-     # all of the message sub-option is optional   
+     # all of the message sub-option is optional
 ```
 
 ### Advanced Logic
@@ -325,7 +355,7 @@ Validators can be grouped together with `AND` and `OR` operators:
         message: 'Test plan must be included'
     - must_include:
         regex: 'Goal'
-        message: 'Please include the goal of the PR'                 
+        message: 'Please include the goal of the PR'
 ```
 
 `AND` and `OR` operators can also be nested
@@ -462,7 +492,29 @@ Validate pull requests for mergeability based on content and structure of your P
   ```
   </p>
 </details>
+<br>
 
+**Size**: Ensure that PRs don't exceed a certain size in terms of lines changed
+(excluding files specified with `ignore`).
+
+<details><summary>🔖 See Recipe</summary>
+  <p>
+
+  ```yml
+  version: 2
+  mergeable:
+    - when: pull_request.*
+      validate:
+        - do: size
+          ignore: ['ignore_me.js']
+          lines:
+            max:
+              count: 500
+              message: Change is very large. Should be under 500 lines of addtions and deletions.
+  ```
+  </p>
+</details>
+<br>
 <!-- **Projects**: Ensure that all Pull Requests have a Project associated. Mergeable will also detect when you are [closing an issue](https://help.github.com/articles/closing-issues-using-keywords/) that is associated with the specified project. Useful when you want to make sure all issues and pull requests merged are visible on a [project board](https://help.github.com/articles/about-project-boards/).
 <details><summary>🔖 See Recipe</summary>
   <p>

@@ -82,7 +82,17 @@ module.exports = {
         pullRequests: {
           getFiles: () => {
             if (_.isString(options.files && options.files[0])) {
-              return { data: options.files.map(file => ({filename: file, status: 'modified'})) }
+              return {
+                data: options.files.map(
+                  file => ({
+                    filename: file.filename || file,
+                    status: file.status || 'modified',
+                    additions: file.additions || 0,
+                    deletions: file.deletions || 0,
+                    changes: file.changes || 0
+                  })
+                )
+              }
             } else {
               return { data: options.files && options.files }
             }
