@@ -1,3 +1,4 @@
+const MetaData = require('../../lib/metaData')
 const Checks = require('../../lib/actions/checks')
 const Helper = require('../../__fixtures__/helper')
 
@@ -44,9 +45,7 @@ test('that afterValidate is called with properly and output is correct', async (
   expect(context.github.checks.update.mock.calls.length).toBe(1)
   expect(output.summary).toBe('This is the summary')
   expect(output.title).toBe('Your run has returned the following status: pass')
-  expect(
-    output.text.indexOf(`<!-- #mergeable-data {"id":"3","event":"pull_request","action":"actionName"} #mergeable-data -->`) !== -1
-  ).toBe(true)
+  expect(MetaData.exists(output.text)).toBe(true)
 })
 
 const createMockContext = () => {
