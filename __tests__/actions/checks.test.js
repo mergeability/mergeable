@@ -45,7 +45,7 @@ test('that afterValidate is called with properly and output is correct', async (
   expect(output.summary).toBe('This is the summary')
   expect(output.title).toBe('Your run has returned the following status: pass')
   expect(
-    output.text.indexOf(`<!-- #mergeable { id: '3', event: 'pull_request', action: 'actionName' } -->`) !== -1
+    output.text.indexOf(`<!-- #mergeable-data {"id":"3","event":"pull_request","action":"actionName"} #mergeable-data -->`) !== -1
   ).toBe(true)
 })
 

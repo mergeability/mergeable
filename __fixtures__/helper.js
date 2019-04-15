@@ -89,7 +89,8 @@ module.exports = {
           },
           getReviews: async () => {
             return { data: (options.reviews) ? options.reviews : [] }
-          }
+          },
+          get: jest.fn()
         },
         paginate: jest.fn(async (fn, cb) => {
           return fn.then(cb)
