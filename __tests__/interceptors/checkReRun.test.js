@@ -1,15 +1,7 @@
+const MetaData = require('../../lib/metaData')
 const CheckReRun = require('../../lib/interceptors/checkReRun')
 const Helper = require('../../__fixtures__/helper')
 require('object-dot').extend()
-
-test('#parseEventAction', () => {
-  let checkReRun = new CheckReRun()
-  let result = checkReRun.parseEventAction(mockOutput())
-
-  expect(result.id).toBe('123')
-  expect(result.event).toBe('pull_request')
-  expect(result.action).toBe('unlabeled')
-})
 
 test('#possibleInjection', () => {
   let checkReRun = new CheckReRun()
@@ -30,7 +22,7 @@ test('#process', async () => {
   context.payload.action = 'rerequested'
   Object.set(context, 'payload.check_run.output.text', mockOutput())
   context.payload.check_run.pull_requests = [{number: 1}]
-  context.payload.check_run.id = '123'
+  context.payload.check_run.id = 123
   context.github.pullRequests.get.mockReturnValue({ data: { number: 456 } })
   let newContext = await checkReRun.process(context)
 
@@ -44,6 +36,6 @@ const mockOutput = () => {
     #### :x: Validator: TITLE * :x:
       ***title must begins with "feat,test,chore"
       *** Input : use-case: title Settings : \`\`\`{"begins_with":{"match":["feat","test","chore"]}}\`\`\`
-      <!-- #mergeable-data { "id": "123", "event": "pull_request", "action": "unlabeled" } #mergeable-data -->
+      ${MetaData.serialize({ id: 123, event: 'pull_request', action: 'unlabeled' })}
   `
 }
