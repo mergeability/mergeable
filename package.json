@@ -25,6 +25,7 @@
     "codecov": "^3.1.0",
     "jest": "^23.6.0",
     "nodemon": "^1.18.3",
+    "object-dot": "^1.7.0",
     "smee-client": "^1.0.1",
     "standard": "^10.0.3"
   },
@@ -39,6 +40,8 @@
   },
   "jest": {
     "coverageDirectory": "./coverage/",
-    "collectCoverageFrom": ["lib/**/*.js"]
+    "collectCoverageFrom": [
+      "lib/**/*.js"
+    ]
   }
 }
