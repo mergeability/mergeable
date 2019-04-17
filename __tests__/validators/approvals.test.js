@@ -429,12 +429,12 @@ test('that ownersEnabled will call fetch OWNERS file', async () => {
   let commitDiffs = createCommitDiffs(['first/second/third/dir/test.go'])
 
   const context = createMockContext(0, [], codeowner, commitDiffs)
-  context.github.repos.getContent = jest.fn().mockReturnValue(new Promise((resolve) => resolve({ data: {
+  context.github.repos.getContents = jest.fn().mockReturnValue(new Promise((resolve) => resolve({ data: {
     content: codeowner
   }})))
 
   await approval.validate(context, settings)
-  expect(context.github.repos.getContent.mock.calls[0][0].path).toBe('.github/CODEOWNERS')
+  expect(context.github.repos.getContents.mock.calls[0][0].path).toBe('.github/CODEOWNERS')
 })
 
 test('that ownersDisabled will call NOT fetch OWNERS file', async () => {
@@ -447,13 +447,13 @@ test('that ownersDisabled will call NOT fetch OWNERS file', async () => {
   let commitDiffs = createCommitDiffs(['first/second/third/dir/test.go'])
 
   const context = createMockContext(0, [], codeowner, commitDiffs)
-  context.github.repos.getContent = jest.fn().mockReturnValue(
+  context.github.repos.getContents = jest.fn().mockReturnValue(
     new Promise((resolve) => resolve({ data: {
       content: codeowner
     }})))
 
   await approval.validate(context, settings)
-  expect(context.github.repos.getContent.mock.calls.length).toBe(0)
+  expect(context.github.repos.getContents.mock.calls.length).toBe(0)
 })
 
 const createCommitDiffs = (diffs) => {
