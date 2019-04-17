@@ -15,8 +15,8 @@
   <a href="https://circleci.com/gh/mergeability/mergeable">
     <img src="https://circleci.com/gh/mergeability/mergeable.svg?style=shield">
   </a>
-  <a href="https://codecov.io/gh/jusx/mergeable">
-    <img src="https://codecov.io/gh/jusx/mergeable/branch/master/graph/badge.svg">
+  <a href="https://codecov.io/gh/mergeability/mergeable">
+    <img src="https://codecov.io/gh/mergeability/mergeable/branch/master/graph/badge.svg">
   </a>
 </p>
 
