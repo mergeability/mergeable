@@ -34,13 +34,8 @@ Make sure to create a private key for the app after it's been registered.
 2. Globally install smee-client from with npm ```npm install -g smee-client```
 3. Go to [smee.io](https://smee.io) and create a new webhook OR use the cli by
    running the `smee` command.
-4. Export all the variables required based on the ProBot deployment guide above:
-    - `APP_ID`: This is shown on the GitHub app page after creating your app above.
-    - `PRIVATE_KEY` or `PRIVATE_KEY_PATH`: Provide the key or path to key file
-      (You should have downloaded it after creating the key above).
-    - `WEBHOOK_PROXY_URL`: Set this to the webhook URL created with `smee` above.
-    - `SECRET_TOKEN`: Set this to the GitHub webhook secret configured above.
-5. Run `npm start` in your local repository
+4. Copy `.env.template` to a new file called `.env`, and fill it out.
+5. Run `npm run dev` in your local repository
 6. Add a repository for your Github app by going to [application settings](https://github.com/settings/installations)
 7. Do a test pull request to check if everything is working
 
@@ -50,4 +45,4 @@ Make sure to create a private key for the app after it's been registered.
 
 This happens when you haven't configured the webhook secret correctly in your
 locally running instance. Make sure to set the `SECRET_TOKEN` environment variable
-before running `npm start`.
+in `.env` before running `npm run dev`.
