@@ -12,8 +12,8 @@
   <a href="https://gitter.im/mergeable-bot/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge">
     <img src="https://badges.gitter.im/mergeable-bot/Lobby.svg">
   </a>
-  <a href="https://circleci.com/gh/jusx/mergeable">
-    <img src="https://circleci.com/gh/jusx/mergeable.svg?style=shield">
+  <a href="https://circleci.com/gh/mergeability/mergeable">
+    <img src="https://circleci.com/gh/mergeability/mergeable.svg?style=shield">
   </a>
   <a href="https://codecov.io/gh/jusx/mergeable">
     <img src="https://codecov.io/gh/jusx/mergeable/branch/master/graph/badge.svg">
