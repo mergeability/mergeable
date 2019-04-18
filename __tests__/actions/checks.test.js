@@ -18,9 +18,9 @@ test('check that checks created when doPostAction is called with proper paramete
 })
 
 test('that afterValidate is called with properly and output is correct', async () => {
-  const checks = new Checks()
   const context = createMockContext()
-  const result = {
+  let checks = new Checks()
+  let result = {
     status: 'pass',
     validations: [{
       status: 'pass',
@@ -45,6 +45,38 @@ test('that afterValidate is called with properly and output is correct', async (
   expect(context.github.checks.update.mock.calls.length).toBe(1)
   expect(output.summary).toBe('This is the summary')
   expect(output.title).toBe('Your run has returned the following status: pass')
+  expect(MetaData.exists(output.text)).toBe(false)
+})
+
+test('that afterValidate is correct when validation fails', async () => {
+  const context = createMockContext()
+  let checks = new Checks()
+  let result = {
+    status: 'fail',
+    validations: [{
+      status: 'fail',
+      name: 'Label'
+    }]
+  }
+  const settings = {
+    payload: {
+      title: `Your run has returned the following status: {{status}}`,
+      summary: 'This is the summary',
+      text: 'Errors occured.'
+    }
+  }
+
+  checks.checkRunResult = {
+    data: {
+      id: '4'
+    }
+  }
+
+  await checks.afterValidate(context, settings, result)
+  let output = context.github.checks.update.mock.calls[0][0].output
+  expect(context.github.checks.update.mock.calls.length).toBe(1)
+  expect(output.summary).toBe('This is the summary')
+  expect(output.title).toBe('Your run has returned the following status: fail')
   expect(MetaData.exists(output.text)).toBe(true)
 })
 

@@ -30,4 +30,5 @@ test('#exists', () => {
   expect(MetaData.exists(dataText)).toBe(true)
   expect(MetaData.exists('abc <!-- #mergeable-data')).toBe(false)
   expect(MetaData.exists('abc #mergeable-data -->')).toBe(false)
+  expect(MetaData.exists(undefined)).toBe(false)
 })
