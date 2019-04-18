@@ -19,8 +19,8 @@ test('check that checks created when doPostAction is called with proper paramete
 
 test('that afterValidate is called with properly and output is correct', async () => {
   const context = createMockContext()
-  let checks = new Checks()
-  let result = {
+  const checks = new Checks()
+  const result = {
     status: 'pass',
     validations: [{
       status: 'pass',
@@ -49,9 +49,9 @@ test('that afterValidate is called with properly and output is correct', async (
 })
 
 test('that afterValidate is correct when validation fails', async () => {
+  const checks = new Checks()
   const context = createMockContext()
-  let checks = new Checks()
-  let result = {
+  const result = {
     status: 'fail',
     validations: [{
       status: 'fail',
