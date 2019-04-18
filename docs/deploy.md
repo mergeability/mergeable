@@ -20,6 +20,7 @@ The [Probot deployment guide](https://probot.github.io/docs/deployment/) describ
 - Single File - **Read-only**
   - Path: `.github/mergeable.yml`
 - Repository Contents - **Read-Only**
+- Repository projects - **Read-Only**
 
 **And subscription to the following events:**
 - [x] Pull request
