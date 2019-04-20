@@ -1,5 +1,4 @@
 const Configuration = require('../../lib/configuration/configuration')
-
 const helper = require('../../__fixtures__/helper')
 
 describe('Loading bad configuration', () => {
