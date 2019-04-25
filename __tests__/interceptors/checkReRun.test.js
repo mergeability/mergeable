@@ -3,6 +3,30 @@ const CheckReRun = require('../../lib/interceptors/checkReRun')
 const Helper = require('../../__fixtures__/helper')
 require('object-dot').extend()
 
+test('context is not modified if pre conditions are not met', async () => {
+  let checkReRun = new CheckReRun()
+  let context = Helper.mockContext()
+
+  context.event = 'check_run'
+  context.payload.action = 'created'
+  Object.set(context, 'payload.check_run.output.text', mockOutput())
+  context.github.pullRequests.get.mockReturnValue({ data: { number: 456 } })
+  let newContext = await checkReRun.process(context)
+
+  expect(newContext.event).toBe('check_run')
+
+  context.payload.action = 'rerequested'
+
+  newContext = await checkReRun.process(context)
+  expect(newContext.event).toBe('check_run')
+
+  context.payload.check_run.pull_requests = [{number: 1}]
+  context.payload.check_run.id = 123
+
+  newContext = await checkReRun.process(context)
+  expect(newContext.event).toBe('pull_request')
+})
+
 test('#possibleInjection', () => {
   let checkReRun = new CheckReRun()
 
