@@ -198,6 +198,7 @@ describe('with version 1', () => {
       expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe('title regex')
       expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('label regex')
     })
+
     expect(context.github.repos.getContents.mock.calls.length).toBe(1)
   })
 
@@ -326,8 +327,6 @@ describe('with version 1', () => {
 
     expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe('^wip')
     expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('work in progress|wip|do not merge')
-
-    expect(context.github.repos.getContent.mock.calls.length).toBe(1)
   })
 
   test('that if pass, fail or error is undefined in v2 config, the config will not break', async () => {
