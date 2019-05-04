@@ -592,7 +592,6 @@ Detect issues and pull requests that are `n` days old (stale) and notify authors
 - Additional actions like `label` and `assign`
 - Potentially, integration with external tools like pivotal tracker, slack and trello.
 -  More likely [coveralls](https://coveralls.io/) or [sonarqube](https://www.sonarqube.org/).
-- Able to prevent merging based on the size of pull request.
 
 # Support
 Found a bug? Have a question? Or just want to chat?
