@@ -173,24 +173,15 @@ describe('with version 1', () => {
     expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('label regex')
   })
 
-  test('that defaults load correctly when mergeable is null', () => {
-    let config = new Configuration(`mergeable:`)
-    let validate = config.settings[0].validate
-
-    expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe(Configuration.DEFAULTS.title)
-    expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe(Configuration.DEFAULTS.label)
-    expect(validate.find(e => e.do === 'stale')).toBeUndefined()
-  })
-
-  test('that defaults load correctly when mergeable has partial properties defined', () => {
+  test('that defaults are not injected when user defined configuration exists', () => {
     let config = new Configuration(`
       mergeable:
         approvals: 1
       `)
     let validate = config.settings[0].validate
     expect(validate.find(e => e.do === 'approvals').min.count).toBe(1)
-    expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe(Configuration.DEFAULTS.title)
-    expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe(Configuration.DEFAULTS.label)
+    expect(validate.find(e => e.do === 'title')).toBeUndefined()
+    expect(validate.find(e => e.do === 'label')).toBeUndefined()
   })
 
   test('that instanceWithContext returns the right Configuration', async () => {
@@ -207,6 +198,7 @@ describe('with version 1', () => {
       expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe('title regex')
       expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('label regex')
     })
+
     expect(context.github.repos.getContents.mock.calls.length).toBe(1)
   })
 
@@ -330,16 +322,11 @@ describe('with version 1', () => {
       }
     }
 
-    Configuration.instanceWithContext(context).then(config => {
-      let validate = config.settings[0].validate
+    let config = await Configuration.instanceWithContext(context)
+    let validate = config.settings[0].validate
 
-      expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe(Configuration.DEFAULTS.title)
-      expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe(Configuration.DEFAULTS.label)
-    }).catch(err => {
-      /* global fail */
-      fail('Should handle error: ' + err)
-    })
-    expect(context.github.repos.getContents.mock.calls.length).toBe(1)
+    expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe('^wip')
+    expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('work in progress|wip|do not merge')
   })
 
   test('that if pass, fail or error is undefined in v2 config, the config will not break', async () => {
