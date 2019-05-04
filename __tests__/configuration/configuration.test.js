@@ -2,10 +2,6 @@ const Configuration = require('../../lib/configuration/configuration')
 const helper = require('../../__fixtures__/helper')
 
 describe('Loading bad configuration', () => {
-  beforeEach(() => {
-    process.env.MERGEABLE_VERSION = 'flex'
-  })
-
   test('bad YML', () => {
     let config = new Configuration(`
     version: 2
@@ -53,10 +49,6 @@ describe('Loading bad configuration', () => {
 })
 
 describe('config file fetching', () => {
-  beforeEach(() => {
-    process.env.MERGEABLE_VERSION = 'flex'
-  })
-
   test('fetch from main branch if event is not pull_request', async () => {
     let configString = `
           mergeable:
@@ -156,10 +148,6 @@ describe('config file fetching', () => {
 })
 
 describe('with version 2', () => {
-  beforeEach(() => {
-    process.env.MERGEABLE_VERSION = 'flex'
-  })
-
   test('it loads correctly without version', () => {
     let config = new Configuration()
     expect(config.settings[0].when).toBeDefined()
@@ -169,10 +157,6 @@ describe('with version 2', () => {
 })
 
 describe('with version 1', () => {
-  beforeEach(() => {
-    process.env.MERGEABLE_VERSION = 'flex'
-  })
-
   // write test to test for bad yml
   test('that constructor loads settings correctly', () => {
     let config = new Configuration(`
@@ -189,24 +173,15 @@ describe('with version 1', () => {
     expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('label regex')
   })
 
-  test('that defaults load correctly when mergeable is null', () => {
-    let config = new Configuration(`mergeable:`)
-    let validate = config.settings[0].validate
-
-    expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe(Configuration.DEFAULTS.title)
-    expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe(Configuration.DEFAULTS.label)
-    expect(validate.find(e => e.do === 'stale')).toBeUndefined()
-  })
-
-  test('that defaults load correctly when mergeable has partial properties defined', () => {
+  test('that defaults are not injected when user defined configuration exists', () => {
     let config = new Configuration(`
       mergeable:
         approvals: 1
       `)
     let validate = config.settings[0].validate
     expect(validate.find(e => e.do === 'approvals').min.count).toBe(1)
-    expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe(Configuration.DEFAULTS.title)
-    expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe(Configuration.DEFAULTS.label)
+    expect(validate.find(e => e.do === 'title')).toBeUndefined()
+    expect(validate.find(e => e.do === 'label')).toBeUndefined()
   })
 
   test('that instanceWithContext returns the right Configuration', async () => {
@@ -223,7 +198,8 @@ describe('with version 1', () => {
       expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe('title regex')
       expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('label regex')
     })
-    expect(context.github.repos.getContent.mock.calls.length).toBe(1)
+
+    expect(context.github.repos.getContents.mock.calls.length).toBe(1)
   })
 
   test('that instanceWithContext returns the right Configuration (pull_requests)', async () => {
@@ -240,7 +216,7 @@ describe('with version 1', () => {
       expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe('title pull regex')
       expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('label pull regex')
     })
-    expect(context.github.repos.getContent.mock.calls.length).toBe(1)
+    expect(context.github.repos.getContents.mock.calls.length).toBe(1)
   })
 
   test('that instanceWithContext returns the right Configuration (issues)', async () => {
@@ -257,7 +233,7 @@ describe('with version 1', () => {
       expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe('title issue regex')
       expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('label issue regex')
     })
-    expect(context.github.repos.getContent.mock.calls.length).toBe(1)
+    expect(context.github.repos.getContents.mock.calls.length).toBe(1)
   })
 
   test('that instanceWithContext loads the configuration for stale correctly when specified for pull_requests and issues separately', async () => {
@@ -334,7 +310,7 @@ describe('with version 1', () => {
       },
       github: {
         repos: {
-          getContent: jest.fn().mockReturnValue(
+          getContents: jest.fn().mockReturnValue(
             Promise.reject(
               new HttpError(
                 '{"message":"Not Found","documentation_url":"https://developer.github.com/v3/repos/contents/#get-contents"}',
@@ -346,16 +322,11 @@ describe('with version 1', () => {
       }
     }
 
-    Configuration.instanceWithContext(context).then(config => {
-      let validate = config.settings[0].validate
+    let config = await Configuration.instanceWithContext(context)
+    let validate = config.settings[0].validate
 
-      expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe(Configuration.DEFAULTS.title)
-      expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe(Configuration.DEFAULTS.label)
-    }).catch(err => {
-      /* global fail */
-      fail('Should handle error: ' + err)
-    })
-    expect(context.github.repos.getContent.mock.calls.length).toBe(1)
+    expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe('^wip')
+    expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('work in progress|wip|do not merge')
   })
 
   test('that if pass, fail or error is undefined in v2 config, the config will not break', async () => {
@@ -390,14 +361,14 @@ const createMockGhConfig = (json, prConfig, options) => {
     },
     github: {
       repos: {
-        getContent: jest.fn(({ref}) => {
+        getContents: jest.fn(({ref}) => {
           return Promise.resolve({
             data: { content: ref ? Buffer.from(prConfig).toString('base64') : Buffer.from(json).toString('base64') }
           })
         })
       },
       pullRequests: {
-        getFiles: () => {
+        listFiles: () => {
           return { data: options.files }
         }
       }

@@ -105,7 +105,7 @@ test('mergeable is false if required member(s) has not approved', async () => {
   expect(validation.validations[0].description).toBe('approval: userC required')
 })
 
-test('mergeable is false if required user has not approved', async () => {
+test('mergeable passes if required user has not approved', async () => {
   const approval = new Approval()
   const reviewList = [
     {
@@ -136,6 +136,155 @@ test('mergeable is false if required user has not approved', async () => {
 
   let validation = await approval.validate(createMockContext(5, reviewList), settings)
   expect(validation.validations[0].description).toBe('approval: all required reviewers have approved')
+  expect(validation.status).toBe('pass')
+})
+
+test('validate correctly when one required user approved but followed up with comments.', async () => {
+  const approval = new Approval()
+  const reviewList = [
+    {
+      user: { login: 'userA' },
+      state: 'COMMENTED',
+      submitted_at: Date.now() - 5000
+    },
+    {
+      user: { login: 'userB' },
+      state: 'COMMENTED',
+      submitted_at: Date.now() - 4000
+    },
+    {
+      user: { login: 'userA' },
+      state: 'APPROVED',
+      submitted_at: Date.now() - 3000
+    },
+    {
+      user: { login: 'userB' },
+      state: 'COMMENTED',
+      submitted_at: Date.now() - 2000
+    },
+    {
+      user: { login: 'userB' },
+      state: 'APPROVED',
+      submitted_at: Date.now() - 1000
+    },
+    {
+      user: { login: 'userA' },
+      state: 'COMMENTED',
+      submitted_at: Date.now()
+    },
+    {
+      user: { login: 'userC' },
+      state: 'COMMENTED',
+      submitted_at: Date.now()
+    }
+  ]
+  const settings = {
+    do: 'approval',
+    required: {
+      reviewers: ['userA']
+    }
+  }
+  let validation = await approval.validate(createMockContext(5, reviewList), settings)
+  expect(validation.validations[0].details.input).toEqual(['userB', 'userA'])
+  expect(validation.status).toBe('pass')
+})
+
+test('validate correctly when one required user approved but followed up with REQUEST_CHANGE or PENDING.', async () => {
+  const approval = new Approval()
+  const reviewList = [
+    {
+      user: { login: 'userA' },
+      state: 'COMMENTED',
+      submitted_at: Date.now() - 5000
+    },
+    {
+      user: { login: 'userB' },
+      state: 'COMMENTED',
+      submitted_at: Date.now() - 4000
+    },
+    {
+      user: { login: 'userA' },
+      state: 'APPROVED',
+      submitted_at: Date.now() - 3000
+    },
+    {
+      user: { login: 'userB' },
+      state: 'COMMENTED',
+      submitted_at: Date.now() - 2000
+    },
+    {
+      user: { login: 'userB' },
+      state: 'APPROVED',
+      submitted_at: Date.now() - 1000
+    },
+    {
+      user: { login: 'userA' },
+      state: 'CHANGES_REQUESTED',
+      submitted_at: Date.now() - 500
+    },
+    {
+      user: { login: 'userC' },
+      state: 'APPROVED',
+      submitted_at: Date.now()
+    }
+  ]
+
+  // test with more than one required.
+  let validation = await approval.validate(createMockContext(5, reviewList), {
+    do: 'approval',
+    required: {
+      reviewers: ['userA', 'userB']
+    }
+  })
+  expect(validation.validations[0].details.input).toEqual(['userC', 'userB'])
+  expect(validation.status).toBe('fail') // userA not found.
+
+  // test with only one required.
+  validation = await approval.validate(createMockContext(5, reviewList), {
+    do: 'approval',
+    required: {
+      reviewers: ['userA']
+    }
+  })
+  expect(validation.status).toBe('fail')
+})
+
+test('validate correctly with reviews more than 30.', async () => {
+  const approval = new Approval()
+  const reviewList = [
+    {
+      user: { login: 'user1' },
+      state: 'APPROVED',
+      submitted_at: Date.now() - 5000
+    }]
+
+  for (let i = 0; i < 40; i++) {
+    reviewList.push({
+      user: {
+        login: `user${i}`
+      },
+      state: 'COMMENTED',
+      submitted_at: Date.now() + i
+    })
+  }
+  reviewList.push({
+    user: {
+      login: `user2`
+    },
+    state: 'APPROVED',
+    submitted_at: Date.now() + 1000
+  })
+  let context = createMockContext(5, reviewList)
+  let validation = await approval.validate(context, {
+    do: 'approval',
+    required: {
+      reviewers: ['user1', 'user2']
+    }
+  })
+  expect(validation.validations[0].details.input).toEqual(['user2', 'user1'])
+  expect(validation.status).toBe('pass')
+  // ensure paginate was called
+  expect(context.github.paginate.mock.calls.length).toBe(1)
 })
 
 test('pr creator is removed from required reviewer list', async () => {
@@ -280,12 +429,12 @@ test('that ownersEnabled will call fetch OWNERS file', async () => {
   let commitDiffs = createCommitDiffs(['first/second/third/dir/test.go'])
 
   const context = createMockContext(0, [], codeowner, commitDiffs)
-  context.github.repos.getContent = jest.fn().mockReturnValue(new Promise((resolve) => resolve({ data: {
+  context.github.repos.getContents = jest.fn().mockReturnValue(new Promise((resolve) => resolve({ data: {
     content: codeowner
   }})))
 
   await approval.validate(context, settings)
-  expect(context.github.repos.getContent.mock.calls[0][0].path).toBe('.github/CODEOWNERS')
+  expect(context.github.repos.getContents.mock.calls[0][0].path).toBe('.github/CODEOWNERS')
 })
 
 test('that ownersDisabled will call NOT fetch OWNERS file', async () => {
@@ -298,13 +447,13 @@ test('that ownersDisabled will call NOT fetch OWNERS file', async () => {
   let commitDiffs = createCommitDiffs(['first/second/third/dir/test.go'])
 
   const context = createMockContext(0, [], codeowner, commitDiffs)
-  context.github.repos.getContent = jest.fn().mockReturnValue(
+  context.github.repos.getContents = jest.fn().mockReturnValue(
     new Promise((resolve) => resolve({ data: {
       content: codeowner
     }})))
 
   await approval.validate(context, settings)
-  expect(context.github.repos.getContent.mock.calls.length).toBe(0)
+  expect(context.github.repos.getContents.mock.calls.length).toBe(0)
 })
 
 const createCommitDiffs = (diffs) => {
