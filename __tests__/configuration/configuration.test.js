@@ -198,7 +198,7 @@ describe('with version 1', () => {
       expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe('title regex')
       expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('label regex')
     })
-    expect(context.github.repos.getContent.mock.calls.length).toBe(1)
+    expect(context.github.repos.getContents.mock.calls.length).toBe(1)
   })
 
   test('that instanceWithContext returns the right Configuration (pull_requests)', async () => {
@@ -215,7 +215,7 @@ describe('with version 1', () => {
       expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe('title pull regex')
       expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('label pull regex')
     })
-    expect(context.github.repos.getContent.mock.calls.length).toBe(1)
+    expect(context.github.repos.getContents.mock.calls.length).toBe(1)
   })
 
   test('that instanceWithContext returns the right Configuration (issues)', async () => {
@@ -232,7 +232,7 @@ describe('with version 1', () => {
       expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe('title issue regex')
       expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('label issue regex')
     })
-    expect(context.github.repos.getContent.mock.calls.length).toBe(1)
+    expect(context.github.repos.getContents.mock.calls.length).toBe(1)
   })
 
   test('that instanceWithContext loads the configuration for stale correctly when specified for pull_requests and issues separately', async () => {
@@ -309,7 +309,7 @@ describe('with version 1', () => {
       },
       github: {
         repos: {
-          getContent: jest.fn().mockReturnValue(
+          getContents: jest.fn().mockReturnValue(
             Promise.reject(
               new HttpError(
                 '{"message":"Not Found","documentation_url":"https://developer.github.com/v3/repos/contents/#get-contents"}',
@@ -362,14 +362,14 @@ const createMockGhConfig = (json, prConfig, options) => {
     },
     github: {
       repos: {
-        getContent: jest.fn(({ref}) => {
+        getContents: jest.fn(({ref}) => {
           return Promise.resolve({
             data: { content: ref ? Buffer.from(prConfig).toString('base64') : Buffer.from(json).toString('base64') }
           })
         })
       },
       pullRequests: {
-        getFiles: () => {
+        listFiles: () => {
           return { data: options.files }
         }
       }

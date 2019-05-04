@@ -48,7 +48,7 @@ module.exports = {
       github: {
         repos: {
           createStatus: () => {},
-          getContent: ({ path }) => {
+          getContents: ({ path }) => {
             return new Promise((resolve, reject) => {
               if (path === '.github/mergeable.yml') {
                 throwNotFound()
@@ -80,7 +80,7 @@ module.exports = {
           }
         },
         pullRequests: {
-          getFiles: () => {
+          listFiles: () => {
             if (_.isString(options.files && options.files[0])) {
               return {
                 data: options.files.map(
@@ -97,8 +97,12 @@ module.exports = {
               return { data: options.files && options.files }
             }
           },
-          getReviews: async () => {
-            return { data: (options.reviews) ? options.reviews : [] }
+          listReviews: {
+            endpoint: {
+              merge: async () => {
+                return { data: (options.reviews) ? options.reviews : [] }
+              }
+            }
           },
           get: jest.fn()
         },
@@ -106,18 +110,18 @@ module.exports = {
           return fn.then(cb)
         }),
         projects: {
-          getRepoProjects: () => {
+          listForRepo: () => {
             return { data: (options.repoProjects) ? options.repoProjects : [] }
           },
-          getProjectColumns: () => {
+          listColumns: () => {
             return { data: (options.projectColumns) ? options.projectColumns : [] }
           },
-          getProjectCards: () => {
+          listCards: () => {
             return { data: (options.projectCards) ? options.projectCards : [] }
           }
         },
         issues: {
-          getIssueLabels: () => {
+          listLabelsOnIssue: () => {
             return { data: (options.labels) ? options.labels : [] }
           },
           get: () => {
@@ -142,12 +146,12 @@ module.exports = {
   },
 
   mockConfigWithContext: (context, configString, options) => {
-    context.github.repos.getContent = () => {
+    context.github.repos.getContents = () => {
       return Promise.resolve({ data: {
         content: Buffer.from(configString).toString('base64') }
       })
     }
-    context.github.pullRequests.getFiles = () => {
+    context.github.pullRequests.listFiles = () => {
       return Promise.resolve({
         data: options && options.files ? options.files.map(file => ({ filename: file, status: 'modified' })) : []
       })
