@@ -398,13 +398,38 @@ Supported events:
 ```
 ### checks
 
+
 ```yml
-- do: checks,
+- do: checks # default pass case
   status: 'success' # Can be: success, failure, neutral, cancelled, timed_out, or action_required
   payload:
     title: 'Mergeable Run have been Completed!'
-    summary: `All the validators have returned 'pass'! \n Here are some stats of the run: \n {{validationCount}} validations were ran`
+    summary: "All the validators have returned 'pass'! \n Here are some stats of the run: \n {{validationCount}} validations were ran"
 ```
+
+You can pass in Handlebars template to show the details result of the run.
+
+```yml
+- do: checks # default fail case
+  status: 'failure' # Can be: success, failure, neutral, cancelled, timed_out, or action_required
+  payload:
+    title: 'Mergeable Run have been Completed!'
+    summary: "### Status: {{toUpperCase validationStatus}}
+             
+                     Here are some stats of the run:
+                     {{validationCount}} validations were ran.
+                     {{passCount}} PASSED
+                     {{failCount}} FAILED
+                   "
+    text: "{{#each validationSuites}}
+          #### {{{statusIcon status}}} Validator: {{toUpperCase name}}
+          {{#each validations }} * {{{statusIcon status}}} ***{{{ description }}}***
+                 Input : {{{details.input}}}
+                 Settings : {{{displaySettings details.settings}}}
+                 {{/each}}
+          {{/each}}"
+```
+
 
 Supported events:
 ```js
