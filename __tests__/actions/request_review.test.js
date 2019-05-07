@@ -13,19 +13,35 @@ let result = {
   }]
 }
 
-test('check that user is requested a review', async () => {
+test('check that user is requested a review if user is an collaborator', async () => {
   const requester = new RequestReview()
-  const context = createMockContext()
+  const options = {
+    collaborators: [{login: 'shine2lay'}]
+  }
+
+  const context = createMockContext(options)
 
   await requester.afterValidate(context, settings, result)
   expect(context.github.pullRequests.createReviewRequest.mock.calls.length).toBe(1)
   expect(context.github.pullRequests.createReviewRequest.mock.calls[0][0].reviewers[0]).toBe('shine2lay')
 })
 
-test('that only call request Review if current user is not already requested', async () => {
+test('that requested Reviewers are not requested again', async () => {
   const requester = new RequestReview()
   const options = {
     requestedReviewers: [{login: 'shine2lay'}]
+  }
+
+  const context = createMockContext(options)
+
+  await requester.afterValidate(context, settings, result)
+  expect(context.github.pullRequests.createReviewRequest.mock.calls.length).toBe(0)
+})
+
+test('that non collaborator is not requested reviews', async () => {
+  const requester = new RequestReview()
+  const options = {
+    collaborators: []
   }
 
   const context = createMockContext(options)

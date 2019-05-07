@@ -49,6 +49,9 @@ module.exports = {
       github: {
         repos: {
           createStatus: () => {},
+          listCollaborators: () => {
+            return { data: (options.collaborators) ? options.collaborators : [] }
+          },
           getContents: ({ path }) => {
             return new Promise((resolve, reject) => {
               if (path === '.github/mergeable.yml') {
