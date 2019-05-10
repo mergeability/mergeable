@@ -396,6 +396,21 @@ Supported events:
 'schedule.repository', 'pull_request.*', 'issues.*'
 
 ```
+
+### Labels
+Creates comments in issues and/or pull requests depending on the event specified in the `when` tag.
+
+```yml
+- do: labels
+  # if label doesn't exist, it'll be created
+  labels: [ 'Triage' ] # Only arrays are accepted
+```
+
+Supported events:
+```js
+'schedule.repository', 'pull_request.*', 'issues.*'
+
+```
 ### checks
 
 ```yml

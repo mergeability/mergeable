@@ -124,6 +124,7 @@ module.exports = {
           listLabelsOnIssue: () => {
             return { data: (options.labels) ? options.labels : [] }
           },
+          addLabels: jest.fn(),
           get: () => {
             return {data: (options.deepValidation) ? options.deepValidation : {}}
           }
