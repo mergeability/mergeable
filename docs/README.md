@@ -396,6 +396,36 @@ Supported events:
 'schedule.repository', 'pull_request.*', 'issues.*'
 
 ```
+### assign
+
+```yml
+- do: assign
+  assignees: [ 'shine2lay', 'jusx' ] # only array accepted
+```
+
+Supported events:
+
+```js
+      'pull_request.opened',
+      'pull_request.edited',
+      'pull_request_review.submitted',
+      'pull_request_review.edited',
+      'pull_request_review.dismissed',
+      'pull_request.labeled',
+      'pull_request.milestoned',
+      'pull_request.demilestoned',
+      'pull_request.unlabeled',
+      'pull_request.synchronize',
+      'issues.opened',
+      'issues.edited',
+      'issues.labeled',
+      'issues.milestoned',
+      'issues.demilestoned',
+      'issues.unlabeled',
+      'issues.synchronize'
+```
+
+
 ### checks
 
 ```yml

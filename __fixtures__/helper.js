@@ -124,6 +124,9 @@ module.exports = {
           listLabelsOnIssue: () => {
             return { data: (options.labels) ? options.labels : [] }
           },
+          checkAssignee: () => {
+            return { status: 204 }
+          },
           get: () => {
             return {data: (options.deepValidation) ? options.deepValidation : {}}
           }
