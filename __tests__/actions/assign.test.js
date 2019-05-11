@@ -3,7 +3,7 @@ const Helper = require('../../__fixtures__/helper')
 
 test('check that assignees are added when afterValidate is called with proper parameter', async () => {
   const settings = {
-    assignees: [ 'testuser1', 'testuser2']
+    assignees: [ 'testuser1', 'testuser2' ]
   }
 
   const comment = new Assign()
@@ -24,8 +24,12 @@ test('check only authorized users are added as assignee ', async () => {
   const context = createMockContext()
 
   context.github.issues.checkAssignee = (input) => {
-    if (input.assignee === 'testuser2') return {status: 404}
-    return {status: 204}
+    return new Promise((resolve, reject) => {
+      if (input.assignee === 'testuser2') {
+        resolve({status: 404})
+      }
+      resolve({status: 204})
+    })
   }
 
   await comment.afterValidate(context, settings)

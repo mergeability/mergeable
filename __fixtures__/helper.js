@@ -125,7 +125,9 @@ module.exports = {
             return { data: (options.labels) ? options.labels : [] }
           },
           checkAssignee: () => {
-            return { status: 204 }
+            return new Promise((resolve) => {
+              resolve({ status: 204 })
+            })
           },
           get: () => {
             return {data: (options.deepValidation) ? options.deepValidation : {}}
