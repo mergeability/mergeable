@@ -105,7 +105,7 @@ test('mergeable is false if required member(s) has not approved', async () => {
   expect(validation.validations[0].description).toBe('approval: userC required')
 })
 
-test('mergeable passes if required user has not approved', async () => {
+test('mergeable passes if required user has approved', async () => {
   const approval = new Approval()
   const reviewList = [
     {
@@ -456,13 +456,88 @@ test('that ownersDisabled will call NOT fetch OWNERS file', async () => {
   expect(context.github.repos.getContents.mock.calls.length).toBe(0)
 })
 
+test('that assignees are not required when assignees is not specified', async () => {
+  const approval = new Approval()
+  const assignees = createAssigneeList(['john'])
+  const settings = {
+    do: 'approval',
+    required: {
+      reviewers: ['bob']
+    }
+  }
+
+  let reviewList = createReviewList(['bob'])
+  let validation = await approval.validate(createMockContext(5, reviewList, [], [], assignees), settings)
+  expect(validation.validations[0].description).toBe('approval: all required reviewers have approved')
+  expect(validation.status).toBe('pass')
+})
+
+test('that assignees are not required when assignees is false', async () => {
+  const approval = new Approval()
+  const assignees = createAssigneeList(['john'])
+  const settings = {
+    do: 'approval',
+    required: {
+      assignees: false,
+      reviewers: ['bob']
+    }
+  }
+
+  let reviewList = createReviewList(['bob'])
+  let validation = await approval.validate(createMockContext(5, reviewList, [], [], assignees), settings)
+  expect(validation.validations[0].description).toBe('approval: all required reviewers have approved')
+  expect(validation.status).toBe('pass')
+})
+
+test('that assignees are required when assignees is true', async () => {
+  const approval = new Approval()
+  const assignees = createAssigneeList(['john'])
+  const settings = {
+    do: 'approval',
+    required: {
+      assignees: true
+    }
+  }
+
+  let reviewList = createReviewList(['bob'])
+  let validation = await approval.validate(createMockContext(5, reviewList, [], [], assignees), settings)
+  expect(validation.validations[0].description).toBe('approval: john(Assignee) required')
+  expect(validation.status).toBe('fail')
+
+  reviewList = createReviewList(['bob', 'john'])
+  validation = await approval.validate(createMockContext(5, reviewList, [], [], assignees), settings)
+  expect(validation.validations[0].description).toBe('approval: all required reviewers have approved')
+  expect(validation.status).toBe('pass')
+})
+
+test('that assignees appends to the reviewers list correctly', async () => {
+  const approval = new Approval()
+  const assignees = createAssigneeList(['john'])
+  const settings = {
+    do: 'approval',
+    required: {
+      assignees: true,
+      reviewers: ['bob']
+    }
+  }
+
+  let validation = await approval.validate(createMockContext(5, [], [], [], assignees), settings)
+  expect(validation.validations[0].description).toBe('approval: bob ,john(Assignee) required')
+  expect(validation.status).toBe('fail')
+
+  let reviewList = createReviewList(['bob', 'john'])
+  validation = await approval.validate(createMockContext(5, reviewList, [], [], assignees), settings)
+  expect(validation.validations[0].description).toBe('approval: all required reviewers have approved')
+  expect(validation.status).toBe('pass')
+})
+
 const createCommitDiffs = (diffs) => {
   return diffs.map(diff => ({
     filename: diff
   }))
 }
 
-const createMockContext = (minimum, data, owners, commitDiffs, isOwnersNotFound = false) => {
+const createMockContext = (minimum, data, owners, commitDiffs, assignees, isOwnersNotFound = false) => {
   if (!data) {
     data = []
     for (let i = 0; i < minimum; i++) {
@@ -477,7 +552,13 @@ const createMockContext = (minimum, data, owners, commitDiffs, isOwnersNotFound 
   }
 
   let codeowners = (isOwnersNotFound || !owners) ? null : Buffer.from(`${owners}`).toString('base64')
-  return Helper.mockContext({reviews: data, codeowners: codeowners, compareCommits: commitDiffs})
+  return Helper.mockContext({reviews: data, codeowners: codeowners, compareCommits: commitDiffs, assignees})
+}
+
+const createAssigneeList = (assignees) => {
+  return assignees.map(assignee => ({
+    login: assignee
+  }))
 }
 
 const createReviewList = (reviewers) => {

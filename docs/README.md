@@ -109,8 +109,9 @@ For convenience, wildcards can be used: `pull_request.*`, `issues.*`, `pull_requ
     count: 2 # Number of minimum reviewers. In this case 2.
     message: 'Custom message...'
   required:
-    reviewers: [ user1, user2 ]   # list of github usernames required to review
-    owners: true # accepts boolean. When true,  the file .github/CODEOWNER is read and owners made required reviewers
+    reviewers: [ user1, user2 ] # list of github usernames required to review
+    owners: true # Optional boolean. When true, the file .github/CODEOWNER is read and owners made required reviewers
+    assignees: true # Optional boolean. When true, PR assignees are made required reviewers.
     message: 'Custom message...'
 ```
 
