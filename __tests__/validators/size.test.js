@@ -95,6 +95,61 @@ describe('PR size validator', () => {
     expect(validation.validations[0].description).toBe('PR size is OK!')
   })
 
+  test('ignores glob patterns', async () => {
+    const size = new Size()
+    const settings = {
+      do: 'size',
+      lines: {
+        max: {
+          count: 15,
+          message: 'Too big!'
+        }
+      },
+      ignore: ['nested/one/*', 'nested/two/**']
+    }
+
+    let files = [
+      {
+        filename: 'not_too_big.js',
+        status: 'modified',
+        additions: 10,
+        deletions: 0,
+        changes: 10
+      },
+      {
+        filename: 'nested/one/big_file_1.js',
+        status: 'added',
+        additions: 30,
+        deletions: 0,
+        changes: 30
+      },
+      {
+        filename: 'nested/one/big_file_2.js',
+        status: 'added',
+        additions: 30,
+        deletions: 0,
+        changes: 30
+      },
+      {
+        filename: 'nested/two/three/big_file_3.js',
+        status: 'modified',
+        additions: 30,
+        deletions: 0,
+        changes: 30
+      }
+    ]
+
+    let validation = await size.validate(createMockContext(files), settings)
+    expect(validation.status).toBe('pass')
+    expect(validation.validations[0].description).toBe('PR size is OK!')
+
+    settings.ignore = ['**/big_file_*.js']
+
+    validation = await size.validate(createMockContext(files), settings)
+    expect(validation.status).toBe('pass')
+    expect(validation.validations[0].description).toBe('PR size is OK!')
+  })
+
   test('handles empty ignore args', async () => {
     const size = new Size()
     let settings = {

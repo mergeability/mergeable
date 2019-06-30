@@ -176,19 +176,28 @@ changed lines is below a certain amount using the `max` option:
 
 It also supports an `ignore` setting to allow excluding certain files from the
 total size (e.g. for ignoring automatically generated files that increase the
-size a lot):
+size a lot).
+
+This option supports glob patterns, so you can provide either the path to a
+specific file or ignore whole patterns:
 
 ```yml
   - do: size
-    ignore: ['package-lock.json']
+    ignore: ['package-lock.json', 'src/tests/__snapshots__/**', 'docs/*.md']
     lines:
       max:
         count: 500
         message: Change is very large. Should be under 500 lines of addtions and deletions.
 ```
 
+Note that the glob functionality is powered by the [minimatch] library. Please
+see their documentation for details on how glob patterns are handled and
+possible discrepancies with glob handling in other tools.
+
 The `size` validator currently excludes from the size count any files that were
 completely deleted in the PR.
+
+[minimatch]: https://github.com/isaacs/minimatch
 
 #### Supported events
 ```js
@@ -496,7 +505,7 @@ Validate pull requests for mergeability based on content and structure of your P
 <br>
 
 **Size**: Ensure that PRs don't exceed a certain size in terms of lines changed
-(excluding files specified with `ignore`).
+(excluding file patterns specified with `ignore`).
 
 <details><summary>🔖 See Recipe</summary>
   <p>
@@ -507,7 +516,7 @@ Validate pull requests for mergeability based on content and structure of your P
     - when: pull_request.*
       validate:
         - do: size
-          ignore: ['ignore_me.js']
+          ignore: ['ignore_me.js', 'ignore_this_directory/*', '**/ignore_this_prefix*.js']
           lines:
             max:
               count: 500
