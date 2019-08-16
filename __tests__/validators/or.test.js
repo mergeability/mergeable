@@ -105,6 +105,41 @@ test('Error is returned when validate uses unsupported classes', async() => {
   expect(validation.status).toBe('error')
 })
 
+test('Supports nested or validator', async() => {
+  const or = new Or()
+  const settings = {
+    do: 'or',
+    validate: [
+      {
+        do: 'or',
+        validate: [
+          {
+            do: 'milestone',
+            must_include: {
+              regex: 'Version 1'
+            }
+          },
+          {
+            do: 'milestone',
+            must_include: {
+              regex: 'Version 2'
+            }
+          }
+        ]
+      },
+      {
+        do: 'milestone',
+        must_include: {
+          regex: 'Version 3'
+        }
+      }
+    ]
+  }
+
+  let validation = await or.validate(createMockContext({title: 'Version 2'}), settings)
+  expect(validation.status).toBe('pass')
+})
+
 const createMockContext = (milestone, body, deepValidation) => {
   return Helper.mockContext({milestone, body, deepValidation})
 }
