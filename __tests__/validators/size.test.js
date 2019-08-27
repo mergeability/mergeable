@@ -80,6 +80,33 @@ describe('PR size validator', () => {
     expect(validation.validations[2].description).toBe('PR size for total additions + deletions is OK!')
   })
 
+  test('partial fails and passing when part of PR is within count', async () => {
+    const size = new Size()
+    const settings = {
+      do: 'size',
+      lines: {
+        additions: {
+          count: 13,
+          message: 'Too big!'
+        },
+        deletions: {
+          count: 5,
+          message: 'Too big!'
+        },
+        total: {
+          count: 20,
+          message: 'Too big!'
+        }
+      }
+    }
+
+    let validation = await size.validate(createMockContext(FILES), settings)
+    expect(validation.status).toBe('fail')
+    expect(validation.validations[0].description).toBe('PR size for additions is OK!')
+    expect(validation.validations[1].description).toBe('Too big!')
+    expect(validation.validations[2].description).toBe('PR size for total additions + deletions is OK!')
+  })
+
   test('ignores specified files', async () => {
     const size = new Size()
     const settings = {
