@@ -163,15 +163,20 @@ The above will validate that both the files `package-lock.json` and `yarn.lock` 
 ### Size
 
 `size` validates that the size of changes in the pull request conform to a
-specified limit. Currently this only lets you validate that the total number of
-changed lines is below a certain amount using the `max` option:
+specified limit. We can pass in three options: `total`, `additions` or `deletions`. Each of this take in a `count` and `message`.
 
 ```yml
   - do: size
     lines:
-      max:
+      total:
         count: 500
-        message: Change is very large. Should be under 500 lines of addtions and deletions.
+        message: Change is very large. Should be under 500 lines of additions and deletions.
+      additions:
+        count: 250
+        message: Change is very large. Should be under 250 lines of additions 
+      deletions:
+        count: 500
+        message: Change is very large. Should be under 250 lines of deletions.
 ```
 
 It also supports an `ignore` setting to allow excluding certain files from the
@@ -185,9 +190,9 @@ specific file or ignore whole patterns:
   - do: size
     ignore: ['package-lock.json', 'src/tests/__snapshots__/**', 'docs/*.md']
     lines:
-      max:
+      total:
         count: 500
-        message: Change is very large. Should be under 500 lines of addtions and deletions.
+        message: Change is very large. Should be under 500 lines of additions and deletions
 ```
 
 Note that the glob functionality is powered by the [minimatch] library. Please
