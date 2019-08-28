@@ -49,8 +49,11 @@ describe('PR size validator', () => {
     let validation = await size.validate(createMockContext(FILES), settings)
     expect(validation.status).toBe('fail')
     expect(validation.validations[0].description).toBe('Too big!')
+    expect(validation.validations[0].status).toBe('fail')
     expect(validation.validations[1].description).toBe('Too big!')
+    expect(validation.validations[1].status).toBe('fail')
     expect(validation.validations[2].description).toBe('Too big!')
+    expect(validation.validations[2].status).toBe('fail')
   })
 
   test('passes when changes equal to count', async () => {
@@ -76,8 +79,11 @@ describe('PR size validator', () => {
     let validation = await size.validate(createMockContext(FILES), settings)
     expect(validation.status).toBe('pass')
     expect(validation.validations[0].description).toBe('PR size for additions is OK!')
+    expect(validation.validations[0].status).toBe('pass')
     expect(validation.validations[1].description).toBe('PR size for deletions is OK!')
+    expect(validation.validations[1].status).toBe('pass')
     expect(validation.validations[2].description).toBe('PR size for total additions + deletions is OK!')
+    expect(validation.validations[2].status).toBe('pass')
   })
 
   test('partial fails and passing when part of PR is within count', async () => {
@@ -103,8 +109,11 @@ describe('PR size validator', () => {
     let validation = await size.validate(createMockContext(FILES), settings)
     expect(validation.status).toBe('fail')
     expect(validation.validations[0].description).toBe('PR size for additions is OK!')
+    expect(validation.validations[0].status).toBe('pass')
     expect(validation.validations[1].description).toBe('Too big!')
+    expect(validation.validations[1].status).toBe('fail')
     expect(validation.validations[2].description).toBe('PR size for total additions + deletions is OK!')
+    expect(validation.validations[2].status).toBe('pass')
   })
 
   test('ignores specified files', async () => {
@@ -131,8 +140,11 @@ describe('PR size validator', () => {
     let validation = await size.validate(createMockContext(FILES), settings)
     expect(validation.status).toBe('pass')
     expect(validation.validations[0].description).toBe('PR size for additions is OK!')
+    expect(validation.validations[0].status).toBe('pass')
     expect(validation.validations[1].description).toBe('PR size for deletions is OK!')
+    expect(validation.validations[1].status).toBe('pass')
     expect(validation.validations[2].description).toBe('PR size for total additions + deletions is OK!')
+    expect(validation.validations[2].status).toBe('pass')
   })
 
   test('ignores glob patterns', async () => {
@@ -190,16 +202,22 @@ describe('PR size validator', () => {
     let validation = await size.validate(createMockContext(files), settings)
     expect(validation.status).toBe('pass')
     expect(validation.validations[0].description).toBe('PR size for additions is OK!')
+    expect(validation.validations[0].status).toBe('pass')
     expect(validation.validations[1].description).toBe('PR size for deletions is OK!')
+    expect(validation.validations[1].status).toBe('pass')
     expect(validation.validations[2].description).toBe('PR size for total additions + deletions is OK!')
+    expect(validation.validations[2].status).toBe('pass')
 
     settings.ignore = ['**/big_file_*.js']
 
     validation = await size.validate(createMockContext(files), settings)
     expect(validation.status).toBe('pass')
     expect(validation.validations[0].description).toBe('PR size for additions is OK!')
+    expect(validation.validations[0].status).toBe('pass')
     expect(validation.validations[1].description).toBe('PR size for deletions is OK!')
+    expect(validation.validations[1].status).toBe('pass')
     expect(validation.validations[2].description).toBe('PR size for total additions + deletions is OK!')
+    expect(validation.validations[2].status).toBe('pass')
   })
 
   test('handles empty ignore args', async () => {
@@ -226,8 +244,11 @@ describe('PR size validator', () => {
     let validation = await size.validate(createMockContext(FILES), settings)
     expect(validation.status).toBe('fail')
     expect(validation.validations[0].description).toBe('Too big!')
+    expect(validation.validations[0].status).toBe('fail')
     expect(validation.validations[1].description).toBe('Too big!')
+    expect(validation.validations[1].status).toBe('fail')
     expect(validation.validations[2].description).toBe('Too big!')
+    expect(validation.validations[2].status).toBe('fail')
 
     settings = {
       do: 'size',
@@ -251,8 +272,11 @@ describe('PR size validator', () => {
     validation = await size.validate(createMockContext(FILES), settings)
     expect(validation.status).toBe('pass')
     expect(validation.validations[0].description).toBe('PR size for additions is OK!')
+    expect(validation.validations[0].status).toBe('pass')
     expect(validation.validations[1].description).toBe('PR size for deletions is OK!')
+    expect(validation.validations[1].status).toBe('pass')
     expect(validation.validations[2].description).toBe('PR size for total additions + deletions is OK!')
+    expect(validation.validations[2].status).toBe('pass')
   })
 })
 
