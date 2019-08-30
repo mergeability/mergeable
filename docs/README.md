@@ -179,6 +179,15 @@ specified limit. We can pass in three options: `total`, `additions` or `deletion
         message: Change is very large. Should be under 250 lines of deletions.
 ```
 
+`max` is an alias for `total`, so the below configuration is still valid. 
+```yml
+ - do: size
+    lines:
+      max:
+        count: 500
+        message: Change is very large. Should be under 500 lines of additions and deletions.
+```
+
 It also supports an `ignore` setting to allow excluding certain files from the
 total size (e.g. for ignoring automatically generated files that increase the
 size a lot).
