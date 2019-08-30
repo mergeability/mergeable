@@ -26,6 +26,65 @@ describe('PR size validator', () => {
     }
   ]
 
+  test('errors if both max and total are passed', async () => {
+    const size = new Size()
+    const settings = {
+      do: 'size',
+      lines: {
+        max: {
+          count: 10,
+          message: 'Too big!'
+        },
+        total: {
+          count: 10,
+          message: 'Too big!'
+        }
+      }
+    }
+
+    let validation = await size.validate(createMockContext(FILES), settings)
+    expect(validation.status).toBe('error')
+    expect(validation.validations[0].description).toBe('Options max and total cannot be used together. Please choose one')
+    expect(validation.validations[0].status).toBe('error')
+  })
+
+  test('backwards compatibility test for max and total', async () => {
+    const size = new Size()
+    const settings = {
+      do: 'size',
+      lines: {
+        max: {
+          count: 10,
+          message: 'Too big!'
+        }
+      }
+    }
+
+    let validation = await size.validate(createMockContext(FILES), settings)
+    expect(validation.status).toBe('fail')
+    expect(validation.validations[0].description).toBe('Too big!')
+    expect(validation.validations[0].status).toBe('fail')
+  })
+
+  test('errors if invalid configurations is passed', async () => {
+    const size = new Size()
+    const settings = {
+      do: 'size',
+      lines: {
+        something: {
+          count: 10,
+          message: 'Too big!'
+        }
+      }
+    }
+
+    let validation = await size.validate(createMockContext(FILES), settings)
+    const ERROR_MESSAGE = `Failed to validate because the 'lines' or 'max / total', 'additions' or 'deletions' option is missing. Please check the documentation.`
+    expect(validation.status).toBe('error')
+    expect(validation.validations[0].description).toBe(ERROR_MESSAGE)
+    expect(validation.validations[0].status).toBe('error')
+  })
+
   test('fails when size of changes is above count', async () => {
     const size = new Size()
     const settings = {
