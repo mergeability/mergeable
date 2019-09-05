@@ -355,7 +355,8 @@ const createMockGhConfig = (json, prConfig, options) => {
       pull_request: {
         number: 1,
         head: {
-          ref: 1
+          ref: 1,
+          sha: 1
         }
       }
     },
