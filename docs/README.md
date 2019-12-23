@@ -173,13 +173,13 @@ specified limit. We can pass in three options: `total`, `additions` or `deletion
         message: Change is very large. Should be under 500 lines of additions and deletions.
       additions:
         count: 250
-        message: Change is very large. Should be under 250 lines of additions 
+        message: Change is very large. Should be under 250 lines of additions
       deletions:
         count: 500
         message: Change is very large. Should be under 250 lines of deletions.
 ```
 
-`max` is an alias for `total`, so the below configuration is still valid. 
+`max` is an alias for `total`, so the below configuration is still valid.
 ```yml
  - do: size
     lines:
@@ -439,7 +439,7 @@ You can pass in Handlebars template to show the details result of the run.
   payload:
     title: 'Mergeable Run have been Completed!'
     summary: "### Status: {{toUpperCase validationStatus}}
-             
+
                      Here are some stats of the run:
                      {{validationCount}} validations were ran.
                      {{passCount}} PASSED
@@ -646,12 +646,12 @@ Detect issues and pull requests that are `n` days old (stale) and notify authors
 Found a bug? Have a question? Or just want to chat?
 
 - Find us on [Gitter](https://gitter.im/mergeable-bot/Lobby).
-- Create an [Issue](https://github.com/jusx/mergeable/issues/new).
+- Create an [Issue](https://github.com/mergeability/mergeable/issues/new).
 
 # Contributions
 We need your help:
 
-- Have an **💡idea** for a **new feature**? Please [create a new issue](https://github.com/jusx/mergeable/issues) and tell us!
+- Have an **💡idea** for a **new feature**? Please [create a new issue](https://github.com/mergeability/mergeable/issues) and tell us!
 - **Fix a bug**, implement a new **validator** or **action** and [open a pull request](docs/CONTRIBUTING.md)!
 
 > ☝️ **NOTE:** For development and testing. You'll want to [read about how to run it locally](deploy.md#running-locally).
