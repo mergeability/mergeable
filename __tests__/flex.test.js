@@ -298,4 +298,80 @@ describe('#executor', () => {
     expect(checks.beforeValidate).toHaveBeenCalledTimes(2)
     expect(checks.afterValidate).toHaveBeenCalledTimes(2)
   })
+
+  test('isEventInContext is working only for correct event', async () => {
+    let context = Helper.mockContext('title')
+    Helper.mockConfigWithContext(context, `
+      version: 2
+      mergeable:
+        - when: pull_request.opened
+          validate:
+            - do: title
+              must_exclude:
+                regex: 'wip'
+          pass:
+            - do: checks
+              status: success
+              payload:
+                title: Success!!
+                summary: You are ready to merge
+          fail:
+            - do: checks
+              status: success
+              payload:
+                title: Success!!
+                summary: You are ready to merge
+        - when: issues.opened
+          validate:
+            - do: label
+              must_exclude:
+                regex: 'wip'
+            - do: title
+          pass:
+            - do: checks
+              status: success
+              payload:
+                title: Success!!
+                summary: You are ready to merge
+          fail:
+            - do: checks
+              status: success
+              payload:
+                title: Success!!
+                summary: You are ready to merge
+    `)
+
+    let registry = { validators: new Map(), actions: new Map() }
+    let title = {
+      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
+      isEventSupported: jest.fn().mockReturnValue(true)
+    }
+    registry.validators.set('title', title)
+    let label = {
+      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
+      isEventSupported: jest.fn().mockReturnValue(true)
+    }
+    registry.validators.set('label', label)
+    let checks = {
+      beforeValidate: jest.fn(),
+      afterValidate: jest.fn(),
+      isEventSupported: jest.fn().mockReturnValue(true)
+    }
+    registry.actions.set('checks', checks)
+
+    context.event = 'pull_request_review'
+    context.payload.action = 'opened'
+    await executor(context, registry)
+    expect(title.validate).toHaveBeenCalledTimes(0)
+    expect(label.validate).toHaveBeenCalledTimes(0)
+    expect(checks.beforeValidate).toHaveBeenCalledTimes(0)
+    expect(checks.afterValidate).toHaveBeenCalledTimes(0)
+
+    context.event = 'pull_request'
+    await executor(context, registry)
+    expect(title.validate).toHaveBeenCalledTimes(1)
+    expect(label.validate).toHaveBeenCalledTimes(0)
+    expect(checks.beforeValidate).toHaveBeenCalledTimes(1)
+    expect(checks.afterValidate).toHaveBeenCalledTimes(1)
+  })
 })
