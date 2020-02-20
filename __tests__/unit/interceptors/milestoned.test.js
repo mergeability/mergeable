@@ -30,7 +30,7 @@ test('#process', async () => {
   context.payload.action = 'milestoned'
   Object.set(context, 'payload.issue.pull_request', {})
   context.payload.issue.number = 12
-  context.github.pullRequests.get.mockReturnValue({ data: { number: 12 } })
+  context.github.pulls.get.mockReturnValue({ data: { number: 12 } })
 
   // make sure we setup context correctly.
   expect(milestoned.valid(context)).toBe(true)

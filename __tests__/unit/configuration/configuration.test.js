@@ -368,7 +368,7 @@ const createMockGhConfig = (json, prConfig, options) => {
           })
         })
       },
-      pullRequests: {
+      pulls: {
         listFiles: () => {
           return { data: options.files }
         }

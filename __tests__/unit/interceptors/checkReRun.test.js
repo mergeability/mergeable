@@ -10,7 +10,7 @@ test('context is not modified if pre conditions are not met', async () => {
   context.event = 'check_run'
   context.payload.action = 'created'
   Object.set(context, 'payload.check_run.output.text', mockOutput())
-  context.github.pullRequests.get.mockReturnValue({ data: { number: 456 } })
+  context.github.pulls.get.mockReturnValue({ data: { number: 456 } })
   let newContext = await checkReRun.process(context)
 
   expect(newContext.event).toBe('check_run')
@@ -47,7 +47,7 @@ test('#process', async () => {
   Object.set(context, 'payload.check_run.output.text', mockOutput())
   context.payload.check_run.pull_requests = [{number: 1}]
   context.payload.check_run.id = 123
-  context.github.pullRequests.get.mockReturnValue({ data: { number: 456 } })
+  context.github.pulls.get.mockReturnValue({ data: { number: 456 } })
   let newContext = await checkReRun.process(context)
 
   expect(newContext.payload.pull_request.number).toBe(456)
