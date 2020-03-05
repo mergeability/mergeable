@@ -306,22 +306,9 @@ Supported events:
 ```yml
 
 - do: project
-  no_empty:
-     enabled: true # Cannot be empty when true.
-     message: 'Custom message...'
   must_include:
      regex: 'type|chore|wont'
      message: 'Custom message...'
-  must_exclude:
-     regex: 'DO NOT MERGE'
-     message: 'Custom message...'
-  begins_with:
-     match: 'A String' # array of strings
-     message: 'Some message...'
-  ends_with:
-     match: 'A String' # array of strings
-     message: 'Come message...'
-     # all of the message sub-option is optional
 ```
 > ☝ **NOTE:** When a [closing keyword](https://help.github.com/articles/closing-issues-using-keywords/) is used in the description of a pull request. The annotated issue will be validated against the conditions as well.
 
@@ -438,19 +425,18 @@ You can pass in Handlebars template to show the details result of the run.
   status: 'failure' # Can be: success, failure, neutral, cancelled, timed_out, or action_required
   payload:
     title: 'Mergeable Run have been Completed!'
-    summary: "### Status: {{toUpperCase validationStatus}}
-
-                     Here are some stats of the run:
-                     {{validationCount}} validations were ran.
-                     {{passCount}} PASSED
-                     {{failCount}} FAILED
-                   "
-    text: "{{#each validationSuites}}
-          #### {{{statusIcon status}}} Validator: {{toUpperCase name}}
-          {{#each validations }} * {{{statusIcon status}}} ***{{{ description }}}***
-                 Input : {{{details.input}}}
-                 Settings : {{{displaySettings details.settings}}}
-                 {{/each}}
+    summary: |
+         ### Status: {{toUpperCase validationStatus}}
+              Here are some stats of the run:
+              {{validationCount}} validations were ran.
+              {{passCount}} PASSED
+              {{failCount}} FAILED
+    text: "{{#each validationSuites}}\n
+          #### {{{statusIcon status}}} Validator: {{toUpperCase name}}\n
+          {{#each validations }} * {{{statusIcon status}}} ***{{{ description }}}***\n
+                 Input : {{{details.input}}}\n
+                 Settings : {{{displaySettings details.settings}}}\n
+                 {{/each}}\n
           {{/each}}"
 ```
 
@@ -574,7 +560,8 @@ Validate pull requests for mergeability based on content and structure of your P
     - when: pull_request.*
       validate:
         - do: project
-          must_include: MVP
+          must_include: 
+            regex: MVP
   ```
   </p>
 </details> -->
