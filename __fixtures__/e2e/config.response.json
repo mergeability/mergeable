@@ -1,0 +1,18 @@
+{
+  "type": "file",
+  "encoding": "base64",
+  "size": 5362,
+  "name": "README.md",
+  "path": "README.md",
+  "content": "Cm1lcmdlYWJsZToKICBwdWxsX3JlcXVlc3RzOgogICAgdGl0bGU6CiAgICAgIGFuZDoKICAgICAgICAtIGJlZ2luc193aXRoOgogICAgICAgICAgICBtYXRjaDogJ2JlZ2luc193aXRoX3RleHQnCiAgICAgICAgLSBlbmRzX3dpdGg6CiAgICAgICAgICAgIG1hdGNoOiAnZW5kc193aXRoX3RleHQnCiAgICAgIG9yOgogICAgICAgIC0gbXVzdF9pbmNsdWRlOgogICAgICAgICAgICByZWdleDogJ211c3RfYmVfaW5jbHVkZWRfdGV4dCcKICAgICAgICAtIGJlZ2luc193aXRoOgogICAgICAgICAgICBtYXRjaDogJ2JlZ2luc193aXRoX3RleHQnCiAgICAgIG11c3RfZXhjbHVkZToKICAgICAgICByZWdleDogJ211c3RfYmVfZXhjbHVkZWRfdGV4dCcKICAgICAgbXVzdF9pbmNsdWRlOgogICAgICAgIHJlZ2V4OiAnbXVzdF9iZV9pbmNsdWRlZF90ZXh0JwogICAgICBiZWdpbnNfd2l0aDoKICAgICAgICBtYXRjaDogJ2JlZ2luc193aXRoX3RleHQnCiAgICAgIGVuZHNfd2l0aDoKICAgICAgICBtYXRjaDogJ2VuZHNfd2l0aF90ZXh0JwogICAgYXNzaWduZWU6CiAgICAgIGFuZDoKICAgICAgICAtIG1heDoKICAgICAgICAgICAgY291bnQ6IDQKICAgICAgICAtIG1pbjoKICAgICAgICAgICAgY291bnQ6IDEKICAgICAgb3I6CiAgICAgICAgLSBtYXg6CiAgICAgICAgICAgIGNvdW50OiA0CiAgICAgICAgLSBtaW46CiAgICAgICAgICAgIGNvdW50OiAxCiAgICAgIHJlcXVpcmVkOgogICAgICAgIHJldmlld2VyczogWydzaGluZTJsYXknLCAnc2hpbmVsYXknXQogICAgICBtYXg6CiAgICAgICAgY291bnQ6IDQKICAgICAgbWluOgogICAgICAgIGNvdW50OiAxCiAgICAgIG5vX2VtcHR5OgogICAgICAgIGVuYWJsZWQ6IHRydWUKICAgICAg",
+  "sha": "3d21ec53a331a6f037a91c368710b99387d012c1",
+  "url": "https://api.github.com/repos/octokit/octokit.rb/contents/README.md",
+  "git_url": "https://api.github.com/repos/octokit/octokit.rb/git/blobs/3d21ec53a331a6f037a91c368710b99387d012c1",
+  "html_url": "https://github.com/octokit/octokit.rb/blob/master/README.md",
+  "download_url": "https://raw.githubusercontent.com/octokit/octokit.rb/master/README.md",
+  "_links": {
+    "git": "https://api.github.com/repos/octokit/octokit.rb/git/blobs/3d21ec53a331a6f037a91c368710b99387d012c1",
+    "self": "https://api.github.com/repos/octokit/octokit.rb/contents/README.md",
+    "html": "https://github.com/octokit/octokit.rb/blob/master/README.md"
+  }
+}
