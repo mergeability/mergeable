@@ -1,5 +1,5 @@
-const Assign = require('../../lib/actions/assign')
-const Helper = require('../../__fixtures__/helper')
+const Assign = require('../../../lib/actions/assign')
+const Helper = require('../../../__fixtures__/unit/helper')
 
 test('check that assignees are added when afterValidate is called with proper parameter', async () => {
   const settings = {
