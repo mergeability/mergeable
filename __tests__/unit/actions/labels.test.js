@@ -1,5 +1,5 @@
-const Labels = require('../../lib/actions/labels')
-const Helper = require('../../__fixtures__/helper')
+const Labels = require('../../../lib/actions/labels')
+const Helper = require('../../../__fixtures__/unit/helper')
 
 test('check that labels setting accepts an array', async () => {
   const labels = new Labels()
