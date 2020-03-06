@@ -8,7 +8,7 @@ The [Probot deployment guide](https://probot.github.io/docs/deployment/) describ
 
 **Settings:**
 - GitHub app name - **Your app name**
-- Webhook URL - **Your webhook url for listening to events** (local deployments you can use [smee.io](smee.io))
+- Webhook URL - **Your webhook url for listening to events** (for local deployments you can use [smee.io](https://smee.io/))
 - Webhook secret - **Your generated webhook seceret** (GitHub app page has instructions on how to create this)
 
 **Permissions:**

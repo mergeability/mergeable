@@ -109,8 +109,9 @@ For convenience, wildcards can be used: `pull_request.*`, `issues.*`, `pull_requ
     count: 2 # Number of minimum reviewers. In this case 2.
     message: 'Custom message...'
   required:
-    reviewers: [ user1, user2 ]   # list of github usernames required to review
-    owners: true # accepts boolean. When true,  the file .github/CODEOWNER is read and owners made required reviewers
+    reviewers: [ user1, user2 ] # list of github usernames required to review
+    owners: true # Optional boolean. When true, the file .github/CODEOWNER is read and owners made required reviewers
+    assignees: true # Optional boolean. When true, PR assignees are made required reviewers.
     message: 'Custom message...'
 ```
 
@@ -162,32 +163,55 @@ The above will validate that both the files `package-lock.json` and `yarn.lock` 
 ### Size
 
 `size` validates that the size of changes in the pull request conform to a
-specified limit. Currently this only lets you validate that the total number of
-changed lines is below a certain amount using the `max` option:
+specified limit. We can pass in three options: `total`, `additions` or `deletions`. Each of this take in a `count` and `message`.
 
 ```yml
   - do: size
     lines:
+      total:
+        count: 500
+        message: Change is very large. Should be under 500 lines of additions and deletions.
+      additions:
+        count: 250
+        message: Change is very large. Should be under 250 lines of additions
+      deletions:
+        count: 500
+        message: Change is very large. Should be under 250 lines of deletions.
+```
+
+`max` is an alias for `total`, so the below configuration is still valid.
+```yml
+ - do: size
+    lines:
       max:
         count: 500
-        message: Change is very large. Should be under 500 lines of addtions and deletions.
+        message: Change is very large. Should be under 500 lines of additions and deletions.
 ```
 
 It also supports an `ignore` setting to allow excluding certain files from the
 total size (e.g. for ignoring automatically generated files that increase the
-size a lot):
+size a lot).
+
+This option supports glob patterns, so you can provide either the path to a
+specific file or ignore whole patterns:
 
 ```yml
   - do: size
-    ignore: ['package-lock.json']
+    ignore: ['package-lock.json', 'src/tests/__snapshots__/**', 'docs/*.md']
     lines:
-      max:
+      total:
         count: 500
-        message: Change is very large. Should be under 500 lines of addtions and deletions.
+        message: Change is very large. Should be under 500 lines of additions and deletions
 ```
+
+Note that the glob functionality is powered by the [minimatch] library. Please
+see their documentation for details on how glob patterns are handled and
+possible discrepancies with glob handling in other tools.
 
 The `size` validator currently excludes from the size count any files that were
 completely deleted in the PR.
+
+[minimatch]: https://github.com/isaacs/minimatch
 
 #### Supported events
 ```js
@@ -428,19 +452,62 @@ Supported events:
 
 ### checks
 
+
 ```yml
-- do: checks,
+- do: checks # default pass case
   status: 'success' # Can be: success, failure, neutral, cancelled, timed_out, or action_required
   payload:
     title: 'Mergeable Run have been Completed!'
-    summary: `All the validators have returned 'pass'! \n Here are some stats of the run: \n {{validationCount}} validations were ran`
+    summary: "All the validators have returned 'pass'! \n Here are some stats of the run: \n {{validationCount}} validations were ran"
 ```
+
+You can pass in Handlebars template to show the details result of the run.
+
+```yml
+- do: checks # default fail case
+  status: 'failure' # Can be: success, failure, neutral, cancelled, timed_out, or action_required
+  payload:
+    title: 'Mergeable Run have been Completed!'
+    summary: "### Status: {{toUpperCase validationStatus}}
+
+                     Here are some stats of the run:
+                     {{validationCount}} validations were ran.
+                     {{passCount}} PASSED
+                     {{failCount}} FAILED
+                   "
+    text: "{{#each validationSuites}}
+          #### {{{statusIcon status}}} Validator: {{toUpperCase name}}
+          {{#each validations }} * {{{statusIcon status}}} ***{{{ description }}}***
+                 Input : {{{details.input}}}
+                 Settings : {{{displaySettings details.settings}}}
+                 {{/each}}
+          {{/each}}"
+```
+
 
 Supported events:
 ```js
 'pull_request.*', 'pull_request_review.*'
 
 ```
+
+### request_review
+Creates comments in issues and/or pull requests depending on the event specified in the `when` tag.
+
+```yml
+- do: request_review
+  reviewers: ['name1', 'name2']
+```
+This is only enforced for reviewers who has not been requested already
+
+Note: **The reviewers must be collaborator**, otherwise, github api will throw error
+
+Supported events:
+```js
+'pull_request.*'
+
+```
+
 ## Examples
 
 ### Pull Requests
@@ -525,7 +592,7 @@ Validate pull requests for mergeability based on content and structure of your P
 <br>
 
 **Size**: Ensure that PRs don't exceed a certain size in terms of lines changed
-(excluding files specified with `ignore`).
+(excluding file patterns specified with `ignore`).
 
 <details><summary>🔖 See Recipe</summary>
   <p>
@@ -536,7 +603,7 @@ Validate pull requests for mergeability based on content and structure of your P
     - when: pull_request.*
       validate:
         - do: size
-          ignore: ['ignore_me.js']
+          ignore: ['ignore_me.js', 'ignore_this_directory/*', '**/ignore_this_prefix*.js']
           lines:
             max:
               count: 500
@@ -627,12 +694,12 @@ Detect issues and pull requests that are `n` days old (stale) and notify authors
 Found a bug? Have a question? Or just want to chat?
 
 - Find us on [Gitter](https://gitter.im/mergeable-bot/Lobby).
-- Create an [Issue](https://github.com/jusx/mergeable/issues/new).
+- Create an [Issue](https://github.com/mergeability/mergeable/issues/new).
 
 # Contributions
 We need your help:
 
-- Have an **💡idea** for a **new feature**? Please [create a new issue](https://github.com/jusx/mergeable/issues) and tell us!
+- Have an **💡idea** for a **new feature**? Please [create a new issue](https://github.com/mergeability/mergeable/issues) and tell us!
 - **Fix a bug**, implement a new **validator** or **action** and [open a pull request](docs/CONTRIBUTING.md)!
 
 > ☝️ **NOTE:** For development and testing. You'll want to [read about how to run it locally](deploy.md#running-locally).
