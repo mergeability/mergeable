@@ -468,7 +468,7 @@ Creates comments in issues and/or pull requests depending on the event specified
 - do: request_review
   reviewers: ['name1', 'name2']
 ```
-An API call will only be made if the reviewers are not requested already.
+This is only enforced for reviewers who has not been requested already
 
 Note: **The reviewers must be collaborator**, otherwise, github api will throw error
 
