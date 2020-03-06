@@ -1,5 +1,5 @@
-const RequestReview = require('../../lib/actions/request_review')
-const Helper = require('../../__fixtures__/helper')
+const RequestReview = require('../../../lib/actions/request_review')
+const Helper = require('../../../__fixtures__/unit/helper')
 
 const settings = {
   reviewers: ['shine2lay']
