@@ -460,6 +460,24 @@ Supported events:
 'pull_request.*', 'pull_request_review.*'
 
 ```
+
+### request_review
+Creates comments in issues and/or pull requests depending on the event specified in the `when` tag.
+
+```yml
+- do: request_review
+  reviewers: ['name1', 'name2']
+```
+This is only enforced for reviewers who has not been requested already
+
+Note: **The reviewers must be collaborator**, otherwise, github api will throw error
+
+Supported events:
+```js
+'pull_request.*'
+
+```
+
 ## Examples
 
 ### Pull Requests
