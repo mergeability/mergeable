@@ -40,9 +40,9 @@ module.exports = {
       log: {
         child: (s) => {
           return {
-            debug: (s) => console.log(`TEST[debug] > ${JSON.stringify(s)}`),
-            info: (s) => console.log(`TEST[info] > ${JSON.stringify(s)}`),
-            warn: (s) => console.log(`TEST[warn] > ${JSON.stringify(s)}`)
+            debug: (...s) => console.log(`TEST[debug] > ${JSON.stringify(s)}`),
+            info: (...s) => console.log(`TEST[info] > ${JSON.stringify(s)}`),
+            warn: (...s) => console.warn(`TEST[warn] > ${JSON.stringify(s)}`)
           }
         }
       },
