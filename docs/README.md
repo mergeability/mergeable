@@ -163,15 +163,29 @@ The above will validate that both the files `package-lock.json` and `yarn.lock` 
 ### Size
 
 `size` validates that the size of changes in the pull request conform to a
-specified limit. Currently this only lets you validate that the total number of
-changed lines is below a certain amount using the `max` option:
+specified limit. We can pass in three options: `total`, `additions` or `deletions`. Each of this take in a `count` and `message`.
 
 ```yml
   - do: size
     lines:
+      total:
+        count: 500
+        message: Change is very large. Should be under 500 lines of additions and deletions.
+      additions:
+        count: 250
+        message: Change is very large. Should be under 250 lines of additions
+      deletions:
+        count: 500
+        message: Change is very large. Should be under 250 lines of deletions.
+```
+
+`max` is an alias for `total`, so the below configuration is still valid.
+```yml
+ - do: size
+    lines:
       max:
         count: 500
-        message: Change is very large. Should be under 500 lines of addtions and deletions.
+        message: Change is very large. Should be under 500 lines of additions and deletions.
 ```
 
 It also supports an `ignore` setting to allow excluding certain files from the
@@ -185,9 +199,9 @@ specific file or ignore whole patterns:
   - do: size
     ignore: ['package-lock.json', 'src/tests/__snapshots__/**', 'docs/*.md']
     lines:
-      max:
+      total:
         count: 500
-        message: Change is very large. Should be under 500 lines of addtions and deletions.
+        message: Change is very large. Should be under 500 lines of additions and deletions
 ```
 
 Note that the glob functionality is powered by the [minimatch] library. Please
@@ -292,22 +306,9 @@ Supported events:
 ```yml
 
 - do: project
-  no_empty:
-     enabled: true # Cannot be empty when true.
-     message: 'Custom message...'
   must_include:
      regex: 'type|chore|wont'
      message: 'Custom message...'
-  must_exclude:
-     regex: 'DO NOT MERGE'
-     message: 'Custom message...'
-  begins_with:
-     match: 'A String' # array of strings
-     message: 'Some message...'
-  ends_with:
-     match: 'A String' # array of strings
-     message: 'Come message...'
-     # all of the message sub-option is optional
 ```
 > ☝ **NOTE:** When a [closing keyword](https://help.github.com/articles/closing-issues-using-keywords/) is used in the description of a pull request. The annotated issue will be validated against the conditions as well.
 
@@ -423,21 +424,92 @@ Supported events:
 'schedule.repository', 'pull_request.*', 'issues.*'
 
 ```
-### checks
+
+### assign
 
 ```yml
-- do: checks,
+- do: assign
+  assignees: [ 'shine2lay', 'jusx' ] # only array accepted
+```
+
+Supported events:
+
+```js
+'pull_request.*', 'issues.*'
+```
+
+
+### Labels
+Creates comments in issues and/or pull requests depending on the event specified in the `when` tag.
+
+```yml
+- do: labels
+  # if label doesn't exist, it'll be created
+  labels: [ 'Triage' ] # Only arrays are accepted
+```
+
+Supported events:
+```js
+'schedule.repository', 'pull_request.*', 'issues.*'
+
+```
+### checks
+
+
+```yml
+- do: checks # default pass case
   status: 'success' # Can be: success, failure, neutral, cancelled, timed_out, or action_required
   payload:
     title: 'Mergeable Run have been Completed!'
-    summary: `All the validators have returned 'pass'! \n Here are some stats of the run: \n {{validationCount}} validations were ran`
+    summary: "All the validators have returned 'pass'! \n Here are some stats of the run: \n {{validationCount}} validations were ran"
 ```
+
+You can pass in Handlebars template to show the details result of the run.
+
+```yml
+- do: checks # default fail case
+  status: 'failure' # Can be: success, failure, neutral, cancelled, timed_out, or action_required
+  payload:
+    title: 'Mergeable Run have been Completed!'
+    summary: |
+         ### Status: {{toUpperCase validationStatus}}
+              Here are some stats of the run:
+              {{validationCount}} validations were ran.
+              {{passCount}} PASSED
+              {{failCount}} FAILED
+    text: "{{#each validationSuites}}\n
+          #### {{{statusIcon status}}} Validator: {{toUpperCase name}}\n
+          {{#each validations }} * {{{statusIcon status}}} ***{{{ description }}}***\n
+                 Input : {{{details.input}}}\n
+                 Settings : {{{displaySettings details.settings}}}\n
+                 {{/each}}\n
+          {{/each}}"
+```
+
 
 Supported events:
 ```js
 'pull_request.*', 'pull_request_review.*'
 
 ```
+
+### request_review
+Creates comments in issues and/or pull requests depending on the event specified in the `when` tag.
+
+```yml
+- do: request_review
+  reviewers: ['name1', 'name2']
+```
+This is only enforced for reviewers who has not been requested already
+
+Note: **The reviewers must be collaborator**, otherwise, github api will throw error
+
+Supported events:
+```js
+'pull_request.*'
+
+```
+
 ## Examples
 
 ### Pull Requests
@@ -552,7 +624,8 @@ Validate pull requests for mergeability based on content and structure of your P
     - when: pull_request.*
       validate:
         - do: project
-          must_include: MVP
+          must_include: 
+            regex: MVP
   ```
   </p>
 </details> -->
@@ -624,12 +697,12 @@ Detect issues and pull requests that are `n` days old (stale) and notify authors
 Found a bug? Have a question? Or just want to chat?
 
 - Find us on [Gitter](https://gitter.im/mergeable-bot/Lobby).
-- Create an [Issue](https://github.com/jusx/mergeable/issues/new).
+- Create an [Issue](https://github.com/mergeability/mergeable/issues/new).
 
 # Contributions
 We need your help:
 
-- Have an **💡idea** for a **new feature**? Please [create a new issue](https://github.com/jusx/mergeable/issues) and tell us!
+- Have an **💡idea** for a **new feature**? Please [create a new issue](https://github.com/mergeability/mergeable/issues) and tell us!
 - **Fix a bug**, implement a new **validator** or **action** and [open a pull request](docs/CONTRIBUTING.md)!
 
 > ☝️ **NOTE:** For development and testing. You'll want to [read about how to run it locally](deploy.md#running-locally).
