@@ -133,6 +133,7 @@ module.exports = {
               resolve({ status: 204 })
             })
           },
+          addLabels: jest.fn(),
           get: () => {
             return {data: (options.deepValidation) ? options.deepValidation : {}}
           }
