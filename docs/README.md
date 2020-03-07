@@ -408,6 +408,20 @@ Supported events:
 
 ```
 
+### assign
+
+```yml
+- do: assign
+  assignees: [ 'shine2lay', 'jusx' ] # only array accepted
+```
+
+Supported events:
+
+```js
+'pull_request.*', 'issues.*'
+```
+
+
 ### Labels
 Creates comments in issues and/or pull requests depending on the event specified in the `when` tag.
 

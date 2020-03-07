@@ -128,6 +128,11 @@ module.exports = {
           listLabelsOnIssue: () => {
             return { data: (options.labels) ? options.labels : [] }
           },
+          checkAssignee: () => {
+            return new Promise((resolve) => {
+              resolve({ status: 204 })
+            })
+          },
           addLabels: jest.fn(),
           get: () => {
             return {data: (options.deepValidation) ? options.deepValidation : {}}
