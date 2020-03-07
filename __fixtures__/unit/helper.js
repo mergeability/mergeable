@@ -23,6 +23,7 @@ module.exports = {
           body: options.body,
           number: (options.number) ? options.number : 1,
           milestone: (options.milestone) ? options.milestone : null,
+          requested_reviewers: options.requestedReviewers ? options.requestedReviewers : [],
           base: {
             ref: 'baseRef',
             sha: 'sha2'
@@ -48,6 +49,9 @@ module.exports = {
       github: {
         repos: {
           createStatus: () => {},
+          listCollaborators: () => {
+            return { data: (options.collaborators) ? options.collaborators : [] }
+          },
           getContents: ({ path }) => {
             return new Promise((resolve, reject) => {
               if (path === '.github/mergeable.yml') {
