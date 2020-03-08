@@ -126,7 +126,7 @@ const createMockContext = (results) => {
   let context = Helper.mockContext()
 
   context.github.search = {
-    issues: jest.fn().mockReturnValue({
+    issuesAndPullRequests: jest.fn().mockReturnValue({
       data: { items: results }
     })
   }
