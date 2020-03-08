@@ -374,4 +374,46 @@ describe('#executor', () => {
     expect(checks.beforeValidate).toHaveBeenCalledTimes(1)
     expect(checks.afterValidate).toHaveBeenCalledTimes(1)
   })
+
+  test('Error handling', async() => {
+    let registry = { validators: new Map(), actions: new Map() }
+    let errorValidator = {
+      validate: jest.fn(value => Promise.reject(new Error('Uncaught error'))),
+      isEventSupported: jest.fn().mockReturnValue(true)
+    }
+    let passAction = {
+      beforeValidate: jest.fn(),
+      afterValidate: jest.fn(),
+      isEventSupported: jest.fn().mockReturnValue(true)
+    }
+    let errorAction = {
+      beforeValidate: jest.fn(),
+      afterValidate: jest.fn(),
+      isEventSupported: jest.fn().mockReturnValue(true)
+    }
+    registry.validators.set('error', errorValidator)
+    registry.actions.set('pass_action', passAction)
+    registry.actions.set('error_action', errorAction)
+
+    let context = Helper.mockContext('error')
+    Helper.mockConfigWithContext(context, `
+      version: 2
+      mergeable:
+        - when: pull_request.opened
+          validate:
+            - do: error
+          pass:
+            - do: pass_action
+          error:
+            - do: error_action
+    `)
+    context.event = 'pull_request'
+    context.payload.action = 'opened'
+    await executor(context, registry)
+
+    expect(errorAction.beforeValidate).toHaveBeenCalledTimes(1)
+    expect(errorAction.afterValidate).toHaveBeenCalledTimes(1)
+    expect(passAction.beforeValidate).toHaveBeenCalledTimes(1)
+    expect(passAction.afterValidate).toHaveBeenCalledTimes(0)
+  })
 })
