@@ -1,5 +1,5 @@
-const Or = require('../../lib/validators/or')
-const Helper = require('../../__fixtures__/helper')
+const Or = require('../../../lib/validators/or')
+const Helper = require('../../../__fixtures__/unit/helper')
 
 test('should run subtasks', async () => {
   const or = new Or()
