@@ -149,7 +149,12 @@ describe('config file fetching', () => {
 
 describe('with version 2', () => {
   test('it loads correctly without version', () => {
-    let config = new Configuration()
+    let config = new Configuration(`
+      mergeable:
+        approvals: 5
+        label: 'label regex'
+        title: 'title regex'
+    `)
     expect(config.settings[0].when).toBeDefined()
     expect(config.settings[0].validate).toBeDefined()
     expect(config.hasErrors()).toBe(false)
@@ -298,7 +303,7 @@ describe('with version 1', () => {
     })
   })
 
-  test('that instanceWithContext still returns the Configuration when repo does not content mergeable.yml', async () => {
+  test('that instanceWithContext return error if mergeable.yml is not found', async () => {
     let context = {
       repo: () => {
         return {repo: '', owner: ''}
@@ -323,10 +328,8 @@ describe('with version 1', () => {
     }
 
     let config = await Configuration.instanceWithContext(context)
-    let validate = config.settings[0].validate
-
-    expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe('^wip')
-    expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('work in progress|wip|do not merge')
+    expect(config.hasErrors()).toBe(true)
+    expect(config.errors.has(Configuration.ERROR_CODES.NO_YML)).toBe(true)
   })
 
   test('that if pass, fail or error is undefined in v2 config, the config will not break', async () => {
