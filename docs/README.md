@@ -455,6 +455,7 @@ Supported events:
 ```
 ### checks
 
+Note: Some default cases do exists for `pass`, `fail` and `error` cases but if you provide these cases, the defaults will be overwritten
 
 ```yml
 - do: checks # default pass case
