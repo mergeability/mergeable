@@ -2,7 +2,7 @@ const _ = require('lodash')
 
 const throwNotFound = () => {
   let error = new Error('404 error')
-  error.code = 404
+  error.status = 404
   throw error
 }
 
