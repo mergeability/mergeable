@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "LOG_LEVEL=trace NODE_ENV=development nodemon --exec 'npm start'",
     "start": "probot run ./index.js",
-    "test": "jest && standard",
+    "test": "jest __tests__/unit/validators/options_processor/options/or.test.js && standard",
     "test:unit": "LOG_LEVEL=warn jest __tests__/unit/* && standard",
     "test:e2e": "LOG_LEVEL=warn jest __tests__/e2e/* && standard",
     "test-watch": "jest --watch",
