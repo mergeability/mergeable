@@ -12,6 +12,7 @@ module.exports = {
       repo: (properties) => { return Object.assign({ owner: 'owner', repo: 'repo' }, properties) },
       event: (options.event) ? options.event : 'pull_request',
       payload: {
+        action: 'opened',
         repository: {
           full_name: 'name'
         },

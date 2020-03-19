@@ -109,14 +109,14 @@ test('will set the issues and pulls correctly when type is pull_request only', a
 })
 
 const getFilteredParams = (context, filter = '', days = 10) => {
-  let callParams = context.github.search.issues.mock.calls
+  let callParams = context.github.search.issuesAndPullRequests.mock.calls
   let timestamp = (new Date(new Date() - days * 24 * 60 * 60 * 1000)).toISOString().replace(/\.\d{3}\w$/, '')
   let q = `repo:owner/repo is:open updated:<${timestamp} ${filter}`.trim()
   return callParams.filter(param => param[0].q === q)
 }
 
 const isParamsNoType = (context) => {
-  return context.github.search.issues.mock.calls
+  return context.github.search.issuesAndPullRequests.mock.calls
     .filter(
       param => param[0].q.includes('type:')
     ).length === 0
@@ -126,7 +126,7 @@ const createMockContext = (results) => {
   let context = Helper.mockContext()
 
   context.github.search = {
-    issues: jest.fn().mockReturnValue({
+    issuesAndPullRequests: jest.fn().mockReturnValue({
       data: { items: results }
     })
   }
