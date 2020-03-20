@@ -45,7 +45,7 @@ describe('And Validator Unit Test', () => {
       ]
     }
     let validation = await and.validate(createMockContext({title: 'Version 1'}), settings, registry)
-    expect(validation.status).toBe('pass')
+    expect(validation.status).toBe('fail')
   })
 
   test('should return output of first task to pass when multiple are given', async() => {
@@ -61,7 +61,7 @@ describe('And Validator Unit Test', () => {
         },
         {
           do: 'milestone',
-          must_include: {
+          must_exclude: {
             regex: 'Version 2'
           }
         }
@@ -144,7 +144,42 @@ describe('And Validator Unit Test', () => {
     }
 
     let validation = await and.validate(createMockContext({title: 'Version 2'}), settings, registry)
-    expect(validation.status).toBe('pass')
+    expect(validation.status).toBe('fail')
+  })
+
+  test('error if one of the sub validator errored', async() => {
+    const and = new And()
+    const settings = {
+      do: 'and',
+      validate: [
+        {
+          do: 'and',
+          validate: [
+            {
+              do: 'milestone',
+              must_inclxude: {
+                regex: 'Version 1'
+              }
+            },
+            {
+              do: 'milestone',
+              must_include: {
+                regex: 'Version 2'
+              }
+            }
+          ]
+        },
+        {
+          do: 'milestone',
+          must_include: {
+            regex: 'Version 3'
+          }
+        }
+      ]
+    }
+
+    let validation = await and.validate(createMockContext({title: 'Version 2'}), settings, registry)
+    expect(validation.status).toBe('error')
   })
 })
 

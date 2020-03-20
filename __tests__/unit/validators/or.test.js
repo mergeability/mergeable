@@ -118,7 +118,7 @@ describe('Or Validator Unit Test', () => {
       do: 'or',
       validate: [
         {
-          do: 'and',
+          do: 'or',
           validate: [
             {
               do: 'milestone',
@@ -145,6 +145,41 @@ describe('Or Validator Unit Test', () => {
 
     let validation = await or.validate(createMockContext({title: 'Version 2'}), settings, registry)
     expect(validation.status).toBe('pass')
+  })
+
+  test('error status if one of the sub validator errored', async() => {
+    const or = new Or()
+    const settings = {
+      do: 'or',
+      validate: [
+        {
+          do: 'or',
+          validate: [
+            {
+              do: 'milestone',
+              must_incdlude: {
+                regex: 'Version 1'
+              }
+            },
+            {
+              do: 'milestone',
+              must_include: {
+                regex: 'Version 2'
+              }
+            }
+          ]
+        },
+        {
+          do: 'milestone',
+          must_include: {
+            regex: 'Version 3'
+          }
+        }
+      ]
+    }
+
+    let validation = await or.validate(createMockContext({title: 'Version 2'}), settings, registry)
+    expect(validation.status).toBe('error')
   })
 })
 
