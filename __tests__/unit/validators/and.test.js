@@ -1,7 +1,7 @@
-const Or = require('../../../lib/validators/or')
+const And = require('../../../lib/validators/and')
 const Helper = require('../../../__fixtures__/unit/helper')
 
-describe('Or Validator Unit Test', () => {
+describe('And Validator Unit Test', () => {
   let registry = { validators: new Map(), actions: new Map() }
 
   beforeEach(() => {
@@ -9,9 +9,9 @@ describe('Or Validator Unit Test', () => {
   })
 
   test('should run subtasks', async () => {
-    const or = new Or()
+    const and = new And()
     const settings = {
-      do: 'or',
+      do: 'and',
       validate: [
         {
           do: 'milestone',
@@ -21,14 +21,14 @@ describe('Or Validator Unit Test', () => {
         }
       ]
     }
-    let validation = await or.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await and.validate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('fail')
   })
 
   test('should return output of second task if first fails', async () => {
-    const or = new Or()
+    const and = new And()
     const settings = {
-      do: 'or',
+      do: 'and',
       validate: [
         {
           do: 'milestone',
@@ -44,14 +44,14 @@ describe('Or Validator Unit Test', () => {
         }
       ]
     }
-    let validation = await or.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await and.validate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('pass')
   })
 
   test('should return output of first task to pass when multiple are given', async() => {
-    const or = new Or()
+    const and = new And()
     const settings = {
-      do: 'or',
+      do: 'and',
       validate: [
         {
           do: 'milestone',
@@ -67,58 +67,58 @@ describe('Or Validator Unit Test', () => {
         }
       ]
     }
-    let validation = await or.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await and.validate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('pass')
   })
 
   test('Error is returned when validate is missing', async() => {
-    const or = new Or()
+    const and = new And()
     const settings = {
-      do: 'or'
+      do: 'and'
     }
-    let validation = await or.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await and.validate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('error')
   })
 
   test('Error is returned when validate is not an array', async() => {
-    const or = new Or()
+    const and = new And()
     const settings = {
-      do: 'or',
+      do: 'and',
       validate: ''
     }
-    let validation = await or.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await and.validate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('error')
   })
 
   test('Error is returned when validate is empty', async() => {
-    const or = new Or()
+    const and = new And()
     const settings = {
-      do: 'or',
+      do: 'and',
       validate: []
     }
-    let validation = await or.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await and.validate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('error')
   })
 
   test('Error is returned when validate uses unsupported classes', async() => {
-    const or = new Or()
+    const and = new And()
     const settings = {
-      do: 'or',
+      do: 'and',
       validate: [
         { do: 'missing' }
       ]
     }
-    let validation = await or.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await and.validate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('error')
   })
 
-  test('Supports nested or validator', async() => {
-    const or = new Or()
+  test('Supports nested and validator', async() => {
+    const and = new And()
     const settings = {
-      do: 'or',
+      do: 'and',
       validate: [
         {
-          do: 'and',
+          do: 'or',
           validate: [
             {
               do: 'milestone',
@@ -143,7 +143,7 @@ describe('Or Validator Unit Test', () => {
       ]
     }
 
-    let validation = await or.validate(createMockContext({title: 'Version 2'}), settings, registry)
+    let validation = await and.validate(createMockContext({title: 'Version 2'}), settings, registry)
     expect(validation.status).toBe('pass')
   })
 })

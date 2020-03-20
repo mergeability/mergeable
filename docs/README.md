@@ -386,7 +386,7 @@ Validators can be grouped together with `AND` and `OR` operators:
         message: 'Please include release note: no'
 ```
 
-`OR` can also be used at the validator level:
+`AND` and `OR` can also be used at the validator level:
 
 ```yml
 - do: or
@@ -399,6 +399,26 @@ Validators can be grouped together with `AND` and `OR` operators:
     - must_include:
       regex: 'Goal'
       message: 'Please include the goal of the PR'
+  - do: label
+    must_include:
+      regex: 'test plan: no'
+      message: 'If no test plan is necessary, please include test plan: no label'
+```
+
+similarly, `AND` and `OR` can also be nested at the validator level:
+```yml
+- do: or
+  validate:
+  - do: and
+    validate:
+      - do: description
+        must_include:
+          regex: 'Test plan'
+          message: 'Test plan must be included'
+      - do: title
+        must_exclude:
+          regex: 'WIP'
+          message: 'PR should not be in WIP'
   - do: label
     must_include:
       regex: 'test plan: no'
