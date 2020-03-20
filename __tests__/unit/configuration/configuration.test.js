@@ -341,9 +341,10 @@ describe('with version 1', () => {
           message: 'There has not been any activity in the past month. Is there anything to follow-up?'`
 
     const config = new Configuration(settings)
-    const registry = {validators: new Map(), actions: new Map()}
-    await config.registerValidatorsAndActions(registry)
-    expect(registry.actions.has('comment')).toBe(true)
+
+    expect(config.settings.length).toBe(2)
+    expect(config.settings[0].fail).toBeDefined()
+    expect(config.settings[0].error).toBeDefined()
   })
 })
 
