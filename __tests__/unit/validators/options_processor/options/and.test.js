@@ -52,3 +52,14 @@ test('return error if sub option is not valid', async () => {
   const res = and.process(validatorContext, input, rule)
   expect(res.status).toBe('error')
 })
+
+test('return error if multiple sub option is not valid', async () => {
+  const rule = {and: [{must_inclde: {regex: 'A'}}, {must_excalude: {regex: 'B'}}]}
+  const input = ['B']
+  const res = and.process(validatorContext, input, rule)
+  expect(res.status).toBe('error')
+  expect(res.description).toBe('Error occurred: \n' +
+    `- The 'must_inclde' option is not supported for 'label' validator, please see README for all available options \n` +
+    `- The 'must_excalude' option is not supported for 'label' validator, please see README for all available options \n`
+    )
+})
