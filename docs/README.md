@@ -114,6 +114,9 @@ For convenience, wildcards can be used: `pull_request.*`, `issues.*`, `pull_requ
     assignees: true # Optional boolean. When true, PR assignees are made required reviewers.
     pending_reviewer: true #Optional boolean. When true, all the reviewer's approval is 
     message: 'Custom message...'
+  block:
+    changes_requested: true #If true, block all approvals when one of the reviewers give 'changes_requested' review
+    message: 'Custom message...'
 ```
 
 Supported events:
