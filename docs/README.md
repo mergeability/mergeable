@@ -112,7 +112,7 @@ For convenience, wildcards can be used: `pull_request.*`, `issues.*`, `pull_requ
     reviewers: [ user1, user2 ] # list of github usernames required to review
     owners: true # Optional boolean. When true, the file .github/CODEOWNER is read and owners made required reviewers
     assignees: true # Optional boolean. When true, PR assignees are made required reviewers.
-    pending_reviewer: true #Optional boolean. When true, all the reviewer's approval is 
+    pending_reviewer: true # Optional boolean. When true, all the requested reviewer's approval is required 
     message: 'Custom message...'
   block:
     changes_requested: true #If true, block all approvals when one of the reviewers give 'changes_requested' review
@@ -390,7 +390,7 @@ Validators can be grouped together with `AND` and `OR` operators:
         message: 'Please include release note: no'
 ```
 
-`OR` can also be used at the validator level:
+`AND` and `OR` can also be used at the validator level:
 
 ```yml
 - do: or
@@ -403,6 +403,26 @@ Validators can be grouped together with `AND` and `OR` operators:
     - must_include:
       regex: 'Goal'
       message: 'Please include the goal of the PR'
+  - do: label
+    must_include:
+      regex: 'test plan: no'
+      message: 'If no test plan is necessary, please include test plan: no label'
+```
+
+similarly, `AND` and `OR` can also be nested at the validator level:
+```yml
+- do: or
+  validate:
+  - do: and
+    validate:
+      - do: description
+        must_include:
+          regex: 'Test plan'
+          message: 'Test plan must be included'
+      - do: title
+        must_exclude:
+          regex: 'WIP'
+          message: 'PR should not be in WIP'
   - do: label
     must_include:
       regex: 'test plan: no'
