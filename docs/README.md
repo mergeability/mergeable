@@ -115,7 +115,7 @@ For convenience, wildcards can be used: `pull_request.*`, `issues.*`, `pull_requ
     pending_reviewer: true # Optional boolean. When true, all the requested reviewer's approval is required 
     message: 'Custom message...'
   block:
-    changes_requested: true #If true, block all approvals when one of the reviewers give 'changes_requested' review
+    changes_requested: true #If true, block all approvals when one of the reviewers gave 'changes_requested' review
     message: 'Custom message...'
 ```
 
