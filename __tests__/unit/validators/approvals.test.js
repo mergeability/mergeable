@@ -531,13 +531,34 @@ test('that assignees appends to the reviewers list correctly', async () => {
   expect(validation.status).toBe('pass')
 })
 
+test('that requestedReviewers appends to the reviewers list correctly', async () => {
+  const approval = new Approval()
+  const requestedReviewers = createRequestedReviewersList(['john'])
+  const settings = {
+    do: 'approval',
+    required: {
+      requested_reviewers: true,
+      reviewers: ['bob']
+    }
+  }
+
+  let validation = await approval.validate(createMockContext(5, [], [], [], [], requestedReviewers), settings)
+  expect(validation.validations[0].description).toBe('approval: bob ,john(Requested Reviewer) required')
+  expect(validation.status).toBe('fail')
+
+  let reviewList = createReviewList(['bob', 'john'])
+  validation = await approval.validate(createMockContext(5, reviewList, [], [], [], requestedReviewers), settings)
+  expect(validation.validations[0].description).toBe('approval: all required reviewers have approved')
+  expect(validation.status).toBe('pass')
+})
+
 const createCommitDiffs = (diffs) => {
   return diffs.map(diff => ({
     filename: diff
   }))
 }
 
-const createMockContext = (minimum, data, owners, commitDiffs, assignees, isOwnersNotFound = false) => {
+const createMockContext = (minimum, data, owners, commitDiffs, assignees, requestedReviewers, isOwnersNotFound = false) => {
   if (!data) {
     data = []
     for (let i = 0; i < minimum; i++) {
@@ -552,12 +573,18 @@ const createMockContext = (minimum, data, owners, commitDiffs, assignees, isOwne
   }
 
   let codeowners = (isOwnersNotFound || !owners) ? null : Buffer.from(`${owners}`).toString('base64')
-  return Helper.mockContext({reviews: data, codeowners: codeowners, compareCommits: commitDiffs, assignees})
+  return Helper.mockContext({reviews: data, codeowners: codeowners, compareCommits: commitDiffs, assignees, requestedReviewers})
 }
 
 const createAssigneeList = (assignees) => {
   return assignees.map(assignee => ({
     login: assignee
+  }))
+}
+
+const createRequestedReviewersList = (requestedReviewers) => {
+  return requestedReviewers.map(requestedReviewer => ({
+    login: requestedReviewer
   }))
 }
 
