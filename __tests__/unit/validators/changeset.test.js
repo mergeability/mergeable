@@ -49,7 +49,7 @@ test('mergeable is false if must_exclude is one of the label', async () => {
   const changeset = new Changeset()
   const settings = {
     do: 'changeset',
-    must_include: {
+    must_exclude: {
       regex: 'yarn.lock'
     }
   }
