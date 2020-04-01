@@ -43,6 +43,9 @@
     ]
   },
   "jest": {
+    "setupFiles": [
+      "./__fixtures__/setup/jestSetUp.js"
+    ],
     "coverageDirectory": "./coverage/",
     "collectCoverageFrom": [
       "lib/**/*.js"

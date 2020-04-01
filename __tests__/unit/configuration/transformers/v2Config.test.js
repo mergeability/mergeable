@@ -86,7 +86,7 @@ test('pass, fail, error defaults will load when pull_request is mixed with other
             message: 'This PR is work in progress.'
   `
   let transformed = V2Config.transform(yaml.safeLoad(config))
-  console.log(transformed)
+
   expect(transformed.mergeable[0].pass).toEqual(constants.DEFAULT_PR_PASS)
   expect(transformed.mergeable[0].fail).toEqual(constants.DEFAULT_PR_FAIL)
   expect(transformed.mergeable[0].error).toEqual(constants.DEFAULT_PR_ERROR)

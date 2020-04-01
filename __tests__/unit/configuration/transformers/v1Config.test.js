@@ -315,7 +315,7 @@ test('check that and/or logic is transformed correctly', async () => {
   const validate = res.mergeable
   expect(validate.length).toBe(2)
   const pr = (validate.filter(item => item.when.includes('pull_request')))[0].validate
-  console.log(pr)
+
   expect(pr.length).toBe(1)
   expect(pr[0].do).toBe('label')
   expect(pr[0].or).toBeDefined()
