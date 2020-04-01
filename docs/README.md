@@ -119,6 +119,8 @@ For convenience, wildcards can be used: `pull_request.*`, `issues.*`, `pull_requ
     message: 'Custom message...'
 ```
 
+> ☝ **NOTE:**  `owners` sub-option only works in **public** repos right now, we have plans to enable it for private repo in the future.
+
 Supported events:
 
 ```js
