@@ -552,6 +552,74 @@ test('that requestedReviewers appends to the reviewers list correctly', async ()
   expect(validation.status).toBe('pass')
 })
 
+test('blocks if changes are requested', async () => {
+  const approval = new Approval()
+
+  const reviewList = [
+    {
+      user: {
+        login: 'userA'
+      },
+      state: 'APPROVED',
+      submitted_at: Date.now()
+    },
+    {
+      user: {
+        login: 'userB'
+      },
+      state: 'CHANGES_REQUESTED',
+      submitted_at: Date.now() + 1000
+    }
+  ]
+
+  const settings = {
+    do: 'approval',
+    block: {
+      changes_requested: true
+    }
+  }
+
+  let validation = await approval.validate(createMockContext(5, reviewList), settings)
+  expect(validation.validations[0].description).toBe('Please resolve all the changes requested')
+  expect(validation.status).toBe('fail')
+})
+
+test('blocks if changes are requested while other options area also passed in', async () => {
+  const approval = new Approval()
+
+  const reviewList = [
+    {
+      user: {
+        login: 'userA'
+      },
+      state: 'APPROVED',
+      submitted_at: Date.now()
+    },
+    {
+      user: {
+        login: 'userB'
+      },
+      state: 'CHANGES_REQUESTED',
+      submitted_at: Date.now() + 1000
+    }
+  ]
+
+  const settings = {
+    do: 'approval',
+    block: {
+      changes_requested: true
+    },
+    required: {
+      reviewers: ['userA']
+    }
+  }
+
+  let validation = await approval.validate(createMockContext(5, reviewList), settings)
+  expect(validation.validations.length).toBe(2)
+  expect(validation.validations[1].description).toBe('Please resolve all the changes requested')
+  expect(validation.status).toBe('fail')
+})
+
 const createCommitDiffs = (diffs) => {
   return diffs.map(diff => ({
     filename: diff
