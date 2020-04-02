@@ -133,11 +133,11 @@ describe('#executor', () => {
     expect(registry.validators.get('label')).toBeDefined()
 
     let title = {
-      validate: jest.fn().mockReturnValue({status: 'pass'}),
+      processValidate: jest.fn().mockReturnValue({status: 'pass'}),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     let label = {
-      validate: jest.fn().mockReturnValue({status: 'pass'}),
+      processValidate: jest.fn().mockReturnValue({status: 'pass'}),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.validators.set('title', title)
@@ -152,8 +152,8 @@ describe('#executor', () => {
 
     await executor(context, registry)
 
-    expect(title.validate).toHaveBeenCalledTimes(1)
-    expect(label.validate).toHaveBeenCalledTimes(1)
+    expect(title.processValidate).toHaveBeenCalledTimes(1)
+    expect(label.processValidate).toHaveBeenCalledTimes(1)
     expect(checks.beforeValidate).toHaveBeenCalledTimes(0)
     expect(checks.afterValidate).toHaveBeenCalledTimes(0)
   })
@@ -185,12 +185,12 @@ describe('#executor', () => {
 
     let registry = { validators: new Map(), actions: new Map() }
     let title = {
-      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
+      processValidate: jest.fn(value => Promise.resolve({status: 'pass'})),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.validators.set('title', title)
     let issueOnly = {
-      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
+      processValidate: jest.fn(value => Promise.resolve({status: 'pass'})),
       isEventSupported: jest.fn(event => { return (event === 'issues.opened') })
     }
     registry.validators.set('issueOnly', issueOnly)
@@ -205,9 +205,9 @@ describe('#executor', () => {
     context.event = 'pull_request'
     context.payload.action = 'opened'
     await executor(context, registry)
-    expect(title.validate).toHaveBeenCalledTimes(1)
+    expect(title.processValidate).toHaveBeenCalledTimes(1)
     expect(title.isEventSupported).toHaveBeenCalledTimes(1)
-    expect(issueOnly.validate).toHaveBeenCalledTimes(0)
+    expect(issueOnly.processValidate).toHaveBeenCalledTimes(0)
     expect(issueOnly.isEventSupported).toHaveBeenCalledTimes(1)
     expect(checks.beforeValidate).toHaveBeenCalledTimes(1)
     expect(checks.afterValidate).toHaveBeenCalledTimes(1)
@@ -215,9 +215,9 @@ describe('#executor', () => {
     context.event = 'issues'
     context.payload.action = 'opened'
     await executor(context, registry)
-    expect(title.validate).toHaveBeenCalledTimes(2)
+    expect(title.processValidate).toHaveBeenCalledTimes(2)
     expect(title.isEventSupported).toHaveBeenCalledTimes(2)
-    expect(issueOnly.validate).toHaveBeenCalledTimes(1)
+    expect(issueOnly.processValidate).toHaveBeenCalledTimes(1)
     expect(issueOnly.isEventSupported).toHaveBeenCalledTimes(2)
     expect(checks.beforeValidate).toHaveBeenCalledTimes(1)
     expect(checks.afterValidate).toHaveBeenCalledTimes(1)
@@ -267,12 +267,12 @@ describe('#executor', () => {
 
     let registry = { validators: new Map(), actions: new Map() }
     let title = {
-      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
+      processValidate: jest.fn(value => Promise.resolve({status: 'pass'})),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.validators.set('title', title)
     let label = {
-      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
+      processValidate: jest.fn(value => Promise.resolve({status: 'pass'})),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.validators.set('label', label)
@@ -286,15 +286,15 @@ describe('#executor', () => {
     context.event = 'pull_request'
     context.payload.action = 'opened'
     await executor(context, registry)
-    expect(title.validate).toHaveBeenCalledTimes(1)
-    expect(label.validate).toHaveBeenCalledTimes(0)
+    expect(title.processValidate).toHaveBeenCalledTimes(1)
+    expect(label.processValidate).toHaveBeenCalledTimes(0)
     expect(checks.beforeValidate).toHaveBeenCalledTimes(1)
     expect(checks.afterValidate).toHaveBeenCalledTimes(1)
 
     context.event = 'issues'
     await executor(context, registry)
-    expect(title.validate).toHaveBeenCalledTimes(2)
-    expect(label.validate).toHaveBeenCalledTimes(1)
+    expect(title.processValidate).toHaveBeenCalledTimes(2)
+    expect(label.processValidate).toHaveBeenCalledTimes(1)
     expect(checks.beforeValidate).toHaveBeenCalledTimes(2)
     expect(checks.afterValidate).toHaveBeenCalledTimes(2)
   })
@@ -343,12 +343,12 @@ describe('#executor', () => {
 
     let registry = { validators: new Map(), actions: new Map() }
     let title = {
-      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
+      processValidate: jest.fn(value => Promise.resolve({status: 'pass'})),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.validators.set('title', title)
     let label = {
-      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
+      processValidate: jest.fn(value => Promise.resolve({status: 'pass'})),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.validators.set('label', label)
@@ -362,15 +362,15 @@ describe('#executor', () => {
     context.event = 'pull_request_review'
     context.payload.action = 'opened'
     await executor(context, registry)
-    expect(title.validate).toHaveBeenCalledTimes(0)
-    expect(label.validate).toHaveBeenCalledTimes(0)
+    expect(title.processValidate).toHaveBeenCalledTimes(0)
+    expect(label.processValidate).toHaveBeenCalledTimes(0)
     expect(checks.beforeValidate).toHaveBeenCalledTimes(0)
     expect(checks.afterValidate).toHaveBeenCalledTimes(0)
 
     context.event = 'pull_request'
     await executor(context, registry)
-    expect(title.validate).toHaveBeenCalledTimes(1)
-    expect(label.validate).toHaveBeenCalledTimes(0)
+    expect(title.processValidate).toHaveBeenCalledTimes(1)
+    expect(label.processValidate).toHaveBeenCalledTimes(0)
     expect(checks.beforeValidate).toHaveBeenCalledTimes(1)
     expect(checks.afterValidate).toHaveBeenCalledTimes(1)
   })
@@ -378,7 +378,7 @@ describe('#executor', () => {
   test('Error handling', async() => {
     let registry = { validators: new Map(), actions: new Map() }
     let errorValidator = {
-      validate: jest.fn(value => Promise.reject(new Error('Uncaught error'))),
+      processValidate: jest.fn(value => Promise.reject(new Error('Uncaught error'))),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     let passAction = {
