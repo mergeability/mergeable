@@ -2,7 +2,7 @@ const executor = require('../../lib/flex')
 const Helper = require('../../__fixtures__/unit/helper')
 const { Action } = require('../../lib/actions/action')
 
-describe('Test processBeforeValidate and afterValidate invocations', async () => {
+describe('Test processBeforeValidate and processAfterValidate invocations', async () => {
   let context
   let registry = { validators: new Map(), actions: new Map() }
   let action
@@ -33,7 +33,7 @@ describe('Test processBeforeValidate and afterValidate invocations', async () =>
 
     action = new Action()
     action.processBeforeValidate = jest.fn()
-    action.afterValidate = jest.fn()
+    action.processAfterValidate = jest.fn()
     action.supportedEvents = ['pull_request.opened', 'pull_request.edited', 'pull_request_review.submitted']
     registry.actions.set('checks', action)
   })
@@ -43,7 +43,7 @@ describe('Test processBeforeValidate and afterValidate invocations', async () =>
     context.payload.action = 'opened'
     await executor(context, registry)
     expect(action.processBeforeValidate.mock.calls.length).toBe(1)
-    expect(action.afterValidate.mock.calls.length).toBe(1)
+    expect(action.processAfterValidate.mock.calls.length).toBe(1)
   })
 
   test('when event is not in configuration', async () => {
@@ -51,7 +51,7 @@ describe('Test processBeforeValidate and afterValidate invocations', async () =>
     context.payload.action = 'submitted'
     await executor(context, registry)
     expect(action.processBeforeValidate.mock.calls.length).toBe(0)
-    expect(action.afterValidate.mock.calls.length).toBe(0)
+    expect(action.processAfterValidate.mock.calls.length).toBe(0)
   })
 
   test('when event is in configuration with multiple whens', async () => {
@@ -60,7 +60,7 @@ describe('Test processBeforeValidate and afterValidate invocations', async () =>
     context.payload.action = 'submitted'
     await executor(context, registry)
     expect(action.processBeforeValidate.mock.calls.length).toBe(1)
-    expect(action.afterValidate.mock.calls.length).toBe(1)
+    expect(action.processAfterValidate.mock.calls.length).toBe(1)
   })
 
   test('when event is NOT in configuration with multiple whens', async () => {
@@ -69,7 +69,7 @@ describe('Test processBeforeValidate and afterValidate invocations', async () =>
     context.payload.action = 'commented'
     await executor(context, registry)
     expect(action.processBeforeValidate.mock.calls.length).toBe(0)
-    expect(action.afterValidate.mock.calls.length).toBe(0)
+    expect(action.processAfterValidate.mock.calls.length).toBe(0)
   })
 })
 
@@ -145,7 +145,7 @@ describe('#executor', () => {
 
     let checks = {
       processBeforeValidate: jest.fn(),
-      afterValidate: jest.fn(),
+      processAfterValidate: jest.fn(),
       isEventSupported: jest.fn().mockReturnValue(false)
     }
     registry.actions.set('checks', checks)
@@ -155,7 +155,7 @@ describe('#executor', () => {
     expect(title.processValidate).toHaveBeenCalledTimes(1)
     expect(label.processValidate).toHaveBeenCalledTimes(1)
     expect(checks.processBeforeValidate).toHaveBeenCalledTimes(0)
-    expect(checks.afterValidate).toHaveBeenCalledTimes(0)
+    expect(checks.processAfterValidate).toHaveBeenCalledTimes(0)
   })
 
   test('Comma seperated events', async () => {
@@ -197,7 +197,7 @@ describe('#executor', () => {
 
     let checks = {
       processBeforeValidate: jest.fn(),
-      afterValidate: jest.fn(),
+      processAfterValidate: jest.fn(),
       isEventSupported: jest.fn(event => { return (event === 'pull_request.opened') })
     }
     registry.actions.set('checks', checks)
@@ -210,7 +210,7 @@ describe('#executor', () => {
     expect(issueOnly.processValidate).toHaveBeenCalledTimes(0)
     expect(issueOnly.isEventSupported).toHaveBeenCalledTimes(1)
     expect(checks.processBeforeValidate).toHaveBeenCalledTimes(1)
-    expect(checks.afterValidate).toHaveBeenCalledTimes(1)
+    expect(checks.processAfterValidate).toHaveBeenCalledTimes(1)
 
     context.event = 'issues'
     context.payload.action = 'opened'
@@ -220,7 +220,7 @@ describe('#executor', () => {
     expect(issueOnly.processValidate).toHaveBeenCalledTimes(1)
     expect(issueOnly.isEventSupported).toHaveBeenCalledTimes(2)
     expect(checks.processBeforeValidate).toHaveBeenCalledTimes(1)
-    expect(checks.afterValidate).toHaveBeenCalledTimes(1)
+    expect(checks.processAfterValidate).toHaveBeenCalledTimes(1)
   })
 
   test('Multiple Whens', async () => {
@@ -278,7 +278,7 @@ describe('#executor', () => {
     registry.validators.set('label', label)
     let checks = {
       processBeforeValidate: jest.fn(),
-      afterValidate: jest.fn(),
+      processAfterValidate: jest.fn(),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.actions.set('checks', checks)
@@ -289,14 +289,14 @@ describe('#executor', () => {
     expect(title.processValidate).toHaveBeenCalledTimes(1)
     expect(label.processValidate).toHaveBeenCalledTimes(0)
     expect(checks.processBeforeValidate).toHaveBeenCalledTimes(1)
-    expect(checks.afterValidate).toHaveBeenCalledTimes(1)
+    expect(checks.processAfterValidate).toHaveBeenCalledTimes(1)
 
     context.event = 'issues'
     await executor(context, registry)
     expect(title.processValidate).toHaveBeenCalledTimes(2)
     expect(label.processValidate).toHaveBeenCalledTimes(1)
     expect(checks.processBeforeValidate).toHaveBeenCalledTimes(2)
-    expect(checks.afterValidate).toHaveBeenCalledTimes(2)
+    expect(checks.processAfterValidate).toHaveBeenCalledTimes(2)
   })
 
   test('isEventInContext is working only for correct event', async () => {
@@ -354,7 +354,7 @@ describe('#executor', () => {
     registry.validators.set('label', label)
     let checks = {
       processBeforeValidate: jest.fn(),
-      afterValidate: jest.fn(),
+      processAfterValidate: jest.fn(),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.actions.set('checks', checks)
@@ -365,14 +365,14 @@ describe('#executor', () => {
     expect(title.processValidate).toHaveBeenCalledTimes(0)
     expect(label.processValidate).toHaveBeenCalledTimes(0)
     expect(checks.processBeforeValidate).toHaveBeenCalledTimes(0)
-    expect(checks.afterValidate).toHaveBeenCalledTimes(0)
+    expect(checks.processAfterValidate).toHaveBeenCalledTimes(0)
 
     context.event = 'pull_request'
     await executor(context, registry)
     expect(title.processValidate).toHaveBeenCalledTimes(1)
     expect(label.processValidate).toHaveBeenCalledTimes(0)
     expect(checks.processBeforeValidate).toHaveBeenCalledTimes(1)
-    expect(checks.afterValidate).toHaveBeenCalledTimes(1)
+    expect(checks.processAfterValidate).toHaveBeenCalledTimes(1)
   })
 
   test('Error handling', async() => {
@@ -383,12 +383,12 @@ describe('#executor', () => {
     }
     let passAction = {
       processBeforeValidate: jest.fn(),
-      afterValidate: jest.fn(),
+      processAfterValidate: jest.fn(),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     let errorAction = {
       processBeforeValidate: jest.fn(),
-      afterValidate: jest.fn(),
+      processAfterValidate: jest.fn(),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.validators.set('error', errorValidator)
@@ -412,8 +412,8 @@ describe('#executor', () => {
     await executor(context, registry)
 
     expect(errorAction.processBeforeValidate).toHaveBeenCalledTimes(1)
-    expect(errorAction.afterValidate).toHaveBeenCalledTimes(1)
+    expect(errorAction.processAfterValidate).toHaveBeenCalledTimes(1)
     expect(passAction.processBeforeValidate).toHaveBeenCalledTimes(1)
-    expect(passAction.afterValidate).toHaveBeenCalledTimes(0)
+    expect(passAction.processAfterValidate).toHaveBeenCalledTimes(0)
   })
 })
