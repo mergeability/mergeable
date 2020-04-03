@@ -231,11 +231,13 @@ completely deleted in the PR.
        message: 'Custom message...' # this is optional, a default message is used when not specified.
     must_include:
        regex: '### Goals|### Changes'
+       regex_flag: '' # Optional. Specify the flag for Regex. default is 'i', to disable default use ''
        message: >
         Please describe the goals (why) and changes (what) of the PR.
       # message is is optional, a default message is used when not specified.
     must_exclude:
        regex: 'DO NOT MERGE'
+       regex_flag: '' # Optional. Specify the flag for Regex. default is 'i', to disable default use ''
        message: 'Custom message...' # optional
     begins_with:
        match: '### Goals' # or array of strings
@@ -259,9 +261,11 @@ Supported events:
        message: 'Custom message...'
     must_include:
        regex: 'type|chore|wont'
+       regex_flag: '' # Optional. Specify the flag for Regex. default is 'i', to disable default use ''
        message: 'Custom message...'
     must_exclude:
        regex: 'DO NOT MERGE'
+       regex_flag: '' # Optional. Specify the flag for Regex. default is 'i', to disable default use ''
        message: 'Custom message...'
     begins_with:
        match: 'A String' # or array of strings
@@ -286,9 +290,11 @@ Supported events:
      message: 'Custom message...'
   must_include:
      regex: 'type|chore|wont'
+     regex_flag: '' # Optional. Specify the flag for Regex. default is 'i', to disable default use ''
      message: 'Custom message...'
   must_exclude:
      regex: 'DO NOT MERGE'
+     regex_flag: '' # Optional. Specify the flag for Regex. default is 'i', to disable default use ''
      message: 'Custom message...'
   begins_with:
      match: 'A String' # array of strings
@@ -346,9 +352,11 @@ Supported events:
      message: 'Custom message...'
   must_include:
      regex: 'doc|feat|fix|chore'
+     regex_flag: '' # Optional. Specify the flag for Regex. default is 'i', to disable default use ''
      message: 'Custom message...'
   must_exclude:
      regex: 'DO NOT MERGE|WIP'
+     regex_flag: '' # Optional. Specify the flag for Regex. default is 'i', to disable default use ''
      message: 'Custom message...'
   begins_with:
      match: ['doc','feat','fix','chore']
