@@ -537,6 +537,18 @@ Supported events:
 
 ```
 
+### close
+Close an Issue or Pull Request 
+
+```yml
+- do: close
+```
+
+Supported events:
+```js
+'pull_request.*', 'issues.*'
+```
+
 ## Examples
 
 ### Pull Requests
