@@ -23,6 +23,7 @@ describe('Loading bad configuration', () => {
     let config = new Configuration(`
     version: not a number
     mergeable:
+      pull_request:
     `)
     expect(config.errors.size).toBe(1)
     expect(config.errors.has(Configuration.ERROR_CODES.UNKOWN_VERSION)).toBe(true)
@@ -35,6 +36,79 @@ describe('Loading bad configuration', () => {
     `)
     expect(config.errors.size).toBe(1)
     expect(config.errors.has(Configuration.ERROR_CODES.MISSING_MERGEABLE_NODE)).toBe(true)
+  })
+
+  test('missing rule sets', () => {
+    let config = new Configuration(`
+    version: 2
+    mergeable:
+    `)
+    expect(config.errors.size).toBe(1)
+    expect(config.errors.has(Configuration.ERROR_CODES.MISSING_RULE_SETS)).toBe(true)
+  })
+  test('v2: non array rule set', () => {
+    let config = new Configuration(`
+    version: 2
+    mergeable:
+      when: test
+    `)
+
+    expect(config.errors.size).toBe(1)
+    expect(config.errors.has(Configuration.ERROR_CODES.NON_ARRAY_MERGEABLE)).toBe(true)
+  })
+
+  test('v2: missing/typo in "validate" keyword multiple rule sets', () => {
+    let config = new Configuration(`
+    version: 2
+    mergeable:
+      - when: pull_requests.*
+        validate:
+          - do :
+      - when: issues.*
+        valdate:
+    `)
+    expect(config.errors.size).toBe(1)
+    expect(config.errors.has(Configuration.ERROR_CODES.MISSING_VALIDATE_KEYWORD)).toBe(true)
+
+    config = new Configuration(`
+    version: 2
+    mergeable:
+      - when: pull_requests.*
+    `)
+    expect(config.errors.size).toBe(1)
+    expect(config.errors.has(Configuration.ERROR_CODES.MISSING_VALIDATE_KEYWORD)).toBe(true)
+  })
+
+  test('v2: non-array "validate" node', () => {
+    let config = new Configuration(`
+    version: 2
+    mergeable:
+      - when: pull_requests.*
+        validate:
+    `)
+    expect(config.errors.size).toBe(1)
+    expect(config.errors.has(Configuration.ERROR_CODES.NON_ARRAY_VALIDATE)).toBe(true)
+
+    config = new Configuration(`
+    version: 2
+    mergeable:
+      - when: pull_requests.*
+        validate:
+          do : title
+    `)
+    expect(config.errors.size).toBe(1)
+    expect(config.errors.has(Configuration.ERROR_CODES.NON_ARRAY_VALIDATE)).toBe(true)
+  })
+
+  test('v2: missing/typo in "when" keyword rule sets', () => {
+    let config = new Configuration(`
+    version: 2
+    mergeable:
+      - validate:
+          - do :
+    `)
+    expect(config.errors.size).toBe(1)
+    expect(config.errors.has(Configuration.ERROR_CODES.MISSING_WHEN_KEYWORD)).toBe(true)
   })
 
   test('multiple errors', () => {
