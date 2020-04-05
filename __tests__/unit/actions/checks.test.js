@@ -13,7 +13,7 @@ test('check that checks created when doPostAction is called with proper paramete
   const checks = new Checks()
   const context = createMockContext()
 
-  await checks.beforeValidate({context})
+  await checks.beforeValidate(context)
   expect(context.github.checks.create.mock.calls.length).toBe(1)
 })
 
