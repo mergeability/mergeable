@@ -404,6 +404,11 @@ Supported events:
     single_commint_only: false #Optional, Default is false. only process this validator if there is one commit
     
 ```
+Supported events:
+
+```js
+'pull_request.*', 'pull_request_review.*'
+```
 
 ### Advanced Logic
 Validators can be grouped together with `AND` and `OR` operators:
