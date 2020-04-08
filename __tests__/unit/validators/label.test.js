@@ -79,7 +79,7 @@ test('description is correct', async () => {
   let validation = await label.validate(createMockContext('Work in Progress'), settings)
 
   expect(validation.status).toBe('fail')
-  expect(validation.validations[0].description).toBe('label included "Work in Progress"')
+  expect(validation.validations[0].description).toBe('label does not exclude "Work in Progress"')
 
   validation = await label.validate(createMockContext('Just Label'), settings)
   expect(validation.validations[0].description).toBe("label must exclude 'Work in Progress'")

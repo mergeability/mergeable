@@ -39,3 +39,14 @@ test('return error if inputs are not in expected format', async () => {
     expect(e.message).toBe(`Failed to run the test because 'regex' is not provided for 'must_include' option. Please check README for more information about configuration`)
   }
 })
+
+test('check "all" sub option works', async () => {
+  const rule = {must_include: {regex: 'test', all: true}}
+  let input = ['A test', 'B', 'the test']
+  let res = mustInclude.process(validatorContext, input, rule)
+  expect(res.status).toBe('fail')
+
+  input = ['A test', 'B test', 'the test']
+  res = mustInclude.process(validatorContext, input, rule)
+  expect(res.status).toBe('pass')
+})
