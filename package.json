@@ -6,7 +6,7 @@
   "license": "AGPL-3.0-only",
   "repository": "https://github.com/mergeability/mergeable.git",
   "scripts": {
-    "dev": "LOG_LEVEL=trace NODE_ENV=development nodemon --exec 'npm start'",
+    "dev": "NODE_ENV=development nodemon --exec 'npm start'",
     "start": "probot run ./index.js",
     "test": "NODE_ENV=test jest && standard",
     "test:unit": "LOG_LEVEL=warn NODE_ENV=test jest __tests__/unit/* && standard",

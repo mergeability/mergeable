@@ -38,3 +38,10 @@ test('return error if inputs are not in expected format', async () => {
     expect(e.message).toBe(`Failed to run the test because 'regex' is not provided for 'must_exclude' option. Please check README for more information about configuration`)
   }
 })
+
+test('that regex_flag works as expected', async () => {
+  const rule = {must_exclude: {regex: 'test', regex_flag: 'none'}}
+  const input = ['A', 'B', 'Test']
+  const res = mustExclude.process(validatorContext, input, rule)
+  expect(res.status).toBe('pass')
+})
