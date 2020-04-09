@@ -50,3 +50,10 @@ test('check "all" sub option works', async () => {
   res = mustInclude.process(validatorContext, input, rule)
   expect(res.status).toBe('pass')
 })
+
+test('that regex_flag works as expected', async () => {
+  const rule = {must_include: {regex: 'test', regex_flag: 'none'}}
+  const input = ['A', 'B', 'Test']
+  const res = mustInclude.process(validatorContext, input, rule)
+  expect(res.status).toBe('fail')
+})

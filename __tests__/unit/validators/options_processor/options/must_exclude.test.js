@@ -49,3 +49,10 @@ test('check "all" sub option works', async () => {
   res = mustExclude.process(validatorContext, input, rule)
   expect(res.status).toBe('pass')
 })
+
+test('that regex_flag works as expected', async () => {
+  const rule = {must_exclude: {regex: 'test', regex_flag: 'none'}}
+  const input = ['A', 'B', 'Test']
+  const res = mustExclude.process(validatorContext, input, rule)
+  expect(res.status).toBe('pass')
+})
