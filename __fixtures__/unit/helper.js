@@ -135,6 +135,7 @@ module.exports = {
             })
           },
           addLabels: jest.fn(),
+          update: jest.fn(),
           get: () => {
             return {data: (options.deepValidation) ? options.deepValidation : {}}
           }

@@ -119,6 +119,8 @@ For convenience, wildcards can be used: `pull_request.*`, `issues.*`, `pull_requ
     message: 'Custom message...'
 ```
 
+> ☝ **NOTE:**  `owners` sub-option only works in **public** repos right now, we have plans to enable it for private repos in the future.
+
 Supported events:
 
 ```js
@@ -279,6 +281,38 @@ Supported events:
 
 ```js
 'pull_request.*', 'pull_request_review.*', 'issues.*'
+```
+
+### Change Set
+```yml
+  - do: changeset # validate against the files in the PR
+    no_empty:
+       enabled: false # Cannot be empty when true.
+       message: 'Custom message...'
+    must_include:
+       regex: 'yarn.lock'
+       message: 'Custom message...'
+    must_exclude:
+       regex: 'package.json'
+       message: 'Custom message...'
+    begins_with:
+       match: 'A String' # or array of strings
+       message: 'Some message...'
+    ends_with:
+       match: 'A String' # or array of strings
+       message: 'Come message...'
+    min:
+        count: 2 # min number of files in a PR
+        message: 'Custom message...'
+    max:
+       count: 2 # max number of files in a PR
+       message: 'Custom message...'
+    # all of the message sub-option is optional
+```
+Supported events:
+
+```js
+'pull_request.*', 'pull_request_review.*'
 ```
 
 ### milestone
@@ -541,6 +575,18 @@ Supported events:
 ```js
 'pull_request.*'
 
+```
+
+### close
+Close an Issue or Pull Request 
+
+```yml
+- do: close
+```
+
+Supported events:
+```js
+'pull_request.*', 'issues.*'
 ```
 
 ## Examples
