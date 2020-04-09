@@ -102,6 +102,13 @@ module.exports = {
               return { data: options.files && options.files }
             }
           },
+          listCommits: {
+            endpoint: {
+              merge: async () => {
+                return { data: (options.commits) ? options.commits : [] }
+              }
+            }
+          },
           listReviews: {
             endpoint: {
               merge: async () => {

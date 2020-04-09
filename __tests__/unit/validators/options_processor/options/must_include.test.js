@@ -40,6 +40,17 @@ test('return error if inputs are not in expected format', async () => {
   }
 })
 
+test('check "all" sub option works', async () => {
+  const rule = {must_include: {regex: 'test', all: true}}
+  let input = ['A test', 'B', 'the test']
+  let res = mustInclude.process(validatorContext, input, rule)
+  expect(res.status).toBe('fail')
+
+  input = ['A test', 'B test', 'the test']
+  res = mustInclude.process(validatorContext, input, rule)
+  expect(res.status).toBe('pass')
+})
+
 test('that regex_flag works as expected', async () => {
   const rule = {must_include: {regex: 'test', regex_flag: 'none'}}
   const input = ['A', 'B', 'Test']
