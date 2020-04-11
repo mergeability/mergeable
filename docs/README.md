@@ -664,8 +664,8 @@ Validate pull requests for mergeability based on content and structure of your P
       validate:
         - do: dependent
           changed:
-            file: 'package.json'
-            files: ['package-lock.json', 'yarn.lock']
+            file: 'package.json'  # also supports globs expressions
+            required: ['package-lock.json', 'yarn.lock'] # alias: `files` for backward compatibility
   ```
   </p>
 </details>
