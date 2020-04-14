@@ -30,7 +30,6 @@ describe('dependent files with modified', () => {
         file: 'package.json',
         files: ['package-lock.json']
       }
-
     }
 
     let validation = await dependent.validate(createMockContext(['package.json', 'a.js', 'b.js']), settings)
@@ -45,10 +44,43 @@ describe('dependent files with modified', () => {
         file: 'package.json',
         files: ['package-lock.json']
       }
+    }
 
+    let validation = await dependent.validate(createMockContext(['package.json', 'a.js', 'b.js']), settings)
+    expect(validation.status).toBe('fail')
+  })
+
+  test('required sub option works as alias for files', async () => {
+    const dependent = new Dependent()
+    const settings = {
+      do: 'dependent',
+      changed: {
+        file: 'package.json',
+        required: ['package-lock.json']
+      }
     }
 
     let validation = await dependent.validate(createMockContext([]), settings)
+    expect(validation.status).toBe('pass')
+  })
+
+  test('glob works with changed file option', async () => {
+    const dependent = new Dependent()
+    const settings = {
+      do: 'dependent',
+      changed: {
+        file: '**/*.js',
+        files: ['package-lock.json']
+      }
+    }
+
+    let validation = await dependent.validate(createMockContext(['a.js']), settings)
+    expect(validation.status).toBe('fail')
+
+    validation = await dependent.validate(createMockContext(['test/test.js']), settings)
+    expect(validation.status).toBe('fail')
+
+    validation = await dependent.validate(createMockContext(['test/test.js', 'package-lock.json']), settings)
     expect(validation.status).toBe('pass')
   })
 })
