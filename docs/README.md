@@ -488,7 +488,7 @@ similarly, `AND` and `OR` can also be nested at the validator level:
       message: 'If no test plan is necessary, please include test plan: no label'
 ```
 
-To reuse certain parts of the config, you can utilize anchor points that `yaml` provides, like this 
+To reuse certain parts of the config, you can utilize anchor points that `yaml` provides ([link](https://yaml.org/spec/1.2/spec.html#id2785586)), like this 
 
 ```yml
   - do: title
