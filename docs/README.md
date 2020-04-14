@@ -488,6 +488,17 @@ similarly, `AND` and `OR` can also be nested at the validator level:
       message: 'If no test plan is necessary, please include test plan: no label'
 ```
 
+To reuse certain parts of the config, you can utilize anchor points that `yaml` provides ([link](https://yaml.org/spec/1.2/spec.html#id2785586)), like this 
+
+```yml
+  - do: title
+    must_include: &regex_semantic
+      regex: '^(build|chore|ci|docs|feat|fix|improvement|perf|refactor|revert|style|test)(\([a-z0-9_-]+\))?: [^\s].+$'
+      regex_flag: 'none'
+  - do: commit
+    message: *regex_semantic
+```
+
 ## Actions
 
 Actions are listed for execution at the `pass`, `fail` and `error` tags for a recipe based on the results of the [validation](#validators).
