@@ -64,6 +64,20 @@ describe('dependent files with modified', () => {
     expect(validation.status).toBe('pass')
   })
 
+  test('error when "file" sub option is missing', async () => {
+    const dependent = new Dependent()
+    const settings = {
+      do: 'dependent',
+      changed: {
+        required: ['package-lock.json']
+      }
+    }
+
+    let validation = await dependent.validate(createMockContext([]), settings)
+    expect(validation.status).toBe('error')
+    expect(validation.validations[0].description).toBe('Failed to validate because the \'file\' sub option for \'changed\' option is missing. Please check the documentation')
+  })
+
   test('glob works with changed file option', async () => {
     const dependent = new Dependent()
     const settings = {
