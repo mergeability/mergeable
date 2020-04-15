@@ -404,7 +404,7 @@ Supported events:
 ### commit
 ```yml
 - do: commit
-  messsage:
+  message:
     regex: '^(feat|docs|chore|fix|refactor|test|style|perf)(\(\w+\))?:.+$'
     message: 'Custom message' # Semantic release conventions must be followed
     skip_merge: true # Optional, Default is true. Will skip commit with message that includes 'Merge'
