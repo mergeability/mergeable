@@ -41,6 +41,9 @@ Some examples of what you can do:
 1. [Install](https://github.com/apps/mergeable) the Mergeable GitHub App.
 2. [Create](#configuration) your recipe(s). Here are some [examples](#examples).
 3. Commit and push the recipes to your repository at `.github/mergeable.yml`
+4. (Optional) You can also create a default configuration for an organisation by
+   creating a repo called `.github` and adding your file there. See [Organisation wide defaults](#organisation-wide-defaults)
+   for details.
 
 > ☝ **NOTE:** You can also [deploy to your own server](deploy.md).
 
@@ -112,7 +115,7 @@ For convenience, wildcards can be used: `pull_request.*`, `issues.*`, `pull_requ
     reviewers: [ user1, user2 ] # list of github usernames required to review
     owners: true # Optional boolean. When true, the file .github/CODEOWNER is read and owners made required reviewers
     assignees: true # Optional boolean. When true, PR assignees are made required reviewers.
-    pending_reviewer: true # Optional boolean. When true, all the requested reviewer's approval is required 
+    pending_reviewer: true # Optional boolean. When true, all the requested reviewer's approval is required
     message: 'Custom message...'
   block:
     changes_requested: true #If true, block all approvals when one of the reviewers gave 'changes_requested' review
@@ -410,7 +413,7 @@ Supported events:
     skip_merge: true # Optional, Default is true. Will skip commit with message that includes 'Merge'
     oldest_only: false # Optional, Default is false. Only check the regex against the oldest commit
     single_commit_only: false # Optional, Default is false. only process this validator if there is one commit
-    
+
 ```
 Supported events:
 
@@ -488,7 +491,7 @@ similarly, `AND` and `OR` can also be nested at the validator level:
       message: 'If no test plan is necessary, please include test plan: no label'
 ```
 
-To reuse certain parts of the config, you can utilize anchor points that `yaml` provides ([link](https://yaml.org/spec/1.2/spec.html#id2785586)), like this 
+To reuse certain parts of the config, you can utilize anchor points that `yaml` provides ([link](https://yaml.org/spec/1.2/spec.html#id2785586)), like this
 
 ```yml
   - do: title
@@ -606,7 +609,7 @@ Supported events:
 ```
 
 ### close
-Close an Issue or Pull Request 
+Close an Issue or Pull Request
 
 ```yml
 - do: close
@@ -731,7 +734,7 @@ Validate pull requests for mergeability based on content and structure of your P
     - when: pull_request.*
       validate:
         - do: project
-          must_include: 
+          must_include:
             regex: MVP
   ```
   </p>
@@ -793,6 +796,38 @@ Detect issues and pull requests that are `n` days old (stale) and notify authors
   ```
   </p>
 </details>
+
+# Organisation-wide defaults
+
+You can specify a default configuration to be applied across your GitHub organisation.
+This can help reduce how many configuration files you need to maintain and make it easier
+to get started with Mergeable.
+
+To add a default configuration:
+
+1. Create a repository called `.github` in your organisation.
+2. Create a file with the path `.github/mergeable.yml` in this repository.
+
+The final path of the file (including the repo name) should be `<YOUR_ORG>/.github/.github/mergeable.yml`
+
+Mergeable will now use this file as the default when it cannot find one in a given
+repository or PR. It determines the file to use in the following order:
+
+1. A `mergeable.yml` inside the PR.
+2. A `mergeable.yml` inside the repository the PR is for.
+3. A `mergeable.yml` at `<YOUR_ORG>/.github/.github/mergeable.yml`.
+
+**Note**: Mergeable will only ever use a _single_ file. It does _not_ merge files.
+
+## Why the weird default file path?
+
+The Probots library that Mergeable uses automatically searches for config files
+in a repo named `.github` within the organisation.
+
+The double nesting of the `<YOUR_ORG>/.github/.github/mergeable.yml` default
+file is unfortunately necessary. The GitHub app permissions model only lets you
+specify a single path for your probot to access, so it must be the same as in
+regular repositories.
 
 # Roadmap
 

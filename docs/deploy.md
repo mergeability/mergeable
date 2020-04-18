@@ -47,3 +47,10 @@ Make sure to create a private key for the app after it's been registered.
 This happens when you haven't configured the webhook secret correctly in your
 locally running instance. Make sure to set the `SECRET_TOKEN` environment variable
 in `.env` before running `npm run dev`.
+
+#### `ERROR probot: Integration not found`
+
+This may occur when running Mergeable using a GitHub Enterpise instance.
+
+To fix, try making sure you've set the `GHE_HOST` variable in `.env` to the
+hostname of your Enterprise instance. E.g. `GHE_HOST=github.your_company.com`.
