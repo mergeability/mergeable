@@ -6,6 +6,7 @@ describe('Test processBeforeValidate and processAfterValidate invocations', asyn
   let context
   let registry = { validators: new Map(), actions: new Map() }
   let action
+
   let config = `
     version: 2
     mergeable:
@@ -28,7 +29,7 @@ describe('Test processBeforeValidate and processAfterValidate invocations', asyn
   `
 
   beforeEach(() => {
-    context = Helper.mockContext('title')
+    context = Helper.mockContext()
     Helper.mockConfigWithContext(context, config)
 
     action = new Action()
@@ -75,12 +76,16 @@ describe('Test processBeforeValidate and processAfterValidate invocations', asyn
 
 describe('#executor', () => {
   test('Bad YML', async () => {
-    let context = Helper.mockContext('title')
+    let context = Helper.mockContext()
+    context.event = 'pull_request'
+    context.payload.action = 'opened'
     Helper.mockConfigWithContext(context, `
       version: 2
-      mergeable:
+        mergeable:
     when: pull_request.*
-    `)
+      `,
+      {files: ['.github/mergeable.yml']}
+    )
 
     context.event = 'pull_request'
     context.payload.action = 'opened'
