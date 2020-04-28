@@ -64,13 +64,34 @@ describe('Test processBeforeValidate and processAfterValidate invocations', asyn
     expect(action.processAfterValidate.mock.calls.length).toBe(1)
   })
 
-  test('when event is NOT in configuration with multiple whens', async () => {
-    Helper.mockConfigWithContext(context, configWithMultiple)
-    context.event = 'pull_request_review'
-    context.payload.action = 'commented'
+  test('two whens with same events', async () => {
+    const config = `
+    version: 2
+    mergeable:
+      - when: pull_request.*
+        validate:
+          - do: title
+            must_exclude:
+              regex: wip|work in progress|do not merge
+              message: 'a custom message'
+          - do: label
+            must_exclude:
+              regex: wip|work in progress
+      - when: pull_request.*
+        validate:
+          - do: title
+            must_exclude:
+              regex: wip|work in progress|do not merge
+              message: 'a custom message'
+          - do: label
+            must_exclude:
+              regex: wip|work in progress`
+    Helper.mockConfigWithContext(context, config)
+    context.event = 'pull_request'
+    context.payload.action = 'opened'
     await executor(context, registry)
-    expect(action.processBeforeValidate.mock.calls.length).toBe(0)
-    expect(action.processAfterValidate.mock.calls.length).toBe(0)
+    expect(action.processBeforeValidate.mock.calls.length).toBe(2)
+    expect(action.processAfterValidate.mock.calls.length).toBe(2)
   })
 })
 
