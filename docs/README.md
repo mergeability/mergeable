@@ -59,6 +59,7 @@ The configuration consists of any number of recipes. Recipes are created by tyin
 version: 2
 mergeable:
   - when: {{event}}, {{event}} # can be one or more
+    name: 'name of recipe' # optional (but needed to create multiple checks) 
     validate:
       # list of validators. Specify one or more.
       - do: {{validator}}
