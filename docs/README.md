@@ -492,6 +492,29 @@ similarly, `AND` and `OR` can also be nested at the validator level:
       message: 'If no test plan is necessary, please include test plan: no label'
 ```
 
+If you want to split the validations in multiple checks, you can create multiple named recipe 
+```yml
+version: 2
+mergeable:
+  - when: pull_request.*, pull_request_review.*
+    name: 'JIRA ticket in Title'
+    validate:
+      - do: title
+        must_include:
+          regex: '\[[a-zA-Z]{2,6}-\d{1,7}\]'
+          regex_flag: 'none'
+          message: >
+            Please include ticket in title in square brackets (ex: [AAA-123])
+  - when: pull_request.*, pull_request_review.*
+    name: 'Non Empty Description'
+    validate:
+      - do: description
+        no_empty:
+          enabled: true
+```
+
+Note: if you have multiple recipe without `name`, only the latest valid recipe will be displayed
+
 To reuse certain parts of the config, you can utilize anchor points that `yaml` provides ([link](https://yaml.org/spec/1.2/spec.html#id2785586)), like this
 
 ```yml
