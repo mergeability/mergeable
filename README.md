@@ -845,7 +845,7 @@ Found a bug? Have a question? Or just want to chat?
 We need your help:
 
 - Have an **💡idea** for a **new feature**? Please [create a new issue](https://github.com/mergeability/mergeable/issues) and tell us!
-- **Fix a bug**, implement a new **validator** or **action** and [open a pull request](docs/CONTRIBUTING.md)!
+- **Fix a bug**, implement a new **validator** or **action** and [open a pull request](CONTRIBUTING.md)!
 
 > ☝️ **NOTE:** For development and testing. You'll want to [read about how to run it locally](deploy.md#running-locally).
 
