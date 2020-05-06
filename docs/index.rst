@@ -8,8 +8,6 @@ Mergeable
 
 Mergeable helps automate your team's GitHub workflow without a single line of code.
 
-To get started, follow
-
 .. toctree::
    :maxdepth: 2
 
