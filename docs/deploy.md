@@ -40,6 +40,8 @@ Make sure to create a private key for the app after it's been registered.
 6. Add a repository for your Github app by going to [application settings](https://github.com/settings/installations)
 7. Do a test pull request to check if everything is working
 
+Note: if you wish to use a different config file name beside `mergeable.yml`, use `CONFIG_PATH` environment variable.
+
 ### Possible issues
 
 ####  `400 bad request` / `Error: No X-Hub-Signature found on request`
