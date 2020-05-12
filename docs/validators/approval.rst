@@ -14,10 +14,10 @@ Approvals
         pending_reviewer: true # Optional boolean. When true, all the requested reviewer's approval is required
         message: 'Custom message...'
       block:
-        changes_requested: true #If true, block all approvals when one of the reviewers gave 'changes_requested' review
+        changes_requested: true # If true, block all approvals when one of the reviewers gave 'changes_requested' review
         message: 'Custom message...'
       limit:
-        teams: ['org/team_slug'] #when the option is present, only the approvals from the team members will count
+        teams: ['org/team_slug'] # when the option is present, only the approvals from the team members will count
 
 .. warning::
     ``owners`` sub-option only works in public repos right now, we have plans to enable it for private repos in the future.
