@@ -142,6 +142,9 @@ module.exports = {
               resolve({ status: 204 })
             })
           },
+          listComments: () => {
+            return { data: (options.listComments) ? options.listComments : [] }
+          },
           addLabels: jest.fn(),
           update: jest.fn(),
           get: () => {
