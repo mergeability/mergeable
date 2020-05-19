@@ -25,13 +25,13 @@
     "minimatch": "^3.0.4"
   },
   "devDependencies": {
-    "codecov": "^3.1.0",
-    "jest": "^23.6.0",
+    "codecov": "^3.6.5",
+    "jest": "^24.0.0",
     "nock": "^11.7.2",
-    "nodemon": "^1.18.3",
+    "nodemon": "^2.0.3",
     "object-dot": "^1.7.0",
     "smee-client": "^1.0.1",
-    "standard": "^10.0.3"
+    "standard": "^11.0.0"
   },
   "engines": {
     "node": ">= 7.7.0",
