@@ -620,13 +620,91 @@ test('blocks if changes are requested while other options area also passed in', 
   expect(validation.status).toBe('fail')
 })
 
+test('returns proper error when team provided is not found', async () => {
+  const approval = new Approval()
+
+  const reviewList = [
+    {
+      user: {
+        login: 'userA'
+      },
+      state: 'APPROVED',
+      submitted_at: Date.now()
+    },
+    {
+      user: {
+        login: 'userB'
+      },
+      state: 'CHANGES_REQUESTED',
+      submitted_at: Date.now() + 1000
+    }
+  ]
+
+  const settings = {
+    do: 'approval',
+    limit: {
+      teams: ['test-org/test-team']
+    },
+    required: {
+      reviewers: ['userA']
+    }
+  }
+
+  const listMember = jest.fn().mockRejectedValue({ status: 404, message: 'test Error' })
+  let validation = await approval.validate(createMockContext(5, reviewList, null, null, null, null, false, listMember), settings)
+  expect(validation.validations.length).toBe(1)
+  expect(validation.validations[0].description).toBe('TeamNotFoundError')
+  expect(validation.status).toBe('error')
+})
+
+test('teams option works properly', async () => {
+  const approval = new Approval()
+
+  const reviewList = [
+    {
+      user: {
+        login: 'userA'
+      },
+      state: 'APPROVED',
+      submitted_at: Date.now()
+    },
+    {
+      user: {
+        login: 'userB'
+      },
+      state: 'APPROVED',
+      submitted_at: Date.now() + 1000
+    }
+  ]
+
+  const settings = {
+    do: 'approval',
+    limit: {
+      teams: ['test-org/test-team']
+    },
+    required: {
+      reviewers: ['userA']
+    }
+  }
+
+  const listMember = jest.fn().mockReturnValue({ data: [
+    {
+      login: 'userB'
+    }
+  ]})
+  let validation = await approval.validate(createMockContext(5, reviewList, null, null, null, null, false, listMember), settings)
+  expect(validation.validations.length).toBe(1)
+  expect(validation.status).toBe('fail')
+  expect(validation.validations[0].description).toBe('approval: userA required')
+})
+
 const createCommitDiffs = (diffs) => {
   return diffs.map(diff => ({
     filename: diff
   }))
 }
 
-const createMockContext = (minimum, data, owners, commitDiffs, assignees, requestedReviewers, isOwnersNotFound = false) => {
+const createMockContext = (minimum, data, owners, commitDiffs, assignees, requestedReviewers, isOwnersNotFound = false, listMembers) => {
   if (!data) {
     data = []
     for (let i = 0; i < minimum; i++) {
@@ -641,7 +719,7 @@ const createMockContext = (minimum, data, owners, commitDiffs, assignees, reques
   }
 
   let codeowners = (isOwnersNotFound || !owners) ? null : Buffer.from(`${owners}`).toString('base64')
-  return Helper.mockContext({reviews: data, codeowners: codeowners, compareCommits: commitDiffs, assignees, requestedReviewers})
+  return Helper.mockContext({reviews: data, codeowners: codeowners, compareCommits: commitDiffs, assignees, requestedReviewers, listMembers})
 }
 
 const createAssigneeList = (assignees) => {
