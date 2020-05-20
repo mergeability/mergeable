@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "codecov": "^3.6.5",
+    "handlebars": "^4.7.6",
     "jest": "^24.0.0",
     "nock": "^11.7.2",
     "nodemon": "^2.0.3",
