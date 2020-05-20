@@ -32,18 +32,21 @@ Validates that the files specified are all part of a pull request (added or modi
            count: 500
            message: Change is very large. Should be under 500 lines of additions and deletions.
 
-It also supports an ``ignore`` setting to allow excluding certain files from the total size (e.g. for ignoring automatically generated files that increase the size a lot).
+It also supports an ``ignore`` or ``match`` setting to allow excluding or including certain files from the total size (e.g. for ignoring automatically generated files that increase the size a lot).
 
 This option supports glob patterns, so you can provide either the path to a specific file or ignore whole patterns:
 
 ::
 
      - do: size
+       match: ['src']
        ignore: ['package-lock.json', 'src/tests/__snapshots__/**', 'docs/*.md']
        lines:
          total:
            count: 500
            message: Change is very large. Should be under 500 lines of additions and deletions
+
+In case both ``match`` and ``ignore`` are specified, the ``match`` filters are applied first.
 
 Note that the glob functionality is powered by the minimatch library. Please see their documentation for details on how glob patterns are handled and possible discrepancies with glob handling in other tools.
 

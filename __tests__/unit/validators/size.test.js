@@ -274,6 +274,20 @@ describe('PR size validator', () => {
     expect(validation.validations[1].status).toBe('pass')
     expect(validation.validations[2].description).toBe('PR size for total additions + deletions is OK!')
     expect(validation.validations[2].status).toBe('pass')
+
+    // Explicitly setting ignore to blank so
+    // that we can test for matches.
+    settings.match = ['not_*.js']
+    settings.ignore = []
+
+    validation = await size.validate(createMockContext(files), settings)
+    expect(validation.status).toBe('pass')
+    expect(validation.validations[0].description).toBe('PR size for additions is OK!')
+    expect(validation.validations[0].status).toBe('pass')
+    expect(validation.validations[1].description).toBe('PR size for deletions is OK!')
+    expect(validation.validations[1].status).toBe('pass')
+    expect(validation.validations[2].description).toBe('PR size for total additions + deletions is OK!')
+    expect(validation.validations[2].status).toBe('pass')
   })
 
   test('handles empty ignore args', async () => {
