@@ -71,19 +71,19 @@ test('check that old comments from Mergeable are deleted if they exists', async 
     }]
   }
 
-  await comment.afterValidate(context, settings, result)
+  await comment.afterValidate(context, settings, '', result)
   expect(context.github.issues.deleteComment.mock.calls.length).toBe(1)
   expect(context.github.issues.deleteComment.mock.calls[0][0].comment_id).toBe(`2`)
 })
 
-test('check that old_comment option works', async () => {
+test('check that leave_old_comment option works', async () => {
   const comment = new Comment()
 
   const settings = {
     payload: {
       body: `Your run has returned the following status: {{status}}`
     },
-    old_comment: 'leave'
+    leave_old_comment: true
   }
 
   const listComments = [{
@@ -108,7 +108,7 @@ test('check that old_comment option works', async () => {
     }]
   }
 
-  await comment.afterValidate(context, settings, result)
+  await comment.afterValidate(context, settings, '', result)
   expect(context.github.issues.deleteComment.mock.calls.length).toBe(0)
 })
 
