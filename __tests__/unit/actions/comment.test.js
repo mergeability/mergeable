@@ -27,7 +27,7 @@ test('check that comment created when afterValidate is called with proper parame
     }]
   }
 
-  await comment.afterValidate(context, settings, result)
+  await comment.afterValidate(context, settings, '', result)
   expect(context.github.issues.createComment.mock.calls.length).toBe(1)
   expect(context.github.issues.createComment.mock.calls[0][0].body).toBe(`Your run has returned the following status: pass`)
 })
@@ -42,7 +42,7 @@ test('that comment is created three times when result contain three issues found
       pulls: []
     }
   }]
-  await comment.afterValidate(context, settings, result)
+  await comment.afterValidate(context, settings, '', result)
   expect(context.github.issues.createComment.mock.calls.length).toBe(3)
 })
 

@@ -85,6 +85,9 @@ module.exports = {
             return {}
           }
         },
+        teams: {
+          listMembersInOrg: options.listMembers ? options.listMembers : () => ({ data: [] })
+        },
         pulls: {
           listFiles: () => {
             if (_.isString(options.files && options.files[0])) {

@@ -61,5 +61,5 @@ test('return error if multiple sub option is not valid', async () => {
   expect(res.description).toBe('Error occurred: \n' +
     `- The 'must_inclde' option is not supported for 'label' validator, please see README for all available options \n` +
     `- The 'must_excalude' option is not supported for 'label' validator, please see README for all available options \n`
-    )
+  )
 })
