@@ -85,6 +85,9 @@ module.exports = {
             return {}
           }
         },
+        teams: {
+          listMembersInOrg: options.listMembers ? options.listMembers : () => ({ data: [] })
+        },
         pulls: {
           listFiles: () => {
             if (_.isString(options.files && options.files[0])) {
@@ -141,6 +144,9 @@ module.exports = {
             return new Promise((resolve) => {
               resolve({ status: 204 })
             })
+          },
+          listComments: () => {
+            return { data: (options.listComments) ? options.listComments : [] }
           },
           addLabels: jest.fn(),
           update: jest.fn(),
