@@ -13,8 +13,8 @@ test('will set the issues and pulls appropriately when both types are specified'
 
   let stale = new Stale()
   let context = createMockContext([
-      { number: 1 },
-      { number: 2, pull_request: {} }
+    { number: 1 },
+    { number: 2, pull_request: {} }
   ])
 
   let results = await stale.validate(context, settings)
@@ -29,8 +29,8 @@ test('will set the issues and pulls appropriately when no type is set', async ()
 
   let stale = new Stale()
   let context = createMockContext([
-      { number: 1 },
-      { number: 2, pull_request: {} }
+    { number: 1 },
+    { number: 2, pull_request: {} }
   ])
 
   let results = await stale.validate(context, settings)
@@ -46,8 +46,8 @@ test('will set the issues and pulls even when unsupported type is set', async ()
 
   let stale = new Stale()
   let context = createMockContext([
-      { number: 1 },
-      { number: 2, pull_request: {} }
+    { number: 1 },
+    { number: 2, pull_request: {} }
   ])
 
   let results = await stale.validate(context, settings)

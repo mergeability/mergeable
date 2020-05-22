@@ -2,7 +2,7 @@ const executor = require('../../lib/flex')
 const Helper = require('../../__fixtures__/unit/helper')
 const { Action } = require('../../lib/actions/action')
 
-describe('Test processBeforeValidate and processAfterValidate invocations', async () => {
+describe('Test processBeforeValidate and processAfterValidate invocations', () => {
   let context
   let registry = { validators: new Map(), actions: new Map() }
   let action
@@ -105,7 +105,7 @@ describe('#executor', () => {
         mergeable:
     when: pull_request.*
       `,
-      {files: ['.github/mergeable.yml']}
+    {files: ['.github/mergeable.yml']}
     )
 
     context.event = 'pull_request'
@@ -401,7 +401,7 @@ describe('#executor', () => {
     expect(checks.processAfterValidate).toHaveBeenCalledTimes(1)
   })
 
-  test('Error handling', async() => {
+  test('Error handling', async () => {
     let registry = { validators: new Map(), actions: new Map() }
     let errorValidator = {
       processValidate: jest.fn(value => Promise.reject(new Error('Uncaught error'))),

@@ -147,7 +147,7 @@ test('that mergeable is false when only one of the dependent file is added', asy
 
   let validation = await dependent.validate(
     createMockContext([{ filename: 'package.json', status: 'added' }]),
-      settings
+    settings
   )
   expect(validation.status).toBe('fail')
 })
