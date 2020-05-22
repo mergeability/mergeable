@@ -35,6 +35,35 @@ You can pass in Handlebars template to show the details result of the run.
                      {{/each}}\n
               {{/each}}"
 
+::
+
+    - do: checks # default error case
+      status: 'action_required' # Can be: success, failure, neutral, cancelled, timed_out, or action_required
+      payload:
+        title: 'Mergeable found some errors!'
+        summary: |
+            ### Status: {{toUpperCase validationStatus}}
+            Some or All of the validators have returned 'error' status, please check below for details
+            Here are some stats of the run: \n {{validationCount}} validations were ran.
+            {{passCount}} ***PASSED***
+            {{failCount}} ***FAILED***
+            {{errorCount}} ***ERRORED***
+        text: "{{#each validationSuites}}
+            #### {{{statusIcon status}}} Validator: {{toUpperCase name}}
+            Status {{toUpperCase status}}
+            {{#each validations }} * {{{statusIcon status}}} ***{{{ description }}}***
+                   Input : {{{details.input}}}
+                   Settings : {{{displaySettings details.settings}}}
+                   {{#if details.error}}
+                   Error : {{{details.error}}}
+                   {{/if}}
+                   {{/each}}
+            {{/each}}"
+
+.. warning::
+    if you have have ``checks`` action only for some of the result, you may end up in a state where checks are never finished.
+    So be sure to have ``checks`` for all outcome (``pass``, ``fail``, and ``error``)
+
 Supported Events:
 ::
 
