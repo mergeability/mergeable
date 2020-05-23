@@ -4,7 +4,7 @@ Assign
 ::
 
     - do: assign
-      assignees: [ 'shine2lay', 'jusx' ] # only array accepted
+      assignees: [ 'shine2lay', 'jusx', '@author' ] # only array accepted, use @author for PR/Issue author
 
 Supported Events:
 ::

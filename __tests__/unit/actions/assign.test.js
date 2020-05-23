@@ -15,6 +15,19 @@ test('check that assignees are added when afterValidate is called with proper pa
   expect(context.github.issues.addAssignees.mock.calls[0][0].assignees[1]).toBe(`testuser2`)
 })
 
+test('check that creator is added when assignee is @author', async () => {
+  const settings = {
+    assignees: [ '@author' ]
+  }
+
+  const comment = new Assign()
+  const context = createMockContext()
+
+  await comment.afterValidate(context, settings)
+  expect(context.github.issues.addAssignees.mock.calls.length).toBe(1)
+  expect(context.github.issues.addAssignees.mock.calls[0][0].assignees[0]).toBe(`creator`)
+})
+
 test('check only authorized users are added as assignee ', async () => {
   const settings = {
     assignees: ['testuser1', 'testuser2']
