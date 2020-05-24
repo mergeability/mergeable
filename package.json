@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "NODE_ENV=development nodemon --exec 'npm start'",
     "start": "probot run ./index.js",
-    "test": "NODE_ENV=test jest __tests__/unit/flex.test.js && standard",
+    "test": "NODE_ENV=test jest && standard",
     "test:unit": "LOG_LEVEL=warn NODE_ENV=test jest __tests__/unit/* && standard",
     "test:e2e": "LOG_LEVEL=warn NODE_ENV=test jest __tests__/e2e/* && standard",
     "test-watch": "NODE_ENV=test jest --watch",
