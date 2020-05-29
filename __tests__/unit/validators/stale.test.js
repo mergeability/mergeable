@@ -139,7 +139,7 @@ describe('limit option', () => {
     settings = {
       do: 'stale',
       days: 10,
-      limit: {
+      time_constraint: {
         time_zone: timeZone
       }
     }
@@ -153,7 +153,7 @@ describe('limit option', () => {
     let settings = {
       do: 'stale',
       days: 10,
-      limit: {
+      time_constraint: {
         days_of_week: ['Sun']
       }
     }
@@ -167,7 +167,7 @@ describe('limit option', () => {
     settings = {
       do: 'stale',
       days: 10,
-      limit: {
+      time_constraint: {
         days_of_week: ['Mon']
       }
     }
@@ -180,7 +180,7 @@ describe('limit option', () => {
     let settings = {
       do: 'stale',
       days: 10,
-      limit: {
+      time_constraint: {
         hours_between: ['7', '17']
       }
     }
@@ -194,7 +194,7 @@ describe('limit option', () => {
     settings = {
       do: 'stale',
       days: 10,
-      limit: {
+      time_constraint: {
         hours_between: ['9', '17']
       }
     }
@@ -205,7 +205,7 @@ describe('limit option', () => {
     settings = {
       do: 'stale',
       days: 10,
-      limit: {
+      time_constraint: {
         hours_between: ['1', '7']
       }
     }
