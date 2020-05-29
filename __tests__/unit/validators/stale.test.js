@@ -1,5 +1,15 @@
 const Helper = require('../../../__fixtures__/unit/helper')
 const Stale = require('../../../lib/validators/stale')
+const moment = require('moment-timezone')
+
+jest.mock('moment-timezone', () => jest.fn().mockReturnValue((({
+  utc: jest.fn().mockReturnValue(({
+    tz: jest.fn(),
+    day: jest.fn().mockReturnValue(1),
+    hour: jest.fn().mockReturnValue(8),
+    format: () => '2018–01–30T12:34:56+00:00'
+  }))
+}))))
 
 // Stale relies on the search api:
 // https://help.github.com/articles/searching-issues-and-pull-requests/#search-only-issues-or-pull-requests
@@ -106,6 +116,103 @@ test('will set the issues and pulls correctly when type is pull_request only', a
   context = createMockContext([])
   res = await stale.validate(context, settings)
   expect(res.status).toBe('fail')
+})
+
+describe('limit option', () => {
+  beforeEach(() => {
+
+  })
+
+  test('time_zone option works correctly', async () => {
+    const timeZone = 'America/Los_Angeles'
+    let settings = {
+      do: 'stale',
+      days: 10
+    }
+
+    let stale = new Stale()
+    let context = createMockContext([])
+
+    await stale.validate(context, settings)
+    expect(moment().utc().tz.mock.calls.length).toBe(0)
+
+    settings = {
+      do: 'stale',
+      days: 10,
+      time_constraint: {
+        time_zone: timeZone
+      }
+    }
+
+    await stale.validate(context, settings)
+    expect(moment().utc().tz.mock.calls.length).toBe(1)
+    expect(moment().utc().tz.mock.calls[0][0]).toBe(timeZone)
+  })
+
+  test('days_of_week option works correctly', async () => {
+    let settings = {
+      do: 'stale',
+      days: 10,
+      time_constraint: {
+        days_of_week: ['Sun']
+      }
+    }
+
+    let stale = new Stale()
+    let context = createMockContext([{ number: 1, pull_request: {} }])
+
+    let res = await stale.validate(context, settings)
+    expect(res.status).toBe('fail')
+
+    settings = {
+      do: 'stale',
+      days: 10,
+      time_constraint: {
+        days_of_week: ['Mon']
+      }
+    }
+
+    res = await stale.validate(context, settings)
+    expect(res.status).toBe('pass')
+  })
+
+  test('hours_between option works correctly', async () => {
+    let settings = {
+      do: 'stale',
+      days: 10,
+      time_constraint: {
+        hours_between: ['7', '17']
+      }
+    }
+
+    let stale = new Stale()
+    let context = createMockContext([{ number: 1, pull_request: {} }])
+
+    let res = await stale.validate(context, settings)
+    expect(res.status).toBe('pass')
+
+    settings = {
+      do: 'stale',
+      days: 10,
+      time_constraint: {
+        hours_between: ['9', '17']
+      }
+    }
+
+    res = await stale.validate(context, settings)
+    expect(res.status).toBe('fail')
+
+    settings = {
+      do: 'stale',
+      days: 10,
+      time_constraint: {
+        hours_between: ['1', '7']
+      }
+    }
+
+    res = await stale.validate(context, settings)
+    expect(res.status).toBe('fail')
+  })
 })
 
 const getFilteredParams = (context, filter = '', days = 10) => {
