@@ -104,7 +104,7 @@ describe('Validator#validateSetting', () => {
 
   test('multiple settings type work', () => {
     let supportedSettings = {
-      first: ['string', 'number']
+      first: ['string', 'array']
     }
     let settingToValidate = {
       first: 'Test'
@@ -113,7 +113,7 @@ describe('Validator#validateSetting', () => {
     validator.validateSettings(supportedSettings, settingToValidate)
 
     settingToValidate = {
-      first: 32
+      first: [32]
     }
     validator.validateSettings(supportedSettings, settingToValidate)
   })
