@@ -60,8 +60,11 @@ You can pass in Handlebars template to show the details result of the run.
                    {{/each}}
             {{/each}}"
 
+.. note::
+    if any of required fields ``title``, ``summary`` or ``status`` is missing, default values will be used
+
 .. warning::
-    if you have have ``checks`` action only for some of the result, you may end up in a state where checks are never finished.
+    if you have have ``checks`` action only for some of the outcome, you may end up in a state where checks are never finished.
     So be sure to have ``checks`` for all outcome (``pass``, ``fail``, and ``error``)
 
 Supported Events:

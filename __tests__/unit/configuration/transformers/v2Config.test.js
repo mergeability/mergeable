@@ -110,7 +110,7 @@ test('only pass, fail defaults ignore recipes that are not for pull_requests', (
   expect(transformed.mergeable[0].error).toEqual([])
 })
 
-test('default checks fill in missing fields', () => {
+test('default checks fill in missing required fields', () => {
   let config = `
   version: 2
   mergeable:
@@ -130,7 +130,6 @@ test('default checks fill in missing fields', () => {
 
   expect(transformed.mergeable[0].pass).toEqual([{
     do: 'checks',
-    state: 'completed',
     status: 'success',
     payload: {
       title: 'Mergeable Run has been Completed!',
