@@ -29,12 +29,12 @@ test('validate returns correctly', async () => {
     }
   ]
 
-  let validation = await commit.validate(createMockContext(commits), settings)
+  let validation = await commit.processValidate(createMockContext(commits), settings)
   expect(validation.status).toBe('fail')
 
   commits[0].commit.message = 'feat: this'
 
-  validation = await commit.validate(createMockContext(commits), settings)
+  validation = await commit.processValidate(createMockContext(commits), settings)
   expect(validation.status).toBe('pass')
 })
 
@@ -67,12 +67,12 @@ test('oldest_only sub option', async () => {
     }
   ]
 
-  let validation = await commit.validate(createMockContext(commits), settings)
+  let validation = await commit.processValidate(createMockContext(commits), settings)
   expect(validation.status).toBe('fail')
 
   commits[0].commit.message = 'feat: this'
 
-  validation = await commit.validate(createMockContext(commits), settings)
+  validation = await commit.processValidate(createMockContext(commits), settings)
   expect(validation.status).toBe('pass')
 })
 
@@ -105,11 +105,11 @@ test('skip_merge sub option', async () => {
     }
   ]
 
-  let validation = await commit.validate(createMockContext(commits), settings)
+  let validation = await commit.processValidate(createMockContext(commits), settings)
   expect(validation.status).toBe('fail')
 
   settings.message.skip_merge = true
-  validation = await commit.validate(createMockContext(commits), settings)
+  validation = await commit.processValidate(createMockContext(commits), settings)
   expect(validation.status).toBe('pass')
 })
 
@@ -142,12 +142,12 @@ test('single_commit_only sub option', async () => {
     }
   ]
 
-  let validation = await commit.validate(createMockContext(commits), settings)
+  let validation = await commit.processValidate(createMockContext(commits), settings)
   expect(validation.status).toBe('pass')
   expect(validation.validations[0].description).toBe('Since there are more than one commits, Skipping validation')
 
   commits.pop()
-  validation = await commit.validate(createMockContext(commits), settings)
+  validation = await commit.processValidate(createMockContext(commits), settings)
   expect(validation.status).toBe('fail')
   expect(validation.validations[0].description).toBe('Some or all of your commit messages doesn\'t meet the criteria')
 })

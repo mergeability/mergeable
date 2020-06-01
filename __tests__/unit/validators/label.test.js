@@ -11,10 +11,10 @@ test('validate returns correctly', async () => {
     }
   }
 
-  let results = await label.validate(createMockContext(['wip']), settings)
+  let results = await label.processValidate(createMockContext(['wip']), settings)
   expect(results.status).toBe('fail')
 
-  results = await label.validate(createMockContext(['a', 'b']), settings)
+  results = await label.processValidate(createMockContext(['a', 'b']), settings)
   expect(results.status).toBe('pass')
 })
 
@@ -28,7 +28,7 @@ test('fail gracefully if invalid regex', async () => {
     }
   }
 
-  let validation = await label.validate(createMockContext('WIP'), settings)
+  let validation = await label.processValidate(createMockContext('WIP'), settings)
   expect(validation.status).toBe('pass')
 })
 
@@ -42,10 +42,10 @@ test('mergeable is false if regex found or true if not when there is only one la
     }
   }
 
-  let validation = await label.validate(createMockContext('work in progress'), settings)
+  let validation = await label.processValidate(createMockContext('work in progress'), settings)
   expect(validation.status).toBe('fail')
 
-  validation = await label.validate(createMockContext('Some Label'), settings)
+  validation = await label.processValidate(createMockContext('Some Label'), settings)
   expect(validation.status).toBe('pass')
 })
 
@@ -59,10 +59,10 @@ test('mergeable is false if regex found or true if not when there are multiple l
     }
   }
 
-  let validation = await label.validate(createMockContext(['abc', 'experimental', 'xyz']), settings)
+  let validation = await label.processValidate(createMockContext(['abc', 'experimental', 'xyz']), settings)
   expect(validation.status).toBe('fail')
 
-  validation = await label.validate(createMockContext(['Some Label', '123', '456']), settings)
+  validation = await label.processValidate(createMockContext(['Some Label', '123', '456']), settings)
   expect(validation.status).toBe('pass')
 })
 
@@ -76,12 +76,12 @@ test('description is correct', async () => {
     }
   }
 
-  let validation = await label.validate(createMockContext('Work in Progress'), settings)
+  let validation = await label.processValidate(createMockContext('Work in Progress'), settings)
 
   expect(validation.status).toBe('fail')
   expect(validation.validations[0].description).toBe('label does not exclude "Work in Progress"')
 
-  validation = await label.validate(createMockContext('Just Label'), settings)
+  validation = await label.processValidate(createMockContext('Just Label'), settings)
   expect(validation.validations[0].description).toBe("label must exclude 'Work in Progress'")
 })
 
@@ -95,10 +95,10 @@ test('mergeable is true if must_include is one of the label', async () => {
     }
   }
 
-  let validation = await label.validate(createMockContext(['abc', 'experimental', 'xyz']), settings)
+  let validation = await label.processValidate(createMockContext(['abc', 'experimental', 'xyz']), settings)
   expect(validation.status).toBe('pass')
 
-  validation = await label.validate(createMockContext(['Some Label', '123', '456']), settings)
+  validation = await label.processValidate(createMockContext(['Some Label', '123', '456']), settings)
   expect(validation.status).toBe('fail')
 })
 
@@ -112,10 +112,10 @@ test('mergeable is false if must_exclude is one of the label', async () => {
     }
   }
 
-  let validation = await label.validate(createMockContext(['abc', 'experimental', 'xyz']), settings)
+  let validation = await label.processValidate(createMockContext(['abc', 'experimental', 'xyz']), settings)
   expect(validation.status).toBe('fail')
 
-  validation = await label.validate(createMockContext(['Some Label', '123', '456']), settings)
+  validation = await label.processValidate(createMockContext(['Some Label', '123', '456']), settings)
   expect(validation.status).toBe('pass')
 })
 
@@ -130,11 +130,11 @@ test('that it validates ends_with correctly', async () => {
     }
   }
 
-  let labelValidation = await label.validate(createMockContext(['Some Label']), settings)
+  let labelValidation = await label.processValidate(createMockContext(['Some Label']), settings)
   expect(labelValidation.status).toBe('fail')
   expect(labelValidation.validations[0].description).toBe(`label must end with "${match}"`)
 
-  labelValidation = await label.validate(createMockContext(['Label test']), settings)
+  labelValidation = await label.processValidate(createMockContext(['Label test']), settings)
   expect(labelValidation.status).toBe('pass')
 })
 
@@ -163,17 +163,17 @@ test('complex Logic test', async () => {
     }]
   }
 
-  let validation = await label.validate(createMockContext(['release note: no', 'experimental', 'xyz']), settings)
+  let validation = await label.processValidate(createMockContext(['release note: no', 'experimental', 'xyz']), settings)
   expect(validation.status).toBe('pass')
 
-  validation = await label.validate(createMockContext(['release note: yes', '123', '456']), settings)
+  validation = await label.processValidate(createMockContext(['release note: yes', '123', '456']), settings)
   expect(validation.status).toBe('fail')
   expect(validation.validations[0].description).toBe('((Please include a language label)  ***OR***  Please include release note: no)')
 
-  validation = await label.validate(createMockContext(['lang/core', '456']), settings)
+  validation = await label.processValidate(createMockContext(['lang/core', '456']), settings)
   expect(validation.validations[0].description).toBe('((Please include release note: yes)  ***OR***  Please include release note: no)')
 
-  validation = await label.validate(createMockContext(['release note: yes', 'lang/core', '456']), settings)
+  validation = await label.processValidate(createMockContext(['release note: yes', 'lang/core', '456']), settings)
   expect(validation.status).toBe('pass')
 })
 
