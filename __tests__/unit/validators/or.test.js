@@ -21,7 +21,7 @@ describe('Or Validator Unit Test', () => {
         }
       ]
     }
-    let validation = await or.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await or.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('fail')
   })
 
@@ -44,7 +44,7 @@ describe('Or Validator Unit Test', () => {
         }
       ]
     }
-    let validation = await or.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await or.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('pass')
   })
 
@@ -67,7 +67,7 @@ describe('Or Validator Unit Test', () => {
         }
       ]
     }
-    let validation = await or.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await or.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('pass')
   })
 
@@ -76,7 +76,7 @@ describe('Or Validator Unit Test', () => {
     const settings = {
       do: 'or'
     }
-    let validation = await or.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await or.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('error')
   })
 
@@ -86,7 +86,7 @@ describe('Or Validator Unit Test', () => {
       do: 'or',
       validate: ''
     }
-    let validation = await or.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await or.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('error')
   })
 
@@ -96,7 +96,7 @@ describe('Or Validator Unit Test', () => {
       do: 'or',
       validate: []
     }
-    let validation = await or.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await or.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('error')
   })
 
@@ -108,7 +108,7 @@ describe('Or Validator Unit Test', () => {
         { do: 'missing' }
       ]
     }
-    let validation = await or.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await or.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('error')
   })
 
@@ -143,7 +143,7 @@ describe('Or Validator Unit Test', () => {
       ]
     }
 
-    let validation = await or.validate(createMockContext({title: 'Version 2'}), settings, registry)
+    let validation = await or.processValidate(createMockContext({title: 'Version 2'}), settings, registry)
     expect(validation.status).toBe('pass')
   })
 
@@ -178,7 +178,7 @@ describe('Or Validator Unit Test', () => {
       ]
     }
 
-    let validation = await or.validate(createMockContext({title: 'Version 2'}), settings, registry)
+    let validation = await or.processValidate(createMockContext({title: 'Version 2'}), settings, registry)
     expect(validation.status).toBe('error')
   })
 })
