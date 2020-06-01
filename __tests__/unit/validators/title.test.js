@@ -13,10 +13,10 @@ test('validate returns false', async () => {
       regex: 'wip'
     }
   }
-  let result = await title.validate(mockContext('wip'), settings)
+  let result = await title.processValidate(mockContext('wip'), settings)
   expect(result.status).toBe('fail')
 
-  result = await title.validate(mockContext('(feat) something else'), settings)
+  result = await title.processValidate(mockContext('(feat) something else'), settings)
   expect(result.status).toBe('pass')
 })
 
@@ -30,7 +30,7 @@ test('fail gracefully if invalid regex', async () => {
     }
   }
 
-  let titleValidation = await title.validate(mockContext('WIP Title'), settings)
+  let titleValidation = await title.processValidate(mockContext('WIP Title'), settings)
   expect(titleValidation.status).toBe('pass')
 })
 
@@ -47,10 +47,10 @@ test('checks that it fail when exclude regex is in title', async () => {
     }
   }
 
-  let titleValidation = await title.validate(mockContext('WIP Title'), settings)
+  let titleValidation = await title.processValidate(mockContext('WIP Title'), settings)
   expect(titleValidation.status).toBe('fail')
 
-  titleValidation = await title.validate(mockContext('(feat) WIP Title'), settings)
+  titleValidation = await title.processValidate(mockContext('(feat) WIP Title'), settings)
   expect(titleValidation.status).toBe('fail')
 })
 
@@ -71,11 +71,11 @@ test('checks that advance setting of must_include works', async () => {
     }
   }
 
-  let titleValidation = await title.validate(mockContext('include Title'), settings)
+  let titleValidation = await title.processValidate(mockContext('include Title'), settings)
   expect(titleValidation.status).toBe('fail')
   expect(titleValidation.validations[0].description).toBe(testMessage)
 
-  titleValidation = await title.validate(mockContext('(feat) WIP Title'), settings)
+  titleValidation = await title.processValidate(mockContext('(feat) WIP Title'), settings)
 
   expect(titleValidation.status).toBe('fail')
 })
@@ -94,11 +94,11 @@ describe('begins_with', () => {
     let title = new Title()
     let match = '(test)'
 
-    let titleValidation = await title.validate(mockContext('include Title'), mockMatch(match))
+    let titleValidation = await title.processValidate(mockContext('include Title'), mockMatch(match))
     expect(titleValidation.status).toBe('fail')
     expect(titleValidation.validations[0].description).toBe(`title must begins with "${match}"`)
 
-    titleValidation = await title.validate(mockContext('(test) WIP Title'), mockMatch(match))
+    titleValidation = await title.processValidate(mockContext('(test) WIP Title'), mockMatch(match))
     expect(titleValidation.status).toBe('pass')
   })
 
@@ -106,13 +106,13 @@ describe('begins_with', () => {
     let title = new Title()
     let match = ['test1', 'test2']
 
-    let titleValidation = await title.validate(mockContext('include Title'), mockMatch(match))
+    let titleValidation = await title.processValidate(mockContext('include Title'), mockMatch(match))
     expect(titleValidation.status).toBe('fail')
     expect(titleValidation.validations[0].description).toBe(`title must begins with "${match}"`)
 
-    titleValidation = await title.validate(mockContext('test1 WIP Title'), mockMatch(match))
+    titleValidation = await title.processValidate(mockContext('test1 WIP Title'), mockMatch(match))
     expect(titleValidation.status).toBe('pass')
-    titleValidation = await title.validate(mockContext('test2 WIP Title'), mockMatch(match))
+    titleValidation = await title.processValidate(mockContext('test2 WIP Title'), mockMatch(match))
     expect(titleValidation.status).toBe('pass')
   })
 })
@@ -131,11 +131,11 @@ describe('ends_with', () => {
     let title = new Title()
     let match = '(test)'
 
-    let titleValidation = await title.validate(mockContext('include Title'), mockMatch(match))
+    let titleValidation = await title.processValidate(mockContext('include Title'), mockMatch(match))
     expect(titleValidation.status).toBe('fail')
     expect(titleValidation.validations[0].description).toBe(`title must end with "${match}"`)
 
-    titleValidation = await title.validate(mockContext('WIP Title (test)'), mockMatch(match))
+    titleValidation = await title.processValidate(mockContext('WIP Title (test)'), mockMatch(match))
     expect(titleValidation.status).toBe('pass')
   })
 
@@ -143,13 +143,13 @@ describe('ends_with', () => {
     let title = new Title()
     let match = ['test', 'test2']
 
-    let titleValidation = await title.validate(mockContext('include Title'), mockMatch(match))
+    let titleValidation = await title.processValidate(mockContext('include Title'), mockMatch(match))
     expect(titleValidation.status).toBe('fail')
     expect(titleValidation.validations[0].description).toBe(`title must end with "${match}"`)
 
-    titleValidation = await title.validate(mockContext('WIP Title test'), mockMatch(match))
+    titleValidation = await title.processValidate(mockContext('WIP Title test'), mockMatch(match))
     expect(titleValidation.status).toBe('pass')
-    titleValidation = await title.validate(mockContext('WIP Title test2'), mockMatch(match))
+    titleValidation = await title.processValidate(mockContext('WIP Title test2'), mockMatch(match))
     expect(titleValidation.status).toBe('pass')
   })
 })
@@ -168,11 +168,11 @@ test('checks that it fail when include regex is in title', async () => {
     }
   }
 
-  let titleValidation = await title.validate(mockContext('include Title'), settings)
+  let titleValidation = await title.processValidate(mockContext('include Title'), settings)
   expect(titleValidation.status).toBe('fail')
   expect(titleValidation.validations[0].description).toBe(`title does not include "${includeList}"`)
 
-  titleValidation = await title.validate(mockContext('(feat) WIP Title'), settings)
+  titleValidation = await title.processValidate(mockContext('(feat) WIP Title'), settings)
 
   expect(titleValidation.status).toBe('fail')
 })
