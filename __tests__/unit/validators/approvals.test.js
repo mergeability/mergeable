@@ -9,7 +9,7 @@ test('that approvals work with no owners file', async () => {
       count: 2
     }
   }
-  let validation = await approval.validate(createMockContext(1, null, null, null, true), settings)
+  let validation = await approval.processValidate(createMockContext(1, null, null, null, true), settings)
   expect(validation.status).toBe('fail')
 })
 
@@ -22,7 +22,7 @@ test('that mergeable is false when less than minimum', async () => {
     }
   }
 
-  let validation = await approval.validate(createMockContext(1), settings)
+  let validation = await approval.processValidate(createMockContext(1), settings)
   expect(validation.status).toBe('fail')
 })
 
@@ -35,7 +35,7 @@ test('that mergeable is true when the same as minimum', async () => {
     }
   }
 
-  let validation = await approval.validate(createMockContext(2), settings)
+  let validation = await approval.processValidate(createMockContext(2), settings)
   expect(validation.status).toBe('pass')
 })
 
@@ -48,7 +48,7 @@ test('that mergeable is true when greater than minimum', async () => {
     }
   }
 
-  let validation = await approval.validate(createMockContext(3), settings)
+  let validation = await approval.processValidate(createMockContext(3), settings)
   expect(validation.status).toBe('pass')
 })
 
@@ -61,7 +61,7 @@ test('that description is dynamic based on minimum', async () => {
     }
   }
 
-  let validation = await approval.validate(createMockContext(3), settings)
+  let validation = await approval.processValidate(createMockContext(3), settings)
   expect(validation.validations[0].description).toBe('approval count is less than "5"')
 })
 
@@ -74,7 +74,7 @@ test('that description is null when mergeable', async () => {
     }
   }
 
-  let validation = await approval.validate(createMockContext(5), settings)
+  let validation = await approval.processValidate(createMockContext(5), settings)
   expect(validation.validations[0].description).toBe("approval does have a minimum of '5'")
 })
 
@@ -101,7 +101,7 @@ test('mergeable is false if required member(s) has not approved', async () => {
     }
   }
 
-  let validation = await approval.validate(createMockContext(5, reviewList), settings)
+  let validation = await approval.processValidate(createMockContext(5, reviewList), settings)
   expect(validation.validations[0].description).toBe('approval: userC required')
 })
 
@@ -134,7 +134,7 @@ test('mergeable passes if required user has approved', async () => {
     }
   }
 
-  let validation = await approval.validate(createMockContext(5, reviewList), settings)
+  let validation = await approval.processValidate(createMockContext(5, reviewList), settings)
   expect(validation.validations[0].description).toBe('approval: all required reviewers have approved')
   expect(validation.status).toBe('pass')
 })
@@ -184,7 +184,7 @@ test('validate correctly when one required user approved but followed up with co
       reviewers: ['userA']
     }
   }
-  let validation = await approval.validate(createMockContext(5, reviewList), settings)
+  let validation = await approval.processValidate(createMockContext(5, reviewList), settings)
   expect(validation.validations[0].details.input).toEqual(['userB', 'userA'])
   expect(validation.status).toBe('pass')
 })
@@ -230,7 +230,7 @@ test('validate correctly when one required user approved but followed up with RE
   ]
 
   // test with more than one required.
-  let validation = await approval.validate(createMockContext(5, reviewList), {
+  let validation = await approval.processValidate(createMockContext(5, reviewList), {
     do: 'approval',
     required: {
       reviewers: ['userA', 'userB']
@@ -240,7 +240,7 @@ test('validate correctly when one required user approved but followed up with RE
   expect(validation.status).toBe('fail') // userA not found.
 
   // test with only one required.
-  validation = await approval.validate(createMockContext(5, reviewList), {
+  validation = await approval.processValidate(createMockContext(5, reviewList), {
     do: 'approval',
     required: {
       reviewers: ['userA']
@@ -275,7 +275,7 @@ test('validate correctly with reviews more than 30.', async () => {
     submitted_at: Date.now() + 1000
   })
   let context = createMockContext(5, reviewList)
-  let validation = await approval.validate(context, {
+  let validation = await approval.processValidate(context, {
     do: 'approval',
     required: {
       reviewers: ['user1', 'user2']
@@ -299,7 +299,7 @@ test('pr creator is removed from required reviewer list', async () => {
     }
   }
 
-  let validation = await approval.validate(createMockContext(5, reviewList), settings)
+  let validation = await approval.processValidate(createMockContext(5, reviewList), settings)
   // creator should not be in the description
   expect(validation.validations[0].description).toBe('approval: userC required')
 })
@@ -330,7 +330,7 @@ test('checks that latest review is used', async () => {
     }
   }
 
-  let validation = await approval.validate(createMockContext(5, reviewList), settings)
+  let validation = await approval.processValidate(createMockContext(5, reviewList), settings)
   expect(validation.validations[0].description).toBe('approval: userA required')
 })
 
@@ -344,11 +344,11 @@ test('mergeable advanceSetting min works', async () => {
     }
   }
 
-  let validation = await approval.validate(createMockContext(1), settings)
+  let validation = await approval.processValidate(createMockContext(1), settings)
   expect(validation.status).toBe('fail')
   expect(validation.validations[0].description).toBe('This is a test message')
 
-  validation = await approval.validate(createMockContext(3), settings)
+  validation = await approval.processValidate(createMockContext(3), settings)
   expect(validation.status).toBe('pass')
 })
 
@@ -362,11 +362,11 @@ test('mergeable advanceSetting max works', async () => {
     }
   }
 
-  let validation = await approval.validate(createMockContext(3), settings)
+  let validation = await approval.processValidate(createMockContext(3), settings)
   expect(validation.status).toBe('fail')
   expect(validation.validations[0].description).toBe('This is a test message')
 
-  validation = await approval.validate(createMockContext(1), settings)
+  validation = await approval.processValidate(createMockContext(1), settings)
   expect(validation.status).toBe('pass')
 })
 
@@ -383,14 +383,14 @@ test('that ownersEnabled will check owner file and append it to required list', 
   const codeowner = `*.go @bob`
   let commitDiffs = createCommitDiffs(['first/second/third/dir/test.go'])
 
-  let validations = await approval.validate(createMockContext(0, [], codeowner, commitDiffs), settings)
+  let validations = await approval.processValidate(createMockContext(0, [], codeowner, commitDiffs), settings)
   expect(validations.status).toBe('fail')
   expect(validations.validations[0].description).toBe('approval: john ,bob(Code Owner) required')
 
   commitDiffs = createCommitDiffs(['another/file/path/test.js'])
 
   // bob shouldn't appear because he is not the owner of the files in the PR
-  validations = await approval.validate(createMockContext(0, [], codeowner, commitDiffs), settings)
+  validations = await approval.processValidate(createMockContext(0, [], codeowner, commitDiffs), settings)
   expect(validations.status).toBe('fail')
   expect(validations.validations[0].description).toBe('approval: john required')
 })
@@ -408,11 +408,11 @@ test('that ownersEnabled will check owner file and is mergeable when approval is
   let commitDiffs = createCommitDiffs(['first/second/third/dir/test.go'])
 
   let reviews = createReviewList(['bob'])
-  let validations = await approval.validate(createMockContext(0, [], codeowner, commitDiffs), settings)
+  let validations = await approval.processValidate(createMockContext(0, [], codeowner, commitDiffs), settings)
   expect(validations.status).toBe('fail')
   expect(validations.validations[0].description).toBe('approval: bob(Code Owner) required')
 
-  validations = await approval.validate(createMockContext(0, reviews, codeowner, commitDiffs), settings)
+  validations = await approval.processValidate(createMockContext(0, reviews, codeowner, commitDiffs), settings)
   expect(validations.status).toBe('pass')
 })
 
@@ -433,7 +433,7 @@ test('that ownersEnabled will call fetch OWNERS file', async () => {
     content: codeowner
   }})))
 
-  await approval.validate(context, settings)
+  await approval.processValidate(context, settings)
   expect(context.github.repos.getContents.mock.calls[0][0].path).toBe('.github/CODEOWNERS')
 })
 
@@ -452,7 +452,7 @@ test('that ownersDisabled will call NOT fetch OWNERS file', async () => {
       content: codeowner
     }})))
 
-  await approval.validate(context, settings)
+  await approval.processValidate(context, settings)
   expect(context.github.repos.getContents.mock.calls.length).toBe(0)
 })
 
@@ -467,7 +467,7 @@ test('that assignees are not required when assignees is not specified', async ()
   }
 
   let reviewList = createReviewList(['bob'])
-  let validation = await approval.validate(createMockContext(5, reviewList, [], [], assignees), settings)
+  let validation = await approval.processValidate(createMockContext(5, reviewList, [], [], assignees), settings)
   expect(validation.validations[0].description).toBe('approval: all required reviewers have approved')
   expect(validation.status).toBe('pass')
 })
@@ -484,7 +484,7 @@ test('that assignees are not required when assignees is false', async () => {
   }
 
   let reviewList = createReviewList(['bob'])
-  let validation = await approval.validate(createMockContext(5, reviewList, [], [], assignees), settings)
+  let validation = await approval.processValidate(createMockContext(5, reviewList, [], [], assignees), settings)
   expect(validation.validations[0].description).toBe('approval: all required reviewers have approved')
   expect(validation.status).toBe('pass')
 })
@@ -500,12 +500,12 @@ test('that assignees are required when assignees is true', async () => {
   }
 
   let reviewList = createReviewList(['bob'])
-  let validation = await approval.validate(createMockContext(5, reviewList, [], [], assignees), settings)
+  let validation = await approval.processValidate(createMockContext(5, reviewList, [], [], assignees), settings)
   expect(validation.validations[0].description).toBe('approval: john(Assignee) required')
   expect(validation.status).toBe('fail')
 
   reviewList = createReviewList(['bob', 'john'])
-  validation = await approval.validate(createMockContext(5, reviewList, [], [], assignees), settings)
+  validation = await approval.processValidate(createMockContext(5, reviewList, [], [], assignees), settings)
   expect(validation.validations[0].description).toBe('approval: all required reviewers have approved')
   expect(validation.status).toBe('pass')
 })
@@ -521,12 +521,12 @@ test('that assignees appends to the reviewers list correctly', async () => {
     }
   }
 
-  let validation = await approval.validate(createMockContext(5, [], [], [], assignees), settings)
+  let validation = await approval.processValidate(createMockContext(5, [], [], [], assignees), settings)
   expect(validation.validations[0].description).toBe('approval: bob ,john(Assignee) required')
   expect(validation.status).toBe('fail')
 
   let reviewList = createReviewList(['bob', 'john'])
-  validation = await approval.validate(createMockContext(5, reviewList, [], [], assignees), settings)
+  validation = await approval.processValidate(createMockContext(5, reviewList, [], [], assignees), settings)
   expect(validation.validations[0].description).toBe('approval: all required reviewers have approved')
   expect(validation.status).toBe('pass')
 })
@@ -542,12 +542,12 @@ test('that requestedReviewers appends to the reviewers list correctly', async ()
     }
   }
 
-  let validation = await approval.validate(createMockContext(5, [], [], [], [], requestedReviewers), settings)
+  let validation = await approval.processValidate(createMockContext(5, [], [], [], [], requestedReviewers), settings)
   expect(validation.validations[0].description).toBe('approval: bob ,john(Requested Reviewer) required')
   expect(validation.status).toBe('fail')
 
   let reviewList = createReviewList(['bob', 'john'])
-  validation = await approval.validate(createMockContext(5, reviewList, [], [], [], requestedReviewers), settings)
+  validation = await approval.processValidate(createMockContext(5, reviewList, [], [], [], requestedReviewers), settings)
   expect(validation.validations[0].description).toBe('approval: all required reviewers have approved')
   expect(validation.status).toBe('pass')
 })
@@ -579,7 +579,7 @@ test('blocks if changes are requested', async () => {
     }
   }
 
-  let validation = await approval.validate(createMockContext(5, reviewList), settings)
+  let validation = await approval.processValidate(createMockContext(5, reviewList), settings)
   expect(validation.validations[0].description).toBe('Please resolve all the changes requested')
   expect(validation.status).toBe('fail')
 })
@@ -614,7 +614,7 @@ test('blocks if changes are requested while other options area also passed in', 
     }
   }
 
-  let validation = await approval.validate(createMockContext(5, reviewList), settings)
+  let validation = await approval.processValidate(createMockContext(5, reviewList), settings)
   expect(validation.validations.length).toBe(2)
   expect(validation.validations[1].description).toBe('Please resolve all the changes requested')
   expect(validation.status).toBe('fail')
@@ -651,7 +651,7 @@ test('returns proper error when team provided is not found', async () => {
   }
 
   const listMember = jest.fn().mockRejectedValue({ status: 404, message: 'test Error' })
-  let validation = await approval.validate(createMockContext(5, reviewList, null, null, null, null, false, listMember), settings)
+  let validation = await approval.processValidate(createMockContext(5, reviewList, null, null, null, null, false, listMember), settings)
   expect(validation.validations.length).toBe(1)
   expect(validation.validations[0].description).toBe('TeamNotFoundError')
   expect(validation.status).toBe('error')
@@ -692,7 +692,7 @@ test('teams option works properly', async () => {
       login: 'userB'
     }
   ]})
-  let validation = await approval.validate(createMockContext(5, reviewList, null, null, null, null, false, listMember), settings)
+  let validation = await approval.processValidate(createMockContext(5, reviewList, null, null, null, null, false, listMember), settings)
   expect(validation.validations.length).toBe(1)
   expect(validation.status).toBe('fail')
   expect(validation.validations[0].description).toBe('approval: userA required')
