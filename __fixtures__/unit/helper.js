@@ -120,6 +120,14 @@ module.exports = {
               }
             }
           },
+          checkIfMerged: async () => {
+            if (options.checkIfMerged === false) {
+              return throwNotFound()
+            } else {
+              return { status: 204 }
+            }
+          },
+          merge: jest.fn(),
           get: jest.fn()
         },
         paginate: jest.fn(async (fn, cb) => {
