@@ -109,3 +109,55 @@ test('only pass, fail defaults ignore recipes that are not for pull_requests', (
   expect(transformed.mergeable[0].fail).toEqual([])
   expect(transformed.mergeable[0].error).toEqual([])
 })
+
+test('default checks fill in missing required fields', () => {
+  let config = `
+  version: 2
+  mergeable:
+    - when: pull_requests.*
+      validate:
+        - do: title
+          must_exclude:
+            regex: 'wip|work in progress'
+            message: 'This PR is work in progress.'
+      pass:
+        - do: checks
+          payload:
+            summary: 'test Summary'
+            text: 'test text'
+  `
+  let transformed = V2Config.transform(yaml.safeLoad(config))
+
+  expect(transformed.mergeable[0].pass).toEqual([{
+    do: 'checks',
+    status: 'success',
+    payload: {
+      title: 'Mergeable Run has been Completed!',
+      summary: 'test Summary',
+      text: 'test text'
+    }
+  }])
+})
+
+test('adding default only works for checks', () => {
+  let config = `
+  version: 2
+  mergeable:
+    - when: pull_requests.*
+      validate:
+        - do: title
+          must_exclude:
+            regex: 'wip|work in progress'
+            message: 'This PR is work in progress.'
+      fail:
+        - do: comment
+          payload:
+            body: 'test Body'
+  `
+  let transformed = V2Config.transform(yaml.safeLoad(config))
+
+  expect(transformed.mergeable[0].fail).toEqual([{do: 'comment',
+    payload: {
+      body: 'test Body'
+    }}])
+})
