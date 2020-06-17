@@ -76,6 +76,70 @@ test('check that old comments from Mergeable are deleted if they exists', async 
   expect(context.github.issues.deleteComment.mock.calls[0][0].comment_id).toBe(`2`)
 })
 
+test('error handling includes removing old error comments and creating new error comment', async () => {
+  const comment = new Comment()
+
+  const listComments = [{
+    id: '1',
+    user: {
+      login: 'test-1'
+    }
+  },
+  {
+    id: '2',
+    user: {
+      login: 'Mergeable[bot]'
+    },
+    body: 'This is a normal comment'
+  },
+  {
+    id: '3',
+    user: {
+      login: 'Mergeable[bot]'
+    },
+    body: 'This is an Error comment'
+  }]
+  const context = createMockContext(listComments)
+  const payload = {
+    body: 'This is a new error comment'
+  }
+
+  await comment.handleError(context, payload)
+  expect(context.github.issues.deleteComment.mock.calls.length).toBe(1)
+  expect(context.github.issues.deleteComment.mock.calls[0][0].comment_id).toBe(`3`)
+  expect(context.github.issues.createComment.mock.calls[0][0].body).toBe(payload)
+})
+
+test('remove error comments only remove comments that includes "error" ', async () => {
+  const comment = new Comment()
+
+  const listComments = [{
+    id: '1',
+    user: {
+      login: 'test-1'
+    }
+  },
+  {
+    id: '2',
+    user: {
+      login: 'Mergeable[bot]'
+    },
+    body: 'This is a normal comment'
+  },
+  {
+    id: '3',
+    user: {
+      login: 'Mergeable[bot]'
+    },
+    body: 'This is an Error comment'
+  }]
+  const context = createMockContext(listComments)
+
+  await comment.removeErrorComments(context)
+  expect(context.github.issues.deleteComment.mock.calls.length).toBe(1)
+  expect(context.github.issues.deleteComment.mock.calls[0][0].comment_id).toBe(`3`)
+})
+
 test('check that leave_old_comment option works', async () => {
   const comment = new Comment()
 

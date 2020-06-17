@@ -65,6 +65,7 @@ mergeable:
     const updateCheckCall = Helper.mockCheckUpdateCall(updateCheckOptions)
     const createCheckCall = Helper.mockCheckCreateCall(createCheckOptions)
     const listFilesCall = Helper.mockPRListFileCall()
+    const listCommentsCall = Helper.mockIssueListCommentsCall()
     const fetchConfigCall = Helper.mockFetchConfigCall({config})
 
     // Receive a webhook event
@@ -74,6 +75,7 @@ mergeable:
     expect(updateCheckCall.isDone()).toBe(true)
     expect(createCheckCall.isDone()).toBe(true)
     expect(listFilesCall.isDone()).toBe(true)
+    expect(listCommentsCall.isDone()).toBe(true)
     expect(fetchConfigCall.isDone()).toBe(true)
 
     // check that api calls were made with expect request body
