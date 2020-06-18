@@ -41,14 +41,14 @@ test.only('files ignore option works correctly', async () => {
     do: 'contents',
     files: {
       pr_diff: true,
-      ignore: []
+      ignore: ['package.json']
     },
     must_exclude: {
       regex: 'test'
     }
   }
 
-  validation = await contents.processValidate(createMockContext(['.github/mergeable.yml', 'package.json'], 'string'), settings)
+  validation = await contents.processValidate(createMockContext(['package.json'], 'string'), settings)
   expect(validation.status).toBe('pass')
 })
 
