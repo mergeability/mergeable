@@ -1,6 +1,7 @@
 CHANGELOG
 =====================================
 
+| June 17, 2020 : Added new validator `contents` `#207 <https://github.com/mergeability/mergeable/issues/207>`_
 | June 5, 2020 : For missing fields in 'checks', default values will be used `#233 <https://github.com/mergeability/mergeable/issues/233#issuecomment-632211789>`_
 | May 30, 2020 : New Action `merge` added `#201 <https://github.com/mergeability/mergeable/issues/228>`_
 | May 29, 2020 : throw `UnSupportedSettingError` if provided setting is not valid `#228 <https://github.com/mergeability/mergeable/issues/228>`_
