@@ -106,6 +106,9 @@ module.exports = {
               return { data: options.files && options.files }
             }
           },
+          list: () => ({
+            data: options.prList ? options.prList : []
+          }),
           listCommits: {
             endpoint: {
               merge: async () => {

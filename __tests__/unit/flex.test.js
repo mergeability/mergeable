@@ -1,4 +1,4 @@
-const executor = require('../../lib/flex')
+const executor = require('../../lib/flex/flex')
 const Helper = require('../../__fixtures__/unit/helper')
 const { Action } = require('../../lib/actions/action')
 
