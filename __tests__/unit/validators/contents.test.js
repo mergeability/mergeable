@@ -1,7 +1,7 @@
 const Helper = require('../../../__fixtures__/unit/helper')
 const Contents = require('../../../lib/validators/contents')
 
-test.only('files pr_diff option works correctly', async () => {
+test('files pr_diff option works correctly', async () => {
   const contents = new Contents()
   const settings = {
     do: 'contents',
@@ -21,7 +21,7 @@ test.only('files pr_diff option works correctly', async () => {
   expect(validation.status).toBe('pass')
 })
 
-test.only('files ignore option works correctly', async () => {
+test('files ignore option works correctly', async () => {
   const contents = new Contents()
   let settings = {
     do: 'contents',
