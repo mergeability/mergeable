@@ -107,7 +107,7 @@ test('error handling includes removing old error comments and creating new error
   await comment.handleError(context, payload)
   expect(context.github.issues.deleteComment.mock.calls.length).toBe(1)
   expect(context.github.issues.deleteComment.mock.calls[0][0].comment_id).toBe(`3`)
-  expect(context.github.issues.createComment.mock.calls[0][0].body).toBe(payload)
+  expect(context.github.issues.createComment.mock.calls[0][0].body).toBe(payload.body)
 })
 
 test('remove error comments only remove comments that includes "error" ', async () => {
