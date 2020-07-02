@@ -5,6 +5,7 @@ const checkUpdateResponse = require('./check.update.response.json')
 const checkCreateResponse = require('./check.create.response.json')
 const configResponse = require('./config.response.json')
 const prListFilesResponse = require('./pr.listFile.response.json')
+const issueCommentResponse = require('./issue.listComment.response.json')
 const defaultConfig = fs.readFileSync('./__fixtures__/e2e/config.v1.default.yml', 'utf8')
 
 class MockHelper {
@@ -50,6 +51,14 @@ class MockHelper {
   mockPRListFileCall (options = {}) {
     const response = options.response ? options.response : prListFilesResponse
     const path = `/repos/${this.repo.owner.login}/${this.repo.name}/pulls/${this.payload.number}/files`
+    return nock('https://api.github.com')
+      .get(path)
+      .reply(200, response)
+  }
+
+  mockIssueListCommentsCall (options = {}) {
+    const response = options.response ? options.response : issueCommentResponse
+    const path = `/repos/${this.repo.owner.login}/${this.repo.name}/issues/${this.payload.number}/comments`
     return nock('https://api.github.com')
       .get(path)
       .reply(200, response)
