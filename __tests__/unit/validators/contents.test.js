@@ -76,7 +76,6 @@ test('fail gracefully if content is not found', async () => {
   }
 
   let validation = await contents.processValidate(context, settings)
-  console.log(validation.validations)
   expect(validation.status).toBe('fail')
   expect(validation.validations[0].description).toBe("Failed files : 'package.json (Not Found)'")
 })
