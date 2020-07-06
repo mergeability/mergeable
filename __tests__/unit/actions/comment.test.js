@@ -176,6 +176,22 @@ test('check that leave_old_comment option works', async () => {
   expect(context.github.issues.deleteComment.mock.calls.length).toBe(0)
 })
 
+test('remove Error comment fail gracefully if payload does not exists', async () => {
+  const comment = new Comment()
+
+  const context = {
+    payload: {},
+    github: {
+      issues: {
+        deleteComment: jest.fn()
+      }
+    }
+  }
+
+  await comment.removeErrorComments(context)
+  expect(context.github.issues.deleteComment.mock.calls.length).toBe(0)
+})
+
 const createMockContext = (listComments) => {
   let context = Helper.mockContext({listComments})
 
