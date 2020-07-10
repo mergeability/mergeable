@@ -9,7 +9,7 @@ Approvals
         message: 'Custom message...'
       required:
         reviewers: [ user1, user2 ] # list of github usernames required to review
-        owners: true # Optional boolean. When true, the file .github/CODEOWNER is read and owners made required reviewers
+        owners: true # Optional boolean. When true, the file .github/CODEOWNERS is read and owners made required reviewers
         assignees: true # Optional boolean. When true, PR assignees are made required reviewers.
         requested_reviewers: true # Optional boolean. When true, all the requested reviewer's approval is required
         message: 'Custom message...'
