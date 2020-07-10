@@ -560,7 +560,7 @@ Supported events:
 ```
 
 
-### Labels
+### labels
 Creates comments in issues and/or pull requests depending on the event specified in the `when` tag.
 
 ```yml
