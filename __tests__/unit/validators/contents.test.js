@@ -52,6 +52,34 @@ test('files ignore option works correctly', async () => {
   expect(validation.status).toBe('pass')
 })
 
+test('fail gracefully if content is not found', async () => {
+  const context = Helper.mockContext({files: ['package.json']})
+
+  context.github.repos.getContents = jest.fn().mockReturnValue(
+    Promise.reject(
+      new HttpError(
+        '{"message":"Not Found","documentation_url":"https://developer.github.com/v3/repos/contents/#get-contents"}',
+        404,
+        'Not Found')
+    )
+  )
+
+  const contents = new Contents()
+  let settings = {
+    do: 'contents',
+    files: {
+      pr_diff: true
+    },
+    must_exclude: {
+      regex: 'test'
+    }
+  }
+
+  let validation = await contents.processValidate(context, settings)
+  expect(validation.status).toBe('fail')
+  expect(validation.validations[0].description).toBe("Failed files : 'package.json (Not Found)'")
+})
+
 const createMockContext = (files, fileContent) => {
   const context = Helper.mockContext({files: files})
 
@@ -62,4 +90,14 @@ const createMockContext = (files, fileContent) => {
   }
 
   return context
+}
+
+// to mimic HttpError (https://github.com/octokit/rest.js/blob/fc8960ccf3415b5d77e50372d3bb873cfec80c55/lib/request/http-error.js)
+class HttpError extends Error {
+  constructor (message, code, status) {
+    super(message)
+    this.message = message
+    this.code = code
+    this.status = status
+  }
 }

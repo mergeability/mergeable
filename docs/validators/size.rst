@@ -2,6 +2,7 @@ Size
 ^^^^^^^^^^
 ``size`` validates that the size of changes in the pull request conform to a specified limit. We can pass in three options: ``total``, ``additions`` or ``deletions``. Each of this take in a count and message.
 Validates that the files specified are all part of a pull request (added or modified).
+
 ::
 
   - do: size
@@ -15,8 +16,13 @@ Validates that the files specified are all part of a pull request (added or modi
       deletions:
         count: 500
         message: Change is very large. Should be under 250 lines of deletions.
+      ignore_comments: false #if true, comments will not be counted toward the lines count
 
 ``max`` is an alias for total, so the below configuration is still valid.
+
+
+.. warning::
+    currently ``ignore_comments`` feat only works with '.js' and '.py' extensions, if you have request for more file extensions please create a ticket `here <https://github.com/mergeability/mergeable/issues/new>`_
 
 ::
 
