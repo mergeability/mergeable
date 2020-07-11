@@ -560,8 +560,8 @@ Supported events:
 ```
 
 
-### Labels
-Creates comments in issues and/or pull requests depending on the event specified in the `when` tag.
+### labels
+Creates labels in issues and/or pull requests depending on the event specified in the `when` tag.
 
 ```yml
 - do: labels
