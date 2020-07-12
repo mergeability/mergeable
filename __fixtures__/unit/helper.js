@@ -92,7 +92,7 @@ module.exports = {
           }
         },
         teams: {
-          listMembersInOrg: options.listMembers ? options.listMembers : () => ({ data: [] })
+          listMembersInOrg: options.listMembers ? () => ({ data: options.listMembers }) : () => ({ data: [] })
         },
         pulls: {
           listFiles: () => {
