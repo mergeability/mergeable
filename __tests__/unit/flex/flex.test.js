@@ -1,6 +1,6 @@
-const executor = require('../../lib/flex')
-const Helper = require('../../__fixtures__/unit/helper')
-const { Action } = require('../../lib/actions/action')
+const executor = require('../../../lib/flex/flex')
+const Helper = require('../../../__fixtures__/unit/helper')
+const { Action } = require('../../../lib/actions/action')
 
 describe('Test processBeforeValidate and processAfterValidate invocations', () => {
   let context
