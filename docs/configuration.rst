@@ -118,6 +118,10 @@ repository or PR. It determines the file to use in the following order:
 2. A ``mergeable.yml`` inside the repository the PR is for.
 3. A ``mergeable.yml`` at ``<YOUR_ORG>/.github/.github/mergeable.yml``.
 
+.. note::
+    If config file is changed in base branch, all the PR against the base branch will be re ran using the changed config file
+    Warning! this feature require mergeable have ``read`` access to contents and needs to be listening for ``push`` event
+
 Why the weird default file path?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
