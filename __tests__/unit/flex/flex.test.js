@@ -1,6 +1,6 @@
-const executor = require('../../lib/flex')
-const Helper = require('../../__fixtures__/unit/helper')
-const { Action } = require('../../lib/actions/action')
+const executor = require('../../../lib/flex/flex')
+const Helper = require('../../../__fixtures__/unit/helper')
+const { Action } = require('../../../lib/actions/action')
 
 describe('Test processBeforeValidate and processAfterValidate invocations', () => {
   let context
@@ -92,6 +92,59 @@ describe('Test processBeforeValidate and processAfterValidate invocations', () =
     await executor(context, registry)
     expect(action.processBeforeValidate.mock.calls.length).toBe(2)
     expect(action.processAfterValidate.mock.calls.length).toBe(2)
+  })
+
+  test('processPreAction works correctly, two whens with same events but different actions', async () => {
+    const config = `
+    version: 2
+    mergeable:
+      - when: pull_request.*
+        validate:
+          - do: title
+            must_exclude:
+              regex: wip|work in progress|do not merge
+              message: 'a custom message'
+          - do: label
+            must_exclude:
+              regex: wip|work in progress
+        fail: 
+          - do: assign
+            assignees: ['test user']
+      - when: pull_request.*
+        validate:
+          - do: title
+            must_exclude:
+              regex: wip|work in progress|do not merge
+              message: 'a custom message'
+          - do: label
+            must_exclude:
+              regex: wip|work in progress
+        pass:
+          - do: comment
+            payload:
+              body: 'test comment'
+          `
+
+    let registry = { validators: new Map(), actions: new Map() }
+    const commentAction = new Action()
+    commentAction.processBeforeValidate = jest.fn()
+    commentAction.processAfterValidate = jest.fn()
+    commentAction.supportedEvents = ['pull_request.opened', 'pull_request.edited', 'pull_request_review.submitted']
+    registry.actions.set('comment', commentAction)
+
+    const assignAction = new Action()
+    assignAction.processBeforeValidate = jest.fn()
+    assignAction.processAfterValidate = jest.fn()
+    assignAction.supportedEvents = ['pull_request.opened', 'pull_request.edited', 'pull_request_review.submitted']
+    registry.actions.set('assign', assignAction)
+
+    Helper.mockConfigWithContext(context, config)
+    context.event = 'pull_request'
+    context.payload.action = 'opened'
+    await executor(context, registry)
+
+    expect(commentAction.processBeforeValidate.mock.calls.length).toBe(1)
+    expect(assignAction.processBeforeValidate.mock.calls.length).toBe(1)
   })
 })
 

@@ -1,6 +1,7 @@
 CHANGELOG
 =====================================
 
+| July 1, 2020 : When config file is added/modified in base branch, mergeable will trigger for all PR against the base branch `#153 <https://github.com/mergeability/mergeable/issues/153>`_
 | June 30, 2020 : Add `ignore_comment` option to `size` validator `#245 <https://github.com/mergeability/mergeable/issues/245>`_
 | June 17, 2020 : Added new validator `contents` `#207 <https://github.com/mergeability/mergeable/issues/207>`_
 | June 16, 2020 : Create an error comment if errors have occurred during execution of actions `#312 <https://github.com/mergeability/mergeable/issues/312>`_
