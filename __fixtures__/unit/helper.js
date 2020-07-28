@@ -37,6 +37,12 @@ module.exports = {
               issues_url: 'testRepo/issues{/number}'
             }},
           assignees: (options.assignees) ? options.assignees : []
+        },
+        issue: {
+          user: {
+            login: 'creator'
+          },
+          number: (options.number) ? options.number : 1
         }
       },
       log: {
