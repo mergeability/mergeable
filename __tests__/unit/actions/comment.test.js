@@ -76,6 +76,36 @@ test('check that old comments from Mergeable are deleted if they exists', async 
   expect(context.github.issues.deleteComment.mock.calls[0][0].comment_id).toBe(`2`)
 })
 
+test('check that old comments checks toLowerCase of the Bot name', async () => {
+  const comment = new Comment()
+
+  const listComments = [{
+    id: '1',
+    user: {
+      login: 'test-1'
+    }
+  },
+  {
+    id: '2',
+    user: {
+      login: 'mergeable[bot]'
+    }
+  }]
+  const context = createMockContext(listComments)
+
+  let result = {
+    status: 'pass',
+    validations: [{
+      status: 'pass',
+      name: 'Label'
+    }]
+  }
+
+  await comment.afterValidate(context, settings, '', result)
+  expect(context.github.issues.deleteComment.mock.calls.length).toBe(1)
+  expect(context.github.issues.deleteComment.mock.calls[0][0].comment_id).toBe(`2`)
+})
+
 test('error handling includes removing old error comments and creating new error comment', async () => {
   const comment = new Comment()
 
