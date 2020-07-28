@@ -222,6 +222,19 @@ test('remove Error comment fail gracefully if payload does not exists', async ()
   expect(context.github.issues.deleteComment.mock.calls.length).toBe(0)
 })
 
+test('error handling includes removing old error comments and creating new error comment', async () => {
+  const comment = new Comment()
+  const context = createMockContext()
+  const settings = {
+    payload: {
+      body: '@author , do something!'
+    }
+  }
+
+  await comment.afterValidate(context, settings, '', result)
+  expect(context.github.issues.createComment.mock.calls[0][0].body).toBe('creator , do something!')
+})
+
 const createMockContext = (listComments) => {
   let context = Helper.mockContext({listComments})
 
