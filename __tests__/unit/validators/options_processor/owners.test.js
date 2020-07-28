@@ -1,10 +1,17 @@
 const Helper = require('../../../../__fixtures__/unit/helper')
 const owners = require('../../../../lib/validators/options_processor/owners')
+const teams = require('../../../../lib/validators/options_processor/teams')
+
+jest.mock('../../../../lib/validators/options_processor/teams', () => ({
+  extractTeamMembers: jest.fn()
+}))
 
 test('that * works', async () => {
   const codeowner = `* @bob`
   let commitDiffs = createCommitDiffs(['first/second/third/dir/test.js'])
+
   let res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs))
+
   expect(res.length).toBe(1)
   expect(res[0]).toBe('bob')
 
@@ -155,6 +162,31 @@ test('that rules that comes later takes higher priority', async () => {
   expect(res[0]).toBe('bob')
 })
 
+test('teams owners are processed correctly', async () => {
+  let codeowner = `*.js @bob/test-team`
+  let commitDiffs = createCommitDiffs(['/docs/test.js'])
+
+  teams.extractTeamMembers = jest.fn().mockReturnValue(['teamMember1', 'member2'])
+
+  let res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs))
+  expect(res.length).toBe(2)
+  expect(res[0]).toBe('teamMember1')
+  expect(res[1]).toBe('member2')
+})
+
+test('teams owners and individuals are processed correctly', async () => {
+  let codeowner = `*.js @bob/test-team @hope`
+  let commitDiffs = createCommitDiffs(['/docs/test.js'])
+
+  teams.extractTeamMembers = jest.fn().mockReturnValue(['teamMember1', 'member2'])
+
+  let res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs))
+  expect(res.length).toBe(3)
+  expect(res[0]).toBe('teamMember1')
+  expect(res[1]).toBe('member2')
+  expect(res[2]).toBe('hope')
+})
+
 const createMockPR = () => {
   return Helper.mockContext({
     user: {
@@ -170,6 +202,12 @@ const createCommitDiffs = (diffs) => {
   }))
 }
 
-const createMockContext = (owners, commitDiffs, data) => {
-  return Helper.mockContext({reviews: data, codeowners: Buffer.from(`${owners}`).toString('base64'), compareCommits: commitDiffs})
+const createMockContext = (owners, commitDiffs, options) => {
+  const context = Helper.mockContext({
+    codeowners: Buffer.from(`${owners}`).toString('base64'),
+    compareCommits: commitDiffs,
+    files: options ? options.files : []
+  })
+
+  return context
 }

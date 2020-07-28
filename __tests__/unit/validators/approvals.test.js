@@ -1,5 +1,16 @@
 const Helper = require('../../../__fixtures__/unit/helper')
 const Approval = require('../../../lib/validators/approvals')
+const Teams = require('../../../lib/validators/options_processor/teams')
+const Owners = require('../../../lib/validators/options_processor/owners')
+const TeamNotFoundError = require('../../../lib/errors/teamNotFoundError')
+
+jest.mock('../../../lib/validators/options_processor/teams', () => ({
+  extractTeamMembers: jest.fn()
+}))
+
+jest.mock('../../../lib/validators/options_processor/owners', () => ({
+  process: jest.fn()
+}))
 
 test('that approvals work with no owners file', async () => {
   const approval = new Approval()
@@ -9,7 +20,7 @@ test('that approvals work with no owners file', async () => {
       count: 2
     }
   }
-  let validation = await approval.processValidate(createMockContext(1, null, null, null, true), settings)
+  let validation = await approval.processValidate(createMockContext(1, null, true), settings)
   expect(validation.status).toBe('fail')
 })
 
@@ -370,90 +381,66 @@ test('mergeable advanceSetting max works', async () => {
   expect(validation.status).toBe('pass')
 })
 
-test('that ownersEnabled will check owner file and append it to required list', async () => {
-  const approval = new Approval()
-  const settings = {
-    do: 'approval',
-    required: {
-      reviewers: ['john'],
-      owners: true
+describe('required.owners ', () => {
+  beforeEach(() => {
+    Owners.process.mockClear()
+  })
+
+  test('that ownersEnabled will check owner file and append it to required list', async () => {
+    const approval = new Approval()
+    const settings = {
+      do: 'approval',
+      required: {
+        reviewers: ['john'],
+        owners: true
+      }
     }
-  }
 
-  const codeowner = `*.go @bob`
-  let commitDiffs = createCommitDiffs(['first/second/third/dir/test.go'])
+    Owners.process = jest.fn().mockReturnValue(['bob'])
 
-  let validations = await approval.processValidate(createMockContext(0, [], codeowner, commitDiffs), settings)
-  expect(validations.status).toBe('fail')
-  expect(validations.validations[0].description).toBe('approval: john ,bob(Code Owner) required')
+    let validations = await approval.processValidate(createMockContext(0, []), settings)
+    expect(validations.status).toBe('fail')
+    expect(validations.validations[0].description).toBe('approval: john ,bob(Code Owner) required')
 
-  commitDiffs = createCommitDiffs(['another/file/path/test.js'])
+    Owners.process = jest.fn().mockReturnValue([])
 
-  // bob shouldn't appear because he is not the owner of the files in the PR
-  validations = await approval.processValidate(createMockContext(0, [], codeowner, commitDiffs), settings)
-  expect(validations.status).toBe('fail')
-  expect(validations.validations[0].description).toBe('approval: john required')
-})
+    // bob shouldn't appear because he is not the owner of the files in the PR
+    validations = await approval.processValidate(createMockContext(0, []), settings)
+    expect(validations.status).toBe('fail')
+    expect(validations.validations[0].description).toBe('approval: john required')
+  })
 
-test('that ownersEnabled will check owner file and is mergeable when approval is given', async () => {
-  const approval = new Approval()
-  const settings = {
-    do: 'approval',
-    required: {
-      owners: true
+  test('that ownersEnabled will check owner file and is mergeable when approval is given', async () => {
+    const approval = new Approval()
+    const settings = {
+      do: 'approval',
+      required: {
+        owners: true
+      }
     }
-  }
 
-  const codeowner = `*.go @bob`
-  let commitDiffs = createCommitDiffs(['first/second/third/dir/test.go'])
+    Owners.process = jest.fn().mockReturnValue(['bob'])
 
-  let reviews = createReviewList(['bob'])
-  let validations = await approval.processValidate(createMockContext(0, [], codeowner, commitDiffs), settings)
-  expect(validations.status).toBe('fail')
-  expect(validations.validations[0].description).toBe('approval: bob(Code Owner) required')
+    let reviews = createReviewList(['bob'])
+    let validations = await approval.processValidate(createMockContext(0, []), settings)
+    expect(validations.status).toBe('fail')
+    expect(validations.validations[0].description).toBe('approval: bob(Code Owner) required')
 
-  validations = await approval.processValidate(createMockContext(0, reviews, codeowner, commitDiffs), settings)
-  expect(validations.status).toBe('pass')
-})
+    validations = await approval.processValidate(createMockContext(0, reviews), settings)
+    expect(validations.status).toBe('pass')
+  })
 
-test('that ownersEnabled will call fetch OWNERS file', async () => {
-  const approval = new Approval()
-  const settings = {
-    do: 'approval',
-    required: {
-      owners: true
+  test('that ownersDisabled will call NOT call owners.process', async () => {
+    const approval = new Approval()
+    const settings = {
+      do: 'approval'
     }
-  }
 
-  const codeowner = `*.go @bob`
-  let commitDiffs = createCommitDiffs(['first/second/third/dir/test.go'])
+    const context = createMockContext(0, [])
 
-  const context = createMockContext(0, [], codeowner, commitDiffs)
-  context.github.repos.getContents = jest.fn().mockReturnValue(new Promise((resolve) => resolve({ data: {
-    content: codeowner
-  }})))
-
-  await approval.processValidate(context, settings)
-  expect(context.github.repos.getContents.mock.calls[0][0].path).toBe('.github/CODEOWNERS')
-})
-
-test('that ownersDisabled will call NOT fetch OWNERS file', async () => {
-  const approval = new Approval()
-  const settings = {
-    do: 'approval'
-  }
-
-  const codeowner = `*.go @bob`
-  let commitDiffs = createCommitDiffs(['first/second/third/dir/test.go'])
-
-  const context = createMockContext(0, [], codeowner, commitDiffs)
-  context.github.repos.getContents = jest.fn().mockReturnValue(
-    new Promise((resolve) => resolve({ data: {
-      content: codeowner
-    }})))
-
-  await approval.processValidate(context, settings)
-  expect(context.github.repos.getContents.mock.calls.length).toBe(0)
+    await approval.processValidate(context, settings)
+    expect(Owners.process.mock.calls.length).toBe(0)
+  })
 })
 
 test('that assignees are not required when assignees is not specified', async () => {
@@ -467,7 +454,7 @@ test('that assignees are not required when assignees is not specified', async ()
   }
 
   let reviewList = createReviewList(['bob'])
-  let validation = await approval.processValidate(createMockContext(5, reviewList, [], [], assignees), settings)
+  let validation = await approval.processValidate(createMockContext(5, reviewList, assignees), settings)
   expect(validation.validations[0].description).toBe('approval: all required reviewers have approved')
   expect(validation.status).toBe('pass')
 })
@@ -484,7 +471,7 @@ test('that assignees are not required when assignees is false', async () => {
   }
 
   let reviewList = createReviewList(['bob'])
-  let validation = await approval.processValidate(createMockContext(5, reviewList, [], [], assignees), settings)
+  let validation = await approval.processValidate(createMockContext(5, reviewList, assignees), settings)
   expect(validation.validations[0].description).toBe('approval: all required reviewers have approved')
   expect(validation.status).toBe('pass')
 })
@@ -500,12 +487,12 @@ test('that assignees are required when assignees is true', async () => {
   }
 
   let reviewList = createReviewList(['bob'])
-  let validation = await approval.processValidate(createMockContext(5, reviewList, [], [], assignees), settings)
+  let validation = await approval.processValidate(createMockContext(5, reviewList, assignees), settings)
   expect(validation.validations[0].description).toBe('approval: john(Assignee) required')
   expect(validation.status).toBe('fail')
 
   reviewList = createReviewList(['bob', 'john'])
-  validation = await approval.processValidate(createMockContext(5, reviewList, [], [], assignees), settings)
+  validation = await approval.processValidate(createMockContext(5, reviewList, assignees), settings)
   expect(validation.validations[0].description).toBe('approval: all required reviewers have approved')
   expect(validation.status).toBe('pass')
 })
@@ -521,12 +508,12 @@ test('that assignees appends to the reviewers list correctly', async () => {
     }
   }
 
-  let validation = await approval.processValidate(createMockContext(5, [], [], [], assignees), settings)
+  let validation = await approval.processValidate(createMockContext(5, [], assignees), settings)
   expect(validation.validations[0].description).toBe('approval: bob ,john(Assignee) required')
   expect(validation.status).toBe('fail')
 
   let reviewList = createReviewList(['bob', 'john'])
-  validation = await approval.processValidate(createMockContext(5, reviewList, [], [], assignees), settings)
+  validation = await approval.processValidate(createMockContext(5, reviewList, assignees), settings)
   expect(validation.validations[0].description).toBe('approval: all required reviewers have approved')
   expect(validation.status).toBe('pass')
 })
@@ -542,12 +529,12 @@ test('that requestedReviewers appends to the reviewers list correctly', async ()
     }
   }
 
-  let validation = await approval.processValidate(createMockContext(5, [], [], [], [], requestedReviewers), settings)
+  let validation = await approval.processValidate(createMockContext(5, [], [], requestedReviewers), settings)
   expect(validation.validations[0].description).toBe('approval: bob ,john(Requested Reviewer) required')
   expect(validation.status).toBe('fail')
 
   let reviewList = createReviewList(['bob', 'john'])
-  validation = await approval.processValidate(createMockContext(5, reviewList, [], [], [], requestedReviewers), settings)
+  validation = await approval.processValidate(createMockContext(5, reviewList, [], requestedReviewers), settings)
   expect(validation.validations[0].description).toBe('approval: all required reviewers have approved')
   expect(validation.status).toBe('pass')
 })
@@ -650,61 +637,97 @@ test('returns proper error when team provided is not found', async () => {
     }
   }
 
-  const listMember = jest.fn().mockRejectedValue({ status: 404, message: 'test Error' })
-  let validation = await approval.processValidate(createMockContext(5, reviewList, null, null, null, null, false, listMember), settings)
+  Teams.extractTeamMembers = jest.fn().mockRejectedValue(new TeamNotFoundError('org/test-team'))
+
+  let validation = await approval.processValidate(createMockContext(5, reviewList, null, null, false), settings)
   expect(validation.validations.length).toBe(1)
   expect(validation.validations[0].description).toBe('TeamNotFoundError')
   expect(validation.status).toBe('error')
 })
 
-test('teams option works properly', async () => {
-  const approval = new Approval()
+describe('required.owners ', () => {
+  beforeEach(() => {
+    Owners.process.mockClear()
+  })
 
-  const reviewList = [
-    {
-      user: {
-        login: 'userA'
+  test('limit.teams option works properly', async () => {
+    const approval = new Approval()
+
+    const reviewList = [
+      {
+        user: {
+          login: 'userA'
+        },
+        state: 'APPROVED',
+        submitted_at: Date.now()
       },
-      state: 'APPROVED',
-      submitted_at: Date.now()
-    },
-    {
-      user: {
-        login: 'userB'
+      {
+        user: {
+          login: 'userB'
+        },
+        state: 'APPROVED',
+        submitted_at: Date.now() + 1000
+      }
+    ]
+
+    const settings = {
+      do: 'approval',
+      limit: {
+        teams: ['test-org/test-team']
       },
-      state: 'APPROVED',
-      submitted_at: Date.now() + 1000
+      required: {
+        reviewers: ['userA']
+      }
     }
-  ]
 
-  const settings = {
-    do: 'approval',
-    limit: {
-      teams: ['test-org/test-team']
-    },
-    required: {
-      reviewers: ['userA']
-    }
-  }
+    Teams.extractTeamMembers = jest.fn().mockReturnValue(['userB'])
 
-  const listMember = jest.fn().mockReturnValue({ data: [
-    {
-      login: 'userB'
+    let validation = await approval.processValidate(createMockContext(5, reviewList, null, null, false), settings)
+    expect(validation.validations.length).toBe(1)
+    expect(validation.status).toBe('fail')
+    expect(validation.validations[0].description).toBe('approval: userA required')
+  })
+
+  test('limit.owners option works properly', async () => {
+    const approval = new Approval()
+
+    const reviewList = [
+      {
+        user: {
+          login: 'userA'
+        },
+        state: 'APPROVED',
+        submitted_at: Date.now()
+      },
+      {
+        user: {
+          login: 'userB'
+        },
+        state: 'APPROVED',
+        submitted_at: Date.now() + 1000
+      }
+    ]
+
+    const settings = {
+      do: 'approval',
+      limit: {
+        owners: true
+      },
+      required: {
+        reviewers: ['userA']
+      }
     }
-  ]})
-  let validation = await approval.processValidate(createMockContext(5, reviewList, null, null, null, null, false, listMember), settings)
-  expect(validation.validations.length).toBe(1)
-  expect(validation.status).toBe('fail')
-  expect(validation.validations[0].description).toBe('approval: userA required')
+
+    Owners.process = jest.fn().mockReturnValue(['userB'])
+    let validation = await approval.processValidate(createMockContext(5, reviewList, null, null, false), settings)
+
+    expect(validation.validations.length).toBe(1)
+    expect(validation.status).toBe('fail')
+    expect(validation.validations[0].description).toBe('approval: userA required')
+  })
 })
 
-const createCommitDiffs = (diffs) => {
-  return diffs.map(diff => ({
-    filename: diff
-  }))
-}
-
-const createMockContext = (minimum, data, owners, commitDiffs, assignees, requestedReviewers, isOwnersNotFound = false, listMembers) => {
+const createMockContext = (minimum, data, assignees, requestedReviewers, isOwnersNotFound = false) => {
   if (!data) {
     data = []
     for (let i = 0; i < minimum; i++) {
@@ -718,8 +741,7 @@ const createMockContext = (minimum, data, owners, commitDiffs, assignees, reques
     }
   }
 
-  let codeowners = (isOwnersNotFound || !owners) ? null : Buffer.from(`${owners}`).toString('base64')
-  return Helper.mockContext({reviews: data, codeowners: codeowners, compareCommits: commitDiffs, assignees, requestedReviewers, listMembers})
+  return Helper.mockContext({reviews: data, files: [], assignees, requestedReviewers})
 }
 
 const createAssigneeList = (assignees) => {
