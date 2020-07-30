@@ -2,8 +2,10 @@ Check
 ^^^^^^^^
 
 .. note::
-    Some default cases do exists for pass, fail and error cases if you don't provide them when the event include ``pull_request.*``.
-    If you provide these cases, the defaults will be overwritten
+    The logic for whether checks will be added by default is as follows:
+    1. If no action is provided in either pass, fail or error , add `checks` as default (to be backward compatible)
+    2. If only actions other than `checks` is provided, don't add check as default (to support cases where checks are not wanted)
+    3. If checks is a part of the actions provided, all pass , fail and error cases will have `checks` (to prevent case where a check is hanged and never finish processing)
 
 ::
 
