@@ -68,6 +68,7 @@ Validator List
     validators/assignee.rst
     validators/changeset.rst
     validators/commit.rst
+    validators/contents.rst
     validators/dependent.rst
     validators/description.rst
     validators/label.rst
@@ -93,7 +94,6 @@ Actions that mergeable is currently able to perform.
     actions/comment.rst
     actions/label.rst
     actions/request_review.rst
-
 
 .. _organisation-wide-defaults:
 
