@@ -20,9 +20,6 @@ Contents
          match: 'A String' # or array of strings
          message: 'Come message...'
 
-.. warning::
-    ``merge`` action will not work currently as it require ``contents`` ``read:write`` permission which the mergeable doesn't have. We have plans to enable it in the near future
-
 Supported Events:
 ::
 

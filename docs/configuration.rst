@@ -92,6 +92,7 @@ Actions that mergeable is currently able to perform.
     actions/check.rst
     actions/close.rst
     actions/comment.rst
+    actions/merge.rst
     actions/label.rst
     actions/request_review.rst
 
