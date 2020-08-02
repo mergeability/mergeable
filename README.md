@@ -96,7 +96,7 @@ Events supported for pull requests are as follows:
 And for issues:
 `issues.opened`, `issues.edited`, `issues.labeled`, `issues.unlabeled`, `issues.milestoned`, `issues.demilestoned`, `issues.assigned`, `issues.unassigned`, `issues.synchronize`
 
->  ☝ **NOTE:** More details about events can be found on the [GitHub events page](https://developer.github.com/v3/activity/events).
+>  ☝ **NOTE:** More details about events can be found on the [GitHub events page](https://docs.github.com/en/rest/reference/activity#events).
 
 For convenience, wildcards can be used: `pull_request.*`, `issues.*`, `pull_request_review.*`
 
