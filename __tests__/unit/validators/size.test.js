@@ -1,5 +1,8 @@
+jest.mock('node-fetch')
+
 const Helper = require('../../../__fixtures__/unit/helper')
 const Size = require('../../../lib/validators/size')
+let mockedFetch = require('node-fetch')
 
 describe('PR size validator', () => {
   const FILES = [
@@ -42,7 +45,7 @@ describe('PR size validator', () => {
       }
     }
 
-    let validation = await size.validate(createMockContext(FILES), settings)
+    let validation = await size.processValidate(createMockContext(FILES), settings)
     expect(validation.status).toBe('error')
     expect(validation.validations[0].description).toBe('Options max and total cannot be used together. Please choose one')
     expect(validation.validations[0].status).toBe('error')
@@ -60,7 +63,7 @@ describe('PR size validator', () => {
       }
     }
 
-    let validation = await size.validate(createMockContext(FILES), settings)
+    let validation = await size.processValidate(createMockContext(FILES), settings)
     expect(validation.status).toBe('fail')
     expect(validation.validations[0].description).toBe('Too big!')
     expect(validation.validations[0].status).toBe('fail')
@@ -69,16 +72,10 @@ describe('PR size validator', () => {
   test('errors if invalid configurations is passed', async () => {
     const size = new Size()
     const settings = {
-      do: 'size',
-      lines: {
-        something: {
-          count: 10,
-          message: 'Too big!'
-        }
-      }
+      do: 'size'
     }
 
-    let validation = await size.validate(createMockContext(FILES), settings)
+    let validation = await size.processValidate(createMockContext(FILES), settings)
     const ERROR_MESSAGE = `Failed to validate because the 'lines' or 'max / total', 'additions' or 'deletions' option is missing. Please check the documentation.`
     expect(validation.status).toBe('error')
     expect(validation.validations[0].description).toBe(ERROR_MESSAGE)
@@ -105,7 +102,7 @@ describe('PR size validator', () => {
       }
     }
 
-    let validation = await size.validate(createMockContext(FILES), settings)
+    let validation = await size.processValidate(createMockContext(FILES), settings)
     expect(validation.status).toBe('fail')
     expect(validation.validations[0].description).toBe('Too big!')
     expect(validation.validations[0].status).toBe('fail')
@@ -135,7 +132,7 @@ describe('PR size validator', () => {
       }
     }
 
-    let validation = await size.validate(createMockContext(FILES), settings)
+    let validation = await size.processValidate(createMockContext(FILES), settings)
     expect(validation.status).toBe('pass')
     expect(validation.validations[0].description).toBe('PR size for additions is OK!')
     expect(validation.validations[0].status).toBe('pass')
@@ -165,7 +162,7 @@ describe('PR size validator', () => {
       }
     }
 
-    let validation = await size.validate(createMockContext(FILES), settings)
+    let validation = await size.processValidate(createMockContext(FILES), settings)
     expect(validation.status).toBe('fail')
     expect(validation.validations[0].description).toBe('PR size for additions is OK!')
     expect(validation.validations[0].status).toBe('pass')
@@ -196,7 +193,7 @@ describe('PR size validator', () => {
       ignore: ['another.js']
     }
 
-    let validation = await size.validate(createMockContext(FILES), settings)
+    let validation = await size.processValidate(createMockContext(FILES), settings)
     expect(validation.status).toBe('pass')
     expect(validation.validations[0].description).toBe('PR size for additions is OK!')
     expect(validation.validations[0].status).toBe('pass')
@@ -258,7 +255,7 @@ describe('PR size validator', () => {
       }
     ]
 
-    let validation = await size.validate(createMockContext(files), settings)
+    let validation = await size.processValidate(createMockContext(files), settings)
     expect(validation.status).toBe('pass')
     expect(validation.validations[0].description).toBe('PR size for additions is OK!')
     expect(validation.validations[0].status).toBe('pass')
@@ -269,7 +266,7 @@ describe('PR size validator', () => {
 
     settings.ignore = ['**/big_file_*.js']
 
-    validation = await size.validate(createMockContext(files), settings)
+    validation = await size.processValidate(createMockContext(files), settings)
     expect(validation.status).toBe('pass')
     expect(validation.validations[0].description).toBe('PR size for additions is OK!')
     expect(validation.validations[0].status).toBe('pass')
@@ -300,7 +297,7 @@ describe('PR size validator', () => {
       ignore: []
     }
 
-    let validation = await size.validate(createMockContext(FILES), settings)
+    let validation = await size.processValidate(createMockContext(FILES), settings)
     expect(validation.status).toBe('fail')
     expect(validation.validations[0].description).toBe('Too big!')
     expect(validation.validations[0].status).toBe('fail')
@@ -328,7 +325,7 @@ describe('PR size validator', () => {
       ignore: []
     }
 
-    validation = await size.validate(createMockContext(FILES), settings)
+    validation = await size.processValidate(createMockContext(FILES), settings)
     expect(validation.status).toBe('pass')
     expect(validation.validations[0].description).toBe('PR size for additions is OK!')
     expect(validation.validations[0].status).toBe('pass')
@@ -336,6 +333,212 @@ describe('PR size validator', () => {
     expect(validation.validations[1].status).toBe('pass')
     expect(validation.validations[2].description).toBe('PR size for total additions + deletions is OK!')
     expect(validation.validations[2].status).toBe('pass')
+  })
+})
+
+describe('Size Ignore comment functionality', () => {
+  const FILES = [
+    {
+      filename: 'thing.js',
+      status: 'modified',
+      additions: 10,
+      deletions: 5,
+      changes: 15
+    },
+    {
+      filename: 'another.js',
+      status: 'added',
+      additions: 3,
+      deletions: 2,
+      changes: 5
+    },
+    {
+      filename: 'removed_file_should_be_ignored.js',
+      status: 'removed',
+      additions: 0,
+      deletions: 500,
+      changes: 500
+    }
+  ]
+
+  test('both single line comments and block comments are ignored', async () => {
+    const size = new Size()
+    const settings = {
+      do: 'size',
+      lines: {
+        total: {
+          count: 1,
+          message: 'Too big!'
+        },
+        ignore_comments: true
+      }
+    }
+
+    mockedFetch.mockReturnValueOnce({
+      text: () => {
+        return 'diff --git a/commentTestFiles.js b/commentTestFiles.js\n' +
+          'new file mode 100644\n' +
+          'index 0000000..983b141\n' +
+          '--- /dev/null\n' +
+          '+++ b/commentTestFiles.js\n' +
+          '@@ -0,0 +1,5 @@\n' +
+          '+// this is a comment\n' +
+          '+ // second comment\n' +
+          '+ non comment\n' +
+          '+\n' +
+          '+/*\n' +
+          '+    Comment block\n' +
+          '+ */\n'
+      }
+    })
+
+    let validation = await size.processValidate(createMockContext(FILES), settings)
+    expect(validation.status).toBe('fail')
+
+    mockedFetch.mockReturnValueOnce({
+      text: () => {
+        return 'diff --git a/commentTestFiles.js b/commentTestFiles.js\n' +
+          'new file mode 100644\n' +
+          'index 0000000..983b141\n' +
+          '--- /dev/null\n' +
+          '+++ b/commentTestFiles.js\n' +
+          '@@ -0,0 +1,5 @@\n' +
+          '+// this is a comment\n' +
+          '+/*\n' +
+          '+    Comment block\n' +
+          '+ */\n'
+      }
+    })
+
+    validation = await size.processValidate(createMockContext(FILES), settings)
+    expect(validation.status).toBe('pass')
+    expect(validation.validations[0].description).toBe('PR size for total additions + deletions is OK!')
+  })
+
+  test('non supported file extension are ignored', async () => {
+    const size = new Size()
+    const settings = {
+      do: 'size',
+      lines: {
+        total: {
+          count: 1,
+          message: 'Too big!'
+        },
+        ignore_comments: true
+      }
+    }
+
+    mockedFetch.mockReturnValueOnce({
+      text: () => {
+        return 'diff --git a/commentTestFiles.notsupportedExtension b/commentTestFiles.notsupportedExtension\n' +
+          'new file mode 100644\n' +
+          'index 0000000..983b141\n' +
+          '--- /dev/null\n' +
+          '+++ b/commentTestFiles.notsupportedExtension\n' +
+          '@@ -0,0 +1,5 @@\n' +
+          '+// this is a comment\n' +
+          '+/*\n' +
+          '+    Comment block\n' +
+          '+ */\n'
+      }
+    })
+
+    let validation = await size.processValidate(createMockContext(FILES), settings)
+    expect(validation.status).toBe('fail')
+  })
+
+  test('.js file extension works properly', async () => {
+    const size = new Size()
+    const settings = {
+      do: 'size',
+      lines: {
+        total: {
+          count: 1,
+          message: 'Too big!'
+        },
+        ignore_comments: true
+      }
+    }
+
+    mockedFetch.mockReturnValueOnce({
+      text: () => {
+        return 'diff --git a/commentTestFiles.js b/commentTestFiles.js\n' +
+          'new file mode 100644\n' +
+          'index 0000000..983b141\n' +
+          '--- /dev/null\n' +
+          '+++ b/commentTestFiles.js\n' +
+          '@@ -0,0 +1,5 @@\n' +
+          '+// this is a comment\n' +
+          '+ // second comment\n'
+      }
+    })
+
+    let validation = await size.processValidate(createMockContext(FILES), settings)
+    expect(validation.status).toBe('pass')
+
+    mockedFetch.mockReturnValueOnce({
+      text: () => {
+        return 'diff --git a/commentTestFiles.js b/commentTestFiles.js\n' +
+          'new file mode 100644\n' +
+          'index 0000000..983b141\n' +
+          '--- /dev/null\n' +
+          '+++ b/commentTestFiles.js\n' +
+          '@@ -0,0 +1,5 @@\n' +
+          '+/*\n' +
+          '+    Comment block\n' +
+          '+ */\n'
+      }
+    })
+
+    validation = await size.processValidate(createMockContext(FILES), settings)
+    expect(validation.status).toBe('pass')
+  })
+
+  test('.py file extension works properly', async () => {
+    const size = new Size()
+    const settings = {
+      do: 'size',
+      lines: {
+        total: {
+          count: 0,
+          message: 'Too big!'
+        },
+        ignore_comments: true
+      }
+    }
+
+    mockedFetch.mockReturnValueOnce({
+      text: () => {
+        return 'diff --git a/commentTestFiles.py b/commentTestFiles.py\n' +
+          'new file mode 100644\n' +
+          'index 0000000..983b141\n' +
+          '--- /dev/null\n' +
+          '+++ b/commentTestFiles.js\n' +
+          '@@ -0,0 +1,5 @@\n' +
+          '+# this is a comment\n' +
+          '+ # second comment\n' +
+          '+ non comment\n'
+      }
+    })
+
+    let validation = await size.processValidate(createMockContext(FILES), settings)
+    expect(validation.status).toBe('fail')
+
+    mockedFetch.mockReturnValueOnce({
+      text: () => {
+        return 'diff --git a/commentTestFiles.py b/commentTestFiles.py\n' +
+          'new file mode 100644\n' +
+          'index 0000000..983b141\n' +
+          '--- /dev/null\n' +
+          '+++ b/commentTestFiles.py\n' +
+          '@@ -0,0 +1,5 @@\n' +
+          '+# this is a comment\n' +
+          '+ # second comment\n'
+      }
+    })
+
+    validation = await size.processValidate(createMockContext(FILES), settings)
+    expect(validation.status).toBe('pass')
   })
 })
 

@@ -40,6 +40,8 @@ Make sure to create a private key for the app after it's been registered.
 6. Add a repository for your Github app by going to [application settings](https://github.com/settings/installations)
 7. Do a test pull request to check if everything is working
 
+Note: if you wish to use a different config file name beside `mergeable.yml`, use `CONFIG_PATH` environment variable. Config files uses `.github` as base path, see [here](https://github.com/probot/probot/blob/1a19bdd/src/context.ts#L190)   
+
 ### Possible issues
 
 ####  `400 bad request` / `Error: No X-Hub-Signature found on request`
@@ -47,3 +49,10 @@ Make sure to create a private key for the app after it's been registered.
 This happens when you haven't configured the webhook secret correctly in your
 locally running instance. Make sure to set the `SECRET_TOKEN` environment variable
 in `.env` before running `npm run dev`.
+
+#### `ERROR probot: Integration not found`
+
+This may occur when running Mergeable using a GitHub Enterpise instance.
+
+To fix, try making sure you've set the `GHE_HOST` variable in `.env` to the
+hostname of your Enterprise instance. E.g. `GHE_HOST=github.your_company.com`.

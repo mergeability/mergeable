@@ -1,11 +1,12 @@
-const executor = require('../../lib/flex')
-const Helper = require('../../__fixtures__/unit/helper')
-const { Action } = require('../../lib/actions/action')
+const executor = require('../../../lib/flex/flex')
+const Helper = require('../../../__fixtures__/unit/helper')
+const { Action } = require('../../../lib/actions/action')
 
-describe('Test beforeValidate and afterValidate invocations', async () => {
+describe('Test processBeforeValidate and processAfterValidate invocations', () => {
   let context
   let registry = { validators: new Map(), actions: new Map() }
   let action
+
   let config = `
     version: 2
     mergeable:
@@ -28,12 +29,12 @@ describe('Test beforeValidate and afterValidate invocations', async () => {
   `
 
   beforeEach(() => {
-    context = Helper.mockContext('title')
+    context = Helper.mockContext()
     Helper.mockConfigWithContext(context, config)
 
     action = new Action()
-    action.beforeValidate = jest.fn()
-    action.afterValidate = jest.fn()
+    action.processBeforeValidate = jest.fn()
+    action.processAfterValidate = jest.fn()
     action.supportedEvents = ['pull_request.opened', 'pull_request.edited', 'pull_request_review.submitted']
     registry.actions.set('checks', action)
   })
@@ -42,16 +43,16 @@ describe('Test beforeValidate and afterValidate invocations', async () => {
     context.event = 'pull_request'
     context.payload.action = 'opened'
     await executor(context, registry)
-    expect(action.beforeValidate.mock.calls.length).toBe(1)
-    expect(action.afterValidate.mock.calls.length).toBe(1)
+    expect(action.processBeforeValidate.mock.calls.length).toBe(1)
+    expect(action.processAfterValidate.mock.calls.length).toBe(1)
   })
 
   test('when event is not in configuration', async () => {
     context.event = 'pull_request_review'
     context.payload.action = 'submitted'
     await executor(context, registry)
-    expect(action.beforeValidate.mock.calls.length).toBe(0)
-    expect(action.afterValidate.mock.calls.length).toBe(0)
+    expect(action.processBeforeValidate.mock.calls.length).toBe(0)
+    expect(action.processAfterValidate.mock.calls.length).toBe(0)
   })
 
   test('when event is in configuration with multiple whens', async () => {
@@ -59,28 +60,106 @@ describe('Test beforeValidate and afterValidate invocations', async () => {
     context.event = 'pull_request_review'
     context.payload.action = 'submitted'
     await executor(context, registry)
-    expect(action.beforeValidate.mock.calls.length).toBe(1)
-    expect(action.afterValidate.mock.calls.length).toBe(1)
+    expect(action.processBeforeValidate.mock.calls.length).toBe(1)
+    expect(action.processAfterValidate.mock.calls.length).toBe(1)
   })
 
-  test('when event is NOT in configuration with multiple whens', async () => {
-    Helper.mockConfigWithContext(context, configWithMultiple)
-    context.event = 'pull_request_review'
-    context.payload.action = 'commented'
+  test('two whens with same events', async () => {
+    const config = `
+    version: 2
+    mergeable:
+      - when: pull_request.*
+        validate:
+          - do: title
+            must_exclude:
+              regex: wip|work in progress|do not merge
+              message: 'a custom message'
+          - do: label
+            must_exclude:
+              regex: wip|work in progress
+      - when: pull_request.*
+        validate:
+          - do: title
+            must_exclude:
+              regex: wip|work in progress|do not merge
+              message: 'a custom message'
+          - do: label
+            must_exclude:
+              regex: wip|work in progress`
+    Helper.mockConfigWithContext(context, config)
+    context.event = 'pull_request'
+    context.payload.action = 'opened'
     await executor(context, registry)
-    expect(action.beforeValidate.mock.calls.length).toBe(0)
-    expect(action.afterValidate.mock.calls.length).toBe(0)
+    expect(action.processBeforeValidate.mock.calls.length).toBe(2)
+    expect(action.processAfterValidate.mock.calls.length).toBe(2)
+  })
+
+  test('processPreAction works correctly, two whens with same events but different actions', async () => {
+    const config = `
+    version: 2
+    mergeable:
+      - when: pull_request.*
+        validate:
+          - do: title
+            must_exclude:
+              regex: wip|work in progress|do not merge
+              message: 'a custom message'
+          - do: label
+            must_exclude:
+              regex: wip|work in progress
+        fail: 
+          - do: assign
+            assignees: ['test user']
+      - when: pull_request.*
+        validate:
+          - do: title
+            must_exclude:
+              regex: wip|work in progress|do not merge
+              message: 'a custom message'
+          - do: label
+            must_exclude:
+              regex: wip|work in progress
+        pass:
+          - do: comment
+            payload:
+              body: 'test comment'
+          `
+
+    let registry = { validators: new Map(), actions: new Map() }
+    const commentAction = new Action()
+    commentAction.processBeforeValidate = jest.fn()
+    commentAction.processAfterValidate = jest.fn()
+    commentAction.supportedEvents = ['pull_request.opened', 'pull_request.edited', 'pull_request_review.submitted']
+    registry.actions.set('comment', commentAction)
+
+    const assignAction = new Action()
+    assignAction.processBeforeValidate = jest.fn()
+    assignAction.processAfterValidate = jest.fn()
+    assignAction.supportedEvents = ['pull_request.opened', 'pull_request.edited', 'pull_request_review.submitted']
+    registry.actions.set('assign', assignAction)
+
+    Helper.mockConfigWithContext(context, config)
+    context.event = 'pull_request'
+    context.payload.action = 'opened'
+    await executor(context, registry)
+
+    expect(commentAction.processBeforeValidate.mock.calls.length).toBe(1)
+    expect(assignAction.processBeforeValidate.mock.calls.length).toBe(1)
   })
 })
 
 describe('#executor', () => {
   test('Bad YML', async () => {
-    let context = Helper.mockContext('title')
+    let context = Helper.mockContext()
+    context.event = 'pull_request'
+    context.payload.action = 'opened'
     Helper.mockConfigWithContext(context, `
       version: 2
-      mergeable:
+        mergeable:
     when: pull_request.*
-    `)
+      `,
+    {files: ['.github/mergeable.yml']}
+    )
 
     context.event = 'pull_request'
     context.payload.action = 'opened'
@@ -133,29 +212,29 @@ describe('#executor', () => {
     expect(registry.validators.get('label')).toBeDefined()
 
     let title = {
-      validate: jest.fn().mockReturnValue({status: 'pass'}),
+      processValidate: jest.fn().mockReturnValue({status: 'pass'}),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     let label = {
-      validate: jest.fn().mockReturnValue({status: 'pass'}),
+      processValidate: jest.fn().mockReturnValue({status: 'pass'}),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.validators.set('title', title)
     registry.validators.set('label', label)
 
     let checks = {
-      beforeValidate: jest.fn(),
-      afterValidate: jest.fn(),
+      processBeforeValidate: jest.fn(),
+      processAfterValidate: jest.fn(),
       isEventSupported: jest.fn().mockReturnValue(false)
     }
     registry.actions.set('checks', checks)
 
     await executor(context, registry)
 
-    expect(title.validate).toHaveBeenCalledTimes(1)
-    expect(label.validate).toHaveBeenCalledTimes(1)
-    expect(checks.beforeValidate).toHaveBeenCalledTimes(0)
-    expect(checks.afterValidate).toHaveBeenCalledTimes(0)
+    expect(title.processValidate).toHaveBeenCalledTimes(1)
+    expect(label.processValidate).toHaveBeenCalledTimes(1)
+    expect(checks.processBeforeValidate).toHaveBeenCalledTimes(0)
+    expect(checks.processAfterValidate).toHaveBeenCalledTimes(0)
   })
 
   test('Comma seperated events', async () => {
@@ -185,19 +264,19 @@ describe('#executor', () => {
 
     let registry = { validators: new Map(), actions: new Map() }
     let title = {
-      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
+      processValidate: jest.fn(value => Promise.resolve({status: 'pass'})),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.validators.set('title', title)
     let issueOnly = {
-      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
+      processValidate: jest.fn(value => Promise.resolve({status: 'pass'})),
       isEventSupported: jest.fn(event => { return (event === 'issues.opened') })
     }
     registry.validators.set('issueOnly', issueOnly)
 
     let checks = {
-      beforeValidate: jest.fn(),
-      afterValidate: jest.fn(),
+      processBeforeValidate: jest.fn(),
+      processAfterValidate: jest.fn(),
       isEventSupported: jest.fn(event => { return (event === 'pull_request.opened') })
     }
     registry.actions.set('checks', checks)
@@ -205,22 +284,22 @@ describe('#executor', () => {
     context.event = 'pull_request'
     context.payload.action = 'opened'
     await executor(context, registry)
-    expect(title.validate).toHaveBeenCalledTimes(1)
+    expect(title.processValidate).toHaveBeenCalledTimes(1)
     expect(title.isEventSupported).toHaveBeenCalledTimes(1)
-    expect(issueOnly.validate).toHaveBeenCalledTimes(0)
+    expect(issueOnly.processValidate).toHaveBeenCalledTimes(0)
     expect(issueOnly.isEventSupported).toHaveBeenCalledTimes(1)
-    expect(checks.beforeValidate).toHaveBeenCalledTimes(1)
-    expect(checks.afterValidate).toHaveBeenCalledTimes(1)
+    expect(checks.processBeforeValidate).toHaveBeenCalledTimes(1)
+    expect(checks.processAfterValidate).toHaveBeenCalledTimes(1)
 
     context.event = 'issues'
     context.payload.action = 'opened'
     await executor(context, registry)
-    expect(title.validate).toHaveBeenCalledTimes(2)
+    expect(title.processValidate).toHaveBeenCalledTimes(2)
     expect(title.isEventSupported).toHaveBeenCalledTimes(2)
-    expect(issueOnly.validate).toHaveBeenCalledTimes(1)
+    expect(issueOnly.processValidate).toHaveBeenCalledTimes(1)
     expect(issueOnly.isEventSupported).toHaveBeenCalledTimes(2)
-    expect(checks.beforeValidate).toHaveBeenCalledTimes(1)
-    expect(checks.afterValidate).toHaveBeenCalledTimes(1)
+    expect(checks.processBeforeValidate).toHaveBeenCalledTimes(1)
+    expect(checks.processAfterValidate).toHaveBeenCalledTimes(1)
   })
 
   test('Multiple Whens', async () => {
@@ -267,18 +346,18 @@ describe('#executor', () => {
 
     let registry = { validators: new Map(), actions: new Map() }
     let title = {
-      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
+      processValidate: jest.fn(value => Promise.resolve({status: 'pass'})),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.validators.set('title', title)
     let label = {
-      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
+      processValidate: jest.fn(value => Promise.resolve({status: 'pass'})),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.validators.set('label', label)
     let checks = {
-      beforeValidate: jest.fn(),
-      afterValidate: jest.fn(),
+      processBeforeValidate: jest.fn(),
+      processAfterValidate: jest.fn(),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.actions.set('checks', checks)
@@ -286,17 +365,17 @@ describe('#executor', () => {
     context.event = 'pull_request'
     context.payload.action = 'opened'
     await executor(context, registry)
-    expect(title.validate).toHaveBeenCalledTimes(1)
-    expect(label.validate).toHaveBeenCalledTimes(0)
-    expect(checks.beforeValidate).toHaveBeenCalledTimes(1)
-    expect(checks.afterValidate).toHaveBeenCalledTimes(1)
+    expect(title.processValidate).toHaveBeenCalledTimes(1)
+    expect(label.processValidate).toHaveBeenCalledTimes(0)
+    expect(checks.processBeforeValidate).toHaveBeenCalledTimes(1)
+    expect(checks.processAfterValidate).toHaveBeenCalledTimes(1)
 
     context.event = 'issues'
     await executor(context, registry)
-    expect(title.validate).toHaveBeenCalledTimes(2)
-    expect(label.validate).toHaveBeenCalledTimes(1)
-    expect(checks.beforeValidate).toHaveBeenCalledTimes(2)
-    expect(checks.afterValidate).toHaveBeenCalledTimes(2)
+    expect(title.processValidate).toHaveBeenCalledTimes(2)
+    expect(label.processValidate).toHaveBeenCalledTimes(1)
+    expect(checks.processBeforeValidate).toHaveBeenCalledTimes(2)
+    expect(checks.processAfterValidate).toHaveBeenCalledTimes(2)
   })
 
   test('isEventInContext is working only for correct event', async () => {
@@ -343,18 +422,18 @@ describe('#executor', () => {
 
     let registry = { validators: new Map(), actions: new Map() }
     let title = {
-      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
+      processValidate: jest.fn(value => Promise.resolve({status: 'pass'})),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.validators.set('title', title)
     let label = {
-      validate: jest.fn(value => Promise.resolve({status: 'pass'})),
+      processValidate: jest.fn(value => Promise.resolve({status: 'pass'})),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.validators.set('label', label)
     let checks = {
-      beforeValidate: jest.fn(),
-      afterValidate: jest.fn(),
+      processBeforeValidate: jest.fn(),
+      processAfterValidate: jest.fn(),
       isEventSupported: jest.fn().mockReturnValue(true)
     }
     registry.actions.set('checks', checks)
@@ -362,16 +441,58 @@ describe('#executor', () => {
     context.event = 'pull_request_review'
     context.payload.action = 'opened'
     await executor(context, registry)
-    expect(title.validate).toHaveBeenCalledTimes(0)
-    expect(label.validate).toHaveBeenCalledTimes(0)
-    expect(checks.beforeValidate).toHaveBeenCalledTimes(0)
-    expect(checks.afterValidate).toHaveBeenCalledTimes(0)
+    expect(title.processValidate).toHaveBeenCalledTimes(0)
+    expect(label.processValidate).toHaveBeenCalledTimes(0)
+    expect(checks.processBeforeValidate).toHaveBeenCalledTimes(0)
+    expect(checks.processAfterValidate).toHaveBeenCalledTimes(0)
 
     context.event = 'pull_request'
     await executor(context, registry)
-    expect(title.validate).toHaveBeenCalledTimes(1)
-    expect(label.validate).toHaveBeenCalledTimes(0)
-    expect(checks.beforeValidate).toHaveBeenCalledTimes(1)
-    expect(checks.afterValidate).toHaveBeenCalledTimes(1)
+    expect(title.processValidate).toHaveBeenCalledTimes(1)
+    expect(label.processValidate).toHaveBeenCalledTimes(0)
+    expect(checks.processBeforeValidate).toHaveBeenCalledTimes(1)
+    expect(checks.processAfterValidate).toHaveBeenCalledTimes(1)
+  })
+
+  test('Error handling', async () => {
+    let registry = { validators: new Map(), actions: new Map() }
+    let errorValidator = {
+      processValidate: jest.fn(value => Promise.reject(new Error('Uncaught error'))),
+      isEventSupported: jest.fn().mockReturnValue(true)
+    }
+    let passAction = {
+      processBeforeValidate: jest.fn(),
+      processAfterValidate: jest.fn(),
+      isEventSupported: jest.fn().mockReturnValue(true)
+    }
+    let errorAction = {
+      processBeforeValidate: jest.fn(),
+      processAfterValidate: jest.fn(),
+      isEventSupported: jest.fn().mockReturnValue(true)
+    }
+    registry.validators.set('error', errorValidator)
+    registry.actions.set('pass_action', passAction)
+    registry.actions.set('error_action', errorAction)
+
+    let context = Helper.mockContext('error')
+    Helper.mockConfigWithContext(context, `
+      version: 2
+      mergeable:
+        - when: pull_request.opened
+          validate:
+            - do: error
+          pass:
+            - do: pass_action
+          error:
+            - do: error_action
+    `)
+    context.event = 'pull_request'
+    context.payload.action = 'opened'
+    await executor(context, registry)
+
+    expect(errorAction.processBeforeValidate).toHaveBeenCalledTimes(1)
+    expect(errorAction.processAfterValidate).toHaveBeenCalledTimes(1)
+    expect(passAction.processBeforeValidate).toHaveBeenCalledTimes(1)
+    expect(passAction.processAfterValidate).toHaveBeenCalledTimes(0)
   })
 })

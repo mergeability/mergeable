@@ -86,7 +86,7 @@ test('pass, fail, error defaults will load when pull_request is mixed with other
             message: 'This PR is work in progress.'
   `
   let transformed = V2Config.transform(yaml.safeLoad(config))
-  console.log(transformed)
+
   expect(transformed.mergeable[0].pass).toEqual(constants.DEFAULT_PR_PASS)
   expect(transformed.mergeable[0].fail).toEqual(constants.DEFAULT_PR_FAIL)
   expect(transformed.mergeable[0].error).toEqual(constants.DEFAULT_PR_ERROR)
@@ -108,4 +108,99 @@ test('only pass, fail defaults ignore recipes that are not for pull_requests', (
   expect(transformed.mergeable[0].pass).toEqual([])
   expect(transformed.mergeable[0].fail).toEqual([])
   expect(transformed.mergeable[0].error).toEqual([])
+})
+
+test('default checks fill in missing required fields', () => {
+  let config = `
+  version: 2
+  mergeable:
+    - when: pull_requests.*
+      validate:
+        - do: title
+          must_exclude:
+            regex: 'wip|work in progress'
+            message: 'This PR is work in progress.'
+      pass:
+        - do: checks
+          payload:
+            summary: 'test Summary'
+            text: 'test text'
+  `
+  let transformed = V2Config.transform(yaml.safeLoad(config))
+
+  expect(transformed.mergeable[0].pass).toEqual([{
+    do: 'checks',
+    status: 'success',
+    payload: {
+      title: 'Mergeable Run has been Completed!',
+      summary: 'test Summary',
+      text: 'test text'
+    }
+  }])
+})
+
+test('adding default only works for checks', () => {
+  let config = `
+  version: 2
+  mergeable:
+    - when: pull_requests.*
+      validate:
+        - do: title
+          must_exclude:
+            regex: 'wip|work in progress'
+            message: 'This PR is work in progress.'
+      fail:
+        - do: comment
+          payload:
+            body: 'test Body'
+  `
+  let transformed = V2Config.transform(yaml.safeLoad(config))
+
+  expect(transformed.mergeable[0].fail).toEqual([{do: 'comment',
+    payload: {
+      body: 'test Body'
+    }}])
+})
+
+test('defaults are not added to all cases if no checks exists', () => {
+  let config = `
+  version: 2
+  mergeable:
+    - when: pull_requests.*
+      validate:
+        - do: title
+          must_exclude:
+            regex: 'wip|work in progress'
+            message: 'This PR is work in progress.'
+      fail:
+        - do: comment
+          payload:
+            body: 'test Body'
+  `
+  let transformed = V2Config.transform(yaml.safeLoad(config))
+
+  expect(transformed.mergeable[0].pass).toEqual([])
+  expect(transformed.mergeable[0].error).toEqual([])
+})
+
+test('defaults are not added to all cases if at least one checks exists', () => {
+  let config = `
+  version: 2
+  mergeable:
+    - when: pull_requests.*
+      validate:
+        - do: title
+          must_exclude:
+            regex: 'wip|work in progress'
+            message: 'This PR is work in progress.'
+      fail:
+        - do: checks
+          payload:
+            body: 'test Body'
+  `
+  let transformed = V2Config.transform(yaml.safeLoad(config))
+
+  expect(transformed.mergeable[0].pass).toEqual(constants.DEFAULT_PR_PASS)
+  expect(transformed.mergeable[0].fail[0].payload.body).toEqual('test Body')
+  expect(transformed.mergeable[0].error).toEqual(constants.DEFAULT_PR_ERROR)
 })
