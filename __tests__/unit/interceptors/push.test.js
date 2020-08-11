@@ -58,12 +58,13 @@ describe('push interceptor test', () => {
     expect(processWorkflow.mock.calls[0][0].payload.pull_request).toBe('PR1')
   })
 
-  test('do nothing if `head_commit` property does not exist', async () => {
+  test('do nothing if `head_commit` property is null', async () => {
     let push = new Push()
     let context = mockContextWithConfig(CONFIG_STRING, ['PR1'])
 
     context.github.pulls.get.mockReturnValue({ data: { number: 456 } })
     context.event = 'push'
+    context.payload.head_commit = null
 
     let newContext = await push.process(context)
     expect(newContext.event).toBe('push')
