@@ -1,9 +1,8 @@
 const _ = require('lodash')
-const yaml = require('js-yaml')
 
 const throwNotFound = () => {
   let error = new Error('404 error')
-  error.status = 404
+  error.code = 404
   throw error
 }
 
@@ -13,7 +12,6 @@ module.exports = {
       repo: (properties) => { return Object.assign({ owner: 'owner', repo: 'repo' }, properties) },
       event: (options.event) ? options.event : 'pull_request',
       payload: {
-        action: 'opened',
         repository: {
           full_name: 'name'
         },
@@ -37,20 +35,14 @@ module.exports = {
               issues_url: 'testRepo/issues{/number}'
             }},
           assignees: (options.assignees) ? options.assignees : []
-        },
-        issue: {
-          user: {
-            login: 'creator'
-          },
-          number: (options.number) ? options.number : 1
         }
       },
       log: {
         child: (s) => {
           return {
-            debug: (...s) => jest.fn(),
-            info: (...s) => jest.fn(),
-            warn: (...s) => jest.fn()
+            debug: (s) => console.log(`TEST[debug] > ${JSON.stringify(s)}`),
+            info: (s) => console.log(`TEST[info] > ${JSON.stringify(s)}`),
+            warn: (s) => console.log(`TEST[warn] > ${JSON.stringify(s)}`)
           }
         }
       },
@@ -91,9 +83,6 @@ module.exports = {
             return {}
           }
         },
-        teams: {
-          listMembersInOrg: options.listMembers ? () => ({ data: options.listMembers }) : () => ({ data: [] })
-        },
         pulls: {
           listFiles: () => {
             if (_.isString(options.files && options.files[0])) {
@@ -112,16 +101,6 @@ module.exports = {
               return { data: options.files && options.files }
             }
           },
-          list: () => ({
-            data: options.prList ? options.prList : []
-          }),
-          listCommits: {
-            endpoint: {
-              merge: async () => {
-                return { data: (options.commits) ? options.commits : [] }
-              }
-            }
-          },
           listReviews: {
             endpoint: {
               merge: async () => {
@@ -129,14 +108,6 @@ module.exports = {
               }
             }
           },
-          checkIfMerged: async () => {
-            if (options.checkIfMerged === false) {
-              return throwNotFound()
-            } else {
-              return { status: 204 }
-            }
-          },
-          merge: jest.fn(),
           get: jest.fn()
         },
         paginate: jest.fn(async (fn, cb) => {
@@ -157,24 +128,10 @@ module.exports = {
           listLabelsOnIssue: () => {
             return { data: (options.labels) ? options.labels : [] }
           },
-          checkAssignee: () => {
-            return new Promise((resolve) => {
-              resolve({ status: 204 })
-            })
-          },
-          listComments: () => {
-            return { data: (options.listComments) ? options.listComments : [] }
-          },
           addLabels: jest.fn(),
-          update: jest.fn(),
           get: () => {
             return {data: (options.deepValidation) ? options.deepValidation : {}}
           }
-        }
-      },
-      probotContext: {
-        config: () => {
-          return Promise.resolve(options.configJson)
         }
       }
     }
@@ -203,9 +160,6 @@ module.exports = {
       return Promise.resolve({
         data: options && options.files ? options.files.map(file => ({ filename: file, status: 'modified' })) : []
       })
-    }
-    context.probotContext.config = () => {
-      return Promise.resolve(yaml.safeLoad(configString))
     }
   }
 }

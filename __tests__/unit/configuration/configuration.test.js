@@ -1,135 +1,49 @@
-const yaml = require('js-yaml')
 const Configuration = require('../../../lib/configuration/configuration')
+const helper = require('../../../__fixtures__/unit/helper')
 
 describe('Loading bad configuration', () => {
-  test('bad YML', async () => {
-    const context = createMockGhConfig()
-    context.probotContext.config = jest.fn().mockImplementation(() => {
-      throw new yaml.YAMLException('Bad YML')
-    })
-
-    const config = await Configuration.instanceWithContext(context)
-
+  test('bad YML', () => {
+    let config = new Configuration(`
+    version: 2
+    mergeable:
+      when: pull_request.*
+      - do: label:
+    `)
     expect(config.errors.size).toBe(1)
     expect(config.errors.has(Configuration.ERROR_CODES.BAD_YML)).toBe(true)
   })
 
   test('No YML found', async () => {
-    const context = createMockGhConfig()
-    context.probotContext.config = jest.fn().mockResolvedValue(null)
-    const config = await Configuration.instanceWithContext(context)
-
-    expect(config.errors.size).toBe(1)
-    expect(config.errors.has(Configuration.ERROR_CODES.NO_YML)).toBe(true)
+    let config = await Configuration.instanceWithContext(helper.mockContext({ files: [] }))
+    expect(config.warnings.size).toBe(1)
+    expect(config.warnings.has(Configuration.WARNING_CODES.CONFIG_NOT_FOUND)).toBe(true)
   })
 
   test('wrong version', () => {
-    const settings = yaml.safeLoad(`
-      version: not a number
-      mergeable:
-        pull_request:
+    let config = new Configuration(`
+    version: not a number
+    mergeable:
     `)
-    const config = new Configuration(settings)
     expect(config.errors.size).toBe(1)
     expect(config.errors.has(Configuration.ERROR_CODES.UNKOWN_VERSION)).toBe(true)
   })
 
   test('missing mergeable node', () => {
-    const settings = yaml.safeLoad(`
-      version: 2
+    let config = new Configuration(`
+    version: 2
+
     `)
-    const config = new Configuration(settings)
     expect(config.errors.size).toBe(1)
     expect(config.errors.has(Configuration.ERROR_CODES.MISSING_MERGEABLE_NODE)).toBe(true)
   })
 
-  test('missing rule sets', () => {
-    const settings = yaml.safeLoad(`
-      version: 2
-      mergeable:
-    `)
-    let config = new Configuration(settings)
-    expect(config.errors.size).toBe(1)
-    expect(config.errors.has(Configuration.ERROR_CODES.MISSING_RULE_SETS)).toBe(true)
-  })
-  test('v2: non array rule set', () => {
-    const settings = yaml.safeLoad(`
-      version: 2
-      mergeable:
-        when: test
-    `)
-
-    let config = new Configuration(settings)
-    expect(config.errors.size).toBe(1)
-    expect(config.errors.has(Configuration.ERROR_CODES.NON_ARRAY_MERGEABLE)).toBe(true)
-  })
-
-  test('v2: missing/typo in "validate" keyword multiple rule sets', () => {
-    let settings = yaml.safeLoad(`
-      version: 2
-      mergeable:
-        - when: pull_requests.*
-          validate:
-            - do :
-        - when: issues.*
-          valdate:
-    `)
-    let config = new Configuration(settings)
-    expect(config.errors.size).toBe(1)
-    expect(config.errors.has(Configuration.ERROR_CODES.MISSING_VALIDATE_KEYWORD)).toBe(true)
-
-    settings = yaml.safeLoad(`
-      version: 2
-      mergeable:
-        - when: pull_requests.*
-    `)
-    config = new Configuration(settings)
-    expect(config.errors.size).toBe(1)
-    expect(config.errors.has(Configuration.ERROR_CODES.MISSING_VALIDATE_KEYWORD)).toBe(true)
-  })
-
-  test('v2: non-array "validate" node', () => {
-    let settings = yaml.safeLoad(`
-      version: 2
-      mergeable:
-        - when: pull_requests.*
-          validate:
-    `)
-    let config = new Configuration(settings)
-    expect(config.errors.size).toBe(1)
-    expect(config.errors.has(Configuration.ERROR_CODES.NON_ARRAY_VALIDATE)).toBe(true)
-
-    settings = yaml.safeLoad(`
-      version: 2
-      mergeable:
-        - when: pull_requests.*
-          validate:
-            do : title
-    `)
-    config = new Configuration(settings)
-    expect(config.errors.size).toBe(1)
-    expect(config.errors.has(Configuration.ERROR_CODES.NON_ARRAY_VALIDATE)).toBe(true)
-  })
-
-  test('v2: missing/typo in "when" keyword rule sets', () => {
-    const settings = yaml.safeLoad(`
-      version: 2
-      mergeable:
-        - validate:
-            - do :
-    `)
-    let config = new Configuration(settings)
-    expect(config.errors.size).toBe(1)
-    expect(config.errors.has(Configuration.ERROR_CODES.MISSING_WHEN_KEYWORD)).toBe(true)
-  })
-
   test('multiple errors', () => {
-    const settings = yaml.safeLoad(`
-      version: foo
-      mergeably:
-        when: bar
-    `)
-    const config = new Configuration(settings)
+    let yml = `
+    version: foo
+    mergeably:
+      when: bar
+    `
+    let config = new Configuration(yml)
     expect(config.errors.size).toBe(2)
   })
 })
@@ -147,10 +61,11 @@ describe('config file fetching', () => {
                 days: 20
                 message: PR test
         `
-    let parsedConfig = yaml.safeLoad(configString)
+
     let context = createMockGhConfig(configString)
-    const config = await Configuration.fetchConfigFile(context)
-    expect(config).toEqual(parsedConfig)
+    let file = await Configuration.fetchConfigFile(context)
+    const content = Buffer.from(file.data.content, 'base64').toString()
+    expect(content).toBe(configString)
   })
 
   test('fetch from main branch if the event is PR relevant and file is not modified or added', async () => {
@@ -172,8 +87,6 @@ describe('config file fetching', () => {
                 days: 20
                 message: Issue test
         `
-    let parsedConfig = yaml.safeLoad(configString)
-
     let context = createMockGhConfig(
       configString,
       prConfig,
@@ -181,12 +94,14 @@ describe('config file fetching', () => {
     )
 
     context.event = 'pull_request'
-    let config = await Configuration.fetchConfigFile(context)
-    expect(config).toEqual(parsedConfig)
+    let file = await Configuration.fetchConfigFile(context)
+    let content = Buffer.from(file.data.content, 'base64').toString()
+    expect(content).toBe(configString)
 
     context.event = 'pull_request_review'
-    config = await Configuration.fetchConfigFile(context)
-    expect(config).toEqual(parsedConfig)
+    file = await Configuration.fetchConfigFile(context)
+    content = Buffer.from(file.data.content, 'base64').toString()
+    expect(content).toBe(configString)
   })
 
   test('fetch from head branch if the event is relevant to PR and file is modified or added', async () => {
@@ -201,45 +116,40 @@ describe('config file fetching', () => {
                 days: 20
                 message: from HEAD
         `
-    let prConfigString = `
+    let prConfig = `
           mergeable:
             issues:
               stale:
                 days: 20
                 message: From PR Config
         `
-    let parsedConfig = yaml.safeLoad(prConfigString)
     let files = {files: [
       { filename: '.github/mergeable.yml', status: 'modified' }
     ]}
-    let context = createMockGhConfig(configString, prConfigString, files)
+    let context = createMockGhConfig(configString, prConfig, files)
     context.event = 'pull_request'
-    let config = await Configuration.fetchConfigFile(context)
-    expect(config).toEqual(parsedConfig)
+    let file = await Configuration.fetchConfigFile(context)
+    let content = Buffer.from(file.data.content, 'base64').toString()
+    expect(content).toBe(prConfig)
 
     context.event = 'pull_request_review'
-    config = await Configuration.fetchConfigFile(context)
-    expect(config).toEqual(parsedConfig)
+    file = await Configuration.fetchConfigFile(context)
+    content = Buffer.from(file.data.content, 'base64').toString()
+    expect(content).toBe(prConfig)
 
     files = {files: [
-      { filename: '.github/mergeable.yml', status: 'added' }
+      { file: '.github/mergeable.yml', status: 'added' }
     ]}
-    context = createMockGhConfig(null, prConfigString, files)
+    context = createMockGhConfig(configString, prConfig, files)
     context.event = 'pull_request'
-    config = await Configuration.fetchConfigFile(context)
-    expect(config).toEqual(parsedConfig)
+    content = Buffer.from(file.data.content, 'base64').toString()
+    expect(content).toBe(prConfig)
   })
 })
 
 describe('with version 2', () => {
   test('it loads correctly without version', () => {
-    const configJson = yaml.safeLoad(`
-      mergeable:
-        approvals: 5
-        label: 'label regex'
-        title: 'title regex'
-    `)
-    let config = new Configuration(configJson)
+    let config = new Configuration()
     expect(config.settings[0].when).toBeDefined()
     expect(config.settings[0].validate).toBeDefined()
     expect(config.hasErrors()).toBe(false)
@@ -249,13 +159,12 @@ describe('with version 2', () => {
 describe('with version 1', () => {
   // write test to test for bad yml
   test('that constructor loads settings correctly', () => {
-    const configJson = yaml.safeLoad(`
+    let config = new Configuration(`
       mergeable:
         approvals: 5
         label: 'label regex'
         title: 'title regex'
     `)
-    let config = new Configuration(configJson)
 
     let validate = config.settings[0].validate
 
@@ -265,11 +174,10 @@ describe('with version 1', () => {
   })
 
   test('that defaults are not injected when user defined configuration exists', () => {
-    const configJson = yaml.safeLoad(`
+    let config = new Configuration(`
       mergeable:
         approvals: 1
       `)
-    let config = new Configuration(configJson)
     let validate = config.settings[0].validate
     expect(validate.find(e => e.do === 'approvals').min.count).toBe(1)
     expect(validate.find(e => e.do === 'title')).toBeUndefined()
@@ -291,7 +199,7 @@ describe('with version 1', () => {
       expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('label regex')
     })
 
-    expect(context.probotContext.config.mock.calls.length).toBe(1)
+    expect(context.github.repos.getContents.mock.calls.length).toBe(1)
   })
 
   test('that instanceWithContext returns the right Configuration (pull_requests)', async () => {
@@ -308,7 +216,7 @@ describe('with version 1', () => {
       expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe('title pull regex')
       expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('label pull regex')
     })
-    expect(context.probotContext.config.mock.calls.length).toBe(1)
+    expect(context.github.repos.getContents.mock.calls.length).toBe(1)
   })
 
   test('that instanceWithContext returns the right Configuration (issues)', async () => {
@@ -325,7 +233,7 @@ describe('with version 1', () => {
       expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe('title issue regex')
       expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('label issue regex')
     })
-    expect(context.probotContext.config.mock.calls.length).toBe(1)
+    expect(context.github.repos.getContents.mock.calls.length).toBe(1)
   })
 
   test('that instanceWithContext loads the configuration for stale correctly when specified for pull_requests and issues separately', async () => {
@@ -390,7 +298,7 @@ describe('with version 1', () => {
     })
   })
 
-  test('that instanceWithContext return error if mergeable.yml is not found', async () => {
+  test('that instanceWithContext still returns the Configuration when repo does not content mergeable.yml', async () => {
     let context = {
       repo: () => {
         return {repo: '', owner: ''}
@@ -400,62 +308,44 @@ describe('with version 1', () => {
           number: 1
         }
       },
-      probotContext: {
-        config: jest.fn().mockResolvedValue(null)
+      github: {
+        repos: {
+          getContents: jest.fn().mockReturnValue(
+            Promise.reject(
+              new HttpError(
+                '{"message":"Not Found","documentation_url":"https://developer.github.com/v3/repos/contents/#get-contents"}',
+                404,
+                'Not Found')
+            )
+          )
+        }
       }
     }
 
     let config = await Configuration.instanceWithContext(context)
-    expect(config.hasErrors()).toBe(true)
-    expect(config.errors.has(Configuration.ERROR_CODES.NO_YML)).toBe(true)
-  })
+    let validate = config.settings[0].validate
 
-  test('that instanceWithContext return error if mergeable.yml is not found on PRs', async () => {
-    const prConfigString = `
-          mergeable:
-            issues:
-              stale:
-                days: 20
-                message: From PR Config
-        `
-    let files = {files: [
-      { filename: '.github/mergeable.yml', status: 'modified' }
-    ]}
-    let context = createMockGhConfig(null, prConfigString, files)
-    context.event = 'pull_request'
-    context.github.repos.getContents = jest.fn().mockReturnValue(
-      Promise.reject(
-        new HttpError(
-          '{"message":"Not Found","documentation_url":"https://developer.github.com/v3/repos/contents/#get-contents"}',
-          404,
-          'Not Found')
-      )
-    )
-
-    let config = await Configuration.instanceWithContext(context)
-    expect(config.hasErrors()).toBe(true)
-    expect(config.errors.has(Configuration.ERROR_CODES.GITHUB_API_ERROR)).toBe(true)
+    expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe('^wip')
+    expect(validate.find(e => e.do === 'label').must_exclude.regex).toBe('work in progress|wip|do not merge')
   })
 
   test('that if pass, fail or error is undefined in v2 config, the config will not break', async () => {
-    const settings = yaml.safeLoad(`
-      mergeable:
-        issues:
-          stale:
-            days: 30
-            message: 'There has not been any activity in the past month. Is there anything to follow-up?'
-    `)
+    let settings = `
+    mergeable:
+      issues:
+        stale:
+          days: 30
+          message: 'There has not been any activity in the past month. Is there anything to follow-up?'`
 
     const config = new Configuration(settings)
-
-    expect(config.settings.length).toBe(2)
-    expect(config.settings[0].fail).toBeDefined()
-    expect(config.settings[0].error).toBeDefined()
+    const registry = {validators: new Map(), actions: new Map()}
+    await config.registerValidatorsAndActions(registry)
+    expect(registry.actions.has('comment')).toBe(true)
   })
 })
 
 // helper method to return mocked configiration.
-const createMockGhConfig = (config, prConfig, options) => {
+const createMockGhConfig = (json, prConfig, options) => {
   return {
     repo: jest.fn().mockReturnValue({
       repo: '',
@@ -472,9 +362,9 @@ const createMockGhConfig = (config, prConfig, options) => {
     },
     github: {
       repos: {
-        getContents: jest.fn(() => {
+        getContents: jest.fn(({ref}) => {
           return Promise.resolve({
-            data: { content: Buffer.from(prConfig).toString('base64') }
+            data: { content: ref ? Buffer.from(prConfig).toString('base64') : Buffer.from(json).toString('base64') }
           })
         })
       },
@@ -483,9 +373,6 @@ const createMockGhConfig = (config, prConfig, options) => {
           return { data: options.files }
         }
       }
-    },
-    probotContext: {
-      config: jest.fn().mockResolvedValue(yaml.safeLoad(config))
     }
   }
 }

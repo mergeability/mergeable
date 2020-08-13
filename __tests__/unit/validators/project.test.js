@@ -10,26 +10,26 @@ const settings = {
 
 test('that mergeable is true when PR number is in Project', async () => {
   const projects = new Project()
-  let validation = await projects.processValidate(createMockContext({number: 1}), settings)
+  let validation = await projects.validate(createMockContext({number: 1}), settings)
   expect(validation.status).toBe('pass')
 })
 
 test('that mergeable is false when PR number is not in Project', async () => {
   const projects = new Project()
-  let validation = await projects.processValidate(createMockContext({number: 3}), settings)
+  let validation = await projects.validate(createMockContext({number: 3}), settings)
   expect(validation.status).toBe('fail')
 })
 
 test('test description is correct', async () => {
   const projects = new Project()
-  let validation = await projects.processValidate(createMockContext({number: 3}), settings)
+  let validation = await projects.validate(createMockContext({number: 3}), settings)
   expect(validation.status).toBe('fail')
   expect(validation.validations[0].description).toBe('Must be in the "Project One" project.')
 })
 
 test('test deep validation works', async () => {
   const projects = new Project()
-  let validation = await projects.processValidate(createMockContext({number: 3, description: 'closes #1'}), settings)
+  let validation = await projects.validate(createMockContext({number: 3, description: 'closes #1'}), settings)
   expect(validation.status).toBe('pass')
   expect(validation.validations[0].description).toBe('Required Project is present')
 })

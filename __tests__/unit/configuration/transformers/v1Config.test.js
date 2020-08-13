@@ -202,7 +202,7 @@ test('checks all advanced config is transformed accurately', async () => {
           message: 'Custom message...'
         required:
           reviewers: [ user1, user2 ]   # list of github usernames required to review
-          owners: true | false # will read the file .github/CODEOWNERS and make them required reviewers
+          owners: true | false # will read the file .github/CODEOWNER and make them required reviewers
           message: 'Custom message...'
 
       assignee:
@@ -315,7 +315,7 @@ test('check that and/or logic is transformed correctly', async () => {
   const validate = res.mergeable
   expect(validate.length).toBe(2)
   const pr = (validate.filter(item => item.when.includes('pull_request')))[0].validate
-
+  console.log(pr)
   expect(pr.length).toBe(1)
   expect(pr[0].do).toBe('label')
   expect(pr[0].or).toBeDefined()

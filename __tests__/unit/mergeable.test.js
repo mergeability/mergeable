@@ -3,7 +3,7 @@ const {Mergeable} = require('../../lib/mergeable')
 describe('Mergeable', () => {
   test('starting in dev mode and flexed correctly', async () => {
     let mergeable = startMergeable('development')
-    expect(mergeable.schedule).toBeCalledWith(mockRobot, { interval: 2000 })
+    expect(mergeable.schedule).toBeCalledWith(mockRobot, { interval: 60 * 60 * 2 })
     expect(mergeable.flex).toHaveBeenCalledTimes(1)
   })
 

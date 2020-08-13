@@ -9,7 +9,7 @@ test('should be false when a different milestone is specified', async () => {
       regex: 'Version 2'
     }
   }
-  let validation = await milestone.processValidate(createMockContext({title: 'Version 1'}), settings)
+  let validation = await milestone.validate(createMockContext({title: 'Version 1'}), settings)
   expect(validation.status).toBe('fail')
 })
 
@@ -21,7 +21,7 @@ test('shoud be false when milestone is set in settings but null in PR', async ()
       regex: 'Version 1'
     }
   }
-  let validation = await milestone.processValidate(createMockContext(), settings)
+  let validation = await milestone.validate(createMockContext(), settings)
   expect(validation.status).toBe('fail')
 })
 
@@ -34,7 +34,7 @@ test('description should be correct', async () => {
     }
   }
 
-  let validation = await milestone.processValidate(createMockContext(), settings)
+  let validation = await milestone.validate(createMockContext(), settings)
   expect(validation.validations[0].description).toBe(`milestone does not include "Version 1"`)
 })
 
@@ -47,7 +47,7 @@ test('checks that deep validation works if it closes an issue with milestone req
     }
   }
 
-  let validation = await milestone.processValidate(createMockContext(null, 'closes #1', {milestone: {title: 'Version 1'}}), settings)
+  let validation = await milestone.validate(createMockContext(null, 'closes #1', {milestone: {title: 'Version 1'}}), settings)
   expect(validation.status).toBe('pass')
 })
 
@@ -59,7 +59,7 @@ test('checks that deep validation return false if it does not closes an issue wi
       regex: 'Version 1'
     }
   }
-  let validation = await milestone.processValidate(createMockContext(null, 'closes #1', {milestone: {title: 'Version 2'}}), settings)
+  let validation = await milestone.validate(createMockContext(null, 'closes #1', {milestone: {title: 'Version 2'}}), settings)
   expect(validation.status).toBe('fail')
 })
 
