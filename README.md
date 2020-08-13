@@ -50,9 +50,10 @@ We need your help:
 > ☝️ **NOTE:** For development and testing. You'll want to [read about how to run it locally](deploy.md#running-locally).
 
 
-# Authors
+# Authors:
   - Originally created by [@jusx](https://twitter.com/jusx) 👉 follow him on [Twitter](https://twitter.com/jusx).
   - Co-authored by [@shine2lay](https://github.com/shine2lay)
   - Logo by [@minap0lis](https://www.instagram.com/minap0lis/)  👉  follow her on [Instagram](https://www.instagram.com/minap0lis/).
+ - testing Co-authored by [@I-Cat](https://github.com/I=Cat)
 ---
 AGPL, Copyright (c) 2019 [Justin Law](https://github.com/jusx) & [Shine Lee](https://github.com/shine2lay)
