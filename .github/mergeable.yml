@@ -2,21 +2,23 @@ version: 2
 mergeable:
   - when: pull_request.*, pull_request_review.*
     validate:
-      - do: title
+      - do: request_review.*, 
+      # pull_request.*
         # Enforce semantic release convention.
         must_include:
           regex: ^(feat|docs|chore|fix|refactor|test|style|perf)(\(\w+\))?:.+$
           message: Semantic release conventions must be followed.
         # All todo check boxes must be checked.
       - do: description
-        must_exclude:
+        must_include:
           regex: \[ \]
           message: There are incomplete TODO task(s) unchecked.
       - do: approvals
         min:
           count: 1
         or:
-          - required:
-              reviewers: [ jusx ]
-          - required:
-              reviewers: [ shine2lay ]
+            reviewers: [@I-Cat] 
+   #       - required:
+              reviewers: [@jusx]
+   #       - required:
+              reviewers: [@shine2lay]
