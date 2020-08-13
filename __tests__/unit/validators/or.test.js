@@ -21,7 +21,7 @@ describe('Or Validator Unit Test', () => {
         }
       ]
     }
-    let validation = await or.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await or.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('fail')
   })
 
@@ -44,11 +44,11 @@ describe('Or Validator Unit Test', () => {
         }
       ]
     }
-    let validation = await or.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await or.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('pass')
   })
 
-  test('should return output of first task to pass when multiple are given', async() => {
+  test('should return output of first task to pass when multiple are given', async () => {
     const or = new Or()
     const settings = {
       do: 'or',
@@ -67,40 +67,40 @@ describe('Or Validator Unit Test', () => {
         }
       ]
     }
-    let validation = await or.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await or.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('pass')
   })
 
-  test('Error is returned when validate is missing', async() => {
+  test('Error is returned when validate is missing', async () => {
     const or = new Or()
     const settings = {
       do: 'or'
     }
-    let validation = await or.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await or.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('error')
   })
 
-  test('Error is returned when validate is not an array', async() => {
+  test('Error is returned when validate is not an array', async () => {
     const or = new Or()
     const settings = {
       do: 'or',
       validate: ''
     }
-    let validation = await or.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await or.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('error')
   })
 
-  test('Error is returned when validate is empty', async() => {
+  test('Error is returned when validate is empty', async () => {
     const or = new Or()
     const settings = {
       do: 'or',
       validate: []
     }
-    let validation = await or.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await or.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('error')
   })
 
-  test('Error is returned when validate uses unsupported classes', async() => {
+  test('Error is returned when validate uses unsupported classes', async () => {
     const or = new Or()
     const settings = {
       do: 'or',
@@ -108,11 +108,11 @@ describe('Or Validator Unit Test', () => {
         { do: 'missing' }
       ]
     }
-    let validation = await or.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await or.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('error')
   })
 
-  test('Supports nested or validator', async() => {
+  test('Supports nested or validator', async () => {
     const or = new Or()
     const settings = {
       do: 'or',
@@ -143,11 +143,11 @@ describe('Or Validator Unit Test', () => {
       ]
     }
 
-    let validation = await or.validate(createMockContext({title: 'Version 2'}), settings, registry)
+    let validation = await or.processValidate(createMockContext({title: 'Version 2'}), settings, registry)
     expect(validation.status).toBe('pass')
   })
 
-  test('error status if one of the sub validator errored', async() => {
+  test('error status if one of the sub validator errored', async () => {
     const or = new Or()
     const settings = {
       do: 'or',
@@ -178,7 +178,7 @@ describe('Or Validator Unit Test', () => {
       ]
     }
 
-    let validation = await or.validate(createMockContext({title: 'Version 2'}), settings, registry)
+    let validation = await or.processValidate(createMockContext({title: 'Version 2'}), settings, registry)
     expect(validation.status).toBe('error')
   })
 })

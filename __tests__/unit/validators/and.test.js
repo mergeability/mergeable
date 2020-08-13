@@ -21,7 +21,7 @@ describe('And Validator Unit Test', () => {
         }
       ]
     }
-    let validation = await and.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await and.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('fail')
   })
 
@@ -44,11 +44,11 @@ describe('And Validator Unit Test', () => {
         }
       ]
     }
-    let validation = await and.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await and.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('fail')
   })
 
-  test('should return output of first task to pass when multiple are given', async() => {
+  test('should return output of first task to pass when multiple are given', async () => {
     const and = new And()
     const settings = {
       do: 'and',
@@ -67,40 +67,40 @@ describe('And Validator Unit Test', () => {
         }
       ]
     }
-    let validation = await and.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await and.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('pass')
   })
 
-  test('Error is returned when validate is missing', async() => {
+  test('Error is returned when validate is missing', async () => {
     const and = new And()
     const settings = {
       do: 'and'
     }
-    let validation = await and.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await and.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('error')
   })
 
-  test('Error is returned when validate is not an array', async() => {
+  test('Error is returned when validate is not an array', async () => {
     const and = new And()
     const settings = {
       do: 'and',
       validate: ''
     }
-    let validation = await and.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await and.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('error')
   })
 
-  test('Error is returned when validate is empty', async() => {
+  test('Error is returned when validate is empty', async () => {
     const and = new And()
     const settings = {
       do: 'and',
       validate: []
     }
-    let validation = await and.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await and.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('error')
   })
 
-  test('Error is returned when validate uses unsupported classes', async() => {
+  test('Error is returned when validate uses unsupported classes', async () => {
     const and = new And()
     const settings = {
       do: 'and',
@@ -108,11 +108,11 @@ describe('And Validator Unit Test', () => {
         { do: 'missing' }
       ]
     }
-    let validation = await and.validate(createMockContext({title: 'Version 1'}), settings, registry)
+    let validation = await and.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
     expect(validation.status).toBe('error')
   })
 
-  test('Supports nested and validator', async() => {
+  test('Supports nested and validator', async () => {
     const and = new And()
     const settings = {
       do: 'and',
@@ -143,11 +143,11 @@ describe('And Validator Unit Test', () => {
       ]
     }
 
-    let validation = await and.validate(createMockContext({title: 'Version 2'}), settings, registry)
+    let validation = await and.processValidate(createMockContext({title: 'Version 2'}), settings, registry)
     expect(validation.status).toBe('fail')
   })
 
-  test('error if one of the sub validator errored', async() => {
+  test('error if one of the sub validator errored', async () => {
     const and = new And()
     const settings = {
       do: 'and',
@@ -178,7 +178,7 @@ describe('And Validator Unit Test', () => {
       ]
     }
 
-    let validation = await and.validate(createMockContext({title: 'Version 2'}), settings, registry)
+    let validation = await and.processValidate(createMockContext({title: 'Version 2'}), settings, registry)
     expect(validation.status).toBe('error')
   })
 })

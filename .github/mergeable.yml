@@ -3,10 +3,6 @@ mergeable:
   - when: pull_request.*, pull_request_review.*
     validate:
       - do: title
-        # Do not merge when it is marked work in progress (WIP)
-        must_exclude:
-          regex: ^\[WIP\]
-          message: This is work in progress. Do not merge yet.
         # Enforce semantic release convention.
         must_include:
           regex: ^(feat|docs|chore|fix|refactor|test|style|perf)(\(\w+\))?:.+$
@@ -24,7 +20,3 @@ mergeable:
               reviewers: [ jusx ]
           - required:
               reviewers: [ shine2lay ]
-        # Must be marked with the correct milestone.
-      - do: milestone
-        must_include:
-          regex: version 1.2
