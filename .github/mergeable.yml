@@ -20,8 +20,7 @@ mergeable:
         min:
           count: 1
         or:
-        
-          - required:
+        - required:
               reviewers: [ I-Cat ]
           - required:
               reviewers: [ jusx ]
