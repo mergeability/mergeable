@@ -21,8 +21,13 @@ Approvals
         owners: true # Optional boolean. When true, the file .github/CODEOWNER is read and only owners approval will count
 
 .. note::
-    ``owners`` file now support teams as well, make sure to use `@organization/team-slug` format.
+    ``owners`` file now support option, make sure to use `@organization/team-slug` format.
 
+.. warning::
+    ``owners`` sub-option only works in public repos right now, we have plans to enable it for private repos in the future.
+
+.. warning::
+    ``teams`` (both through limit.teams and inside owners file) will not work right now, it require `team:read` permission which mergeable doesn't have, we have plans to request it in the near future.
 
 Supported Events:
 ::

@@ -65,8 +65,9 @@ You can pass in Handlebars template to show the details result of the run.
 .. note::
     if any of required fields ``title``, ``summary`` or ``status`` is missing, default values will be used
 
-.. note::
-    checks will automatically re-run if the base branch has a modified config file
+.. warning::
+    if you have have ``checks`` action only for some of the outcome, you may end up in a state where checks are never finished.
+    So be sure to have ``checks`` for all outcome (``pass``, ``fail``, and ``error``)
 
 Supported Events:
 ::
