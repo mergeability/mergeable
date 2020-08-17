@@ -1,5 +1,4 @@
 const yaml = require('js-yaml')
-const Helper = require('../../../__fixtures__/unit/helper')
 const Configuration = require('../../../lib/configuration/configuration')
 
 describe('Loading bad configuration', () => {
@@ -284,14 +283,8 @@ describe('with version 1', () => {
         label: 'label regex'
         title: 'title regex'
     `)
-    context.probotContext.config = jest.fn().mockResolvedValue(yaml.safeLoad(`
-      mergeable:
-        approvals: 5
-        label: 'label regex'
-        title: 'title regex'
-    `))
 
-    await Configuration.instanceWithContext(context).then(config => {
+    Configuration.instanceWithContext(context).then(config => {
       let validate = config.settings[0].validate
       expect(validate.find(e => e.do === 'approvals').min.count).toBe(5)
       expect(validate.find(e => e.do === 'title').must_exclude.regex).toBe('title regex')
@@ -463,15 +456,38 @@ describe('with version 1', () => {
 
 // helper method to return mocked configiration.
 const createMockGhConfig = (config, prConfig, options) => {
-  const context = Helper.mockContext(options)
-
-  context.github.repos.getContents = () => {
-    return Promise.resolve({ data: {
-      content: Buffer.from(prConfig).toString('base64') }
-    })
+  return {
+    repo: jest.fn().mockReturnValue({
+      repo: '',
+      owner: ''
+    }),
+    payload: {
+      pull_request: {
+        number: 1,
+        head: {
+          ref: 1,
+          sha: 1
+        }
+      }
+    },
+    github: {
+      repos: {
+        getContents: jest.fn(() => {
+          return Promise.resolve({
+            data: { content: Buffer.from(prConfig).toString('base64') }
+          })
+        })
+      },
+      pulls: {
+        listFiles: () => {
+          return { data: options.files }
+        }
+      }
+    },
+    probotContext: {
+      config: jest.fn().mockResolvedValue(yaml.safeLoad(config))
+    }
   }
-  context.probotContext.config = jest.fn().mockResolvedValue(yaml.safeLoad(config))
-  return context
 }
 
 // to mimic HttpError (https://github.com/octokit/rest.js/blob/fc8960ccf3415b5d77e50372d3bb873cfec80c55/lib/request/http-error.js)
