@@ -1,4 +1,4 @@
-version: 2
+version: 1
 mergeable:
   - when: pull_request.*, pull_request_review.*
     validate:
@@ -20,6 +20,9 @@ mergeable:
         min:
           count: 1
         or:
+        
+          - required:
+              reviewers: [ I-Cat ]
           - required:
               reviewers: [ jusx ]
           - required:
@@ -27,4 +30,4 @@ mergeable:
         # Must be marked with the correct milestone.
       - do: milestone
         must_include:
-          regex: version 1.2
+          regex: version 1.0a
