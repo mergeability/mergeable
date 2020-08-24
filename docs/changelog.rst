@@ -1,6 +1,7 @@
 CHANGELOG
 =====================================
 
+| Aug 24, 2020: display files processed in `size` validator `#366 <https://github.com/mergeability/mergeable/issues/366>`_
 | July 28, 2020 : owners file now support teams and limit.owners option added in `approvals` validator `#331 <https://github.com/mergeability/mergeable/issues/331>`_
 | July 12, 2020 : Allow usage of special annotation `@author` in comments and checks `#328 <https://github.com/mergeability/mergeable/issues/328>`_
 | July 1, 2020 : When config file is added/modified in base branch, mergeable will trigger for all PR against the base branch `#153 <https://github.com/mergeability/mergeable/issues/153>`_
