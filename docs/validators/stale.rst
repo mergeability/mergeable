@@ -6,6 +6,9 @@ Stale
     - do: stale
       days: 20 # number of days ago.
       type: pull_request, issues # what items to search for.
+      label: # optional property to filter the items that are actioned upon
+        match: ['label1_to_match', 'label2_to_match'] # only items with matching labels will be actioned upon and marked as stale
+        ignore: ['label1_to_ignore', 'label2_to_ignore'] # items with these labels will be ignored and not marked as stale
       time_constraint: # Optional, run the validator only if it in within the time constraint
         time_zone: 'America/Los_Angeles' # Optional, UTC time by default, for valid timezones see `here <https://momentjs.com/timezone/>`_
         hours_between: ['9', '17'] # Optional, 24 hours by default, run only if [0] >= Hour Now <= [1]

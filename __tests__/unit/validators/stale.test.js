@@ -51,6 +51,86 @@ test('will set the issues and pulls appropriately when no type is set', async ()
   expect(results.status).toBe('pass')
 })
 
+describe('label queries', () => {
+  beforeEach(() => {
+
+  })
+
+  test('will set label matches and ignores correctly', async () => {
+    let settings = { do: 'stale', days: 10, label: { match: ['test_match1', 'test_match2'], ignore: ['test_ignore'] } }
+
+    let stale = new Stale()
+    let context = createMockContext([
+      { number: 1 },
+      { number: 2, pull_request: {} }
+    ])
+
+    let results = await stale.processValidate(context, settings)
+    // no types specified so we assume both types. Hence none passed to search API.
+    expect(isParamsNoType(context)).toBe(true)
+    expect(isParamsNoLabel(context)).toBe(false)
+    expect(getFilteredParams(context, 'label:"test_match1" label:"test_match2" -label:"test_ignore"').length).toBe(1)
+    expect(results.schedule.issues.length).toBe(1)
+    expect(results.schedule.pulls.length).toBe(1)
+    expect(results.status).toBe('pass')
+  })
+
+  test('will set label matches correctly', async () => {
+    let settings = { do: 'stale', days: 10, label: { match: ['test_match1', 'test_match2'] } }
+
+    let stale = new Stale()
+    let context = createMockContext([
+      { number: 1 },
+      { number: 2, pull_request: {} }
+    ])
+
+    let results = await stale.processValidate(context, settings)
+    // no types specified so we assume both types. Hence none passed to search API.
+    expect(isParamsNoType(context)).toBe(true)
+    expect(isParamsNoLabel(context)).toBe(false)
+    expect(getFilteredParams(context, 'label:"test_match1" label:"test_match2"').length).toBe(1)
+    expect(results.schedule.issues.length).toBe(1)
+    expect(results.schedule.pulls.length).toBe(1)
+    expect(results.status).toBe('pass')
+  })
+
+  test('will set label ignores correctly', async () => {
+    let settings = { do: 'stale', days: 10, label: { ignore: ['test_ignore', 'test_ignore2'] } }
+
+    let stale = new Stale()
+    let context = createMockContext([
+      { number: 1 },
+      { number: 2, pull_request: {} }
+    ])
+
+    let results = await stale.processValidate(context, settings)
+    // no types specified so we assume both types. Hence none passed to search API.
+    expect(isParamsNoType(context)).toBe(true)
+    expect(isParamsNoLabel(context)).toBe(false)
+    expect(getFilteredParams(context, '-label:"test_ignore" -label:"test_ignore2"').length).toBe(1)
+    expect(results.schedule.issues.length).toBe(1)
+    expect(results.schedule.pulls.length).toBe(1)
+    expect(results.status).toBe('pass')
+  })
+
+  test('will not add any label queries when no label is specified in match settings', async () => {
+    let settings = { do: 'stale', days: 10 }
+
+    let stale = new Stale()
+    let context = createMockContext([
+      { number: 1 },
+      { number: 2, pull_request: {} }
+    ])
+
+    let results = await stale.processValidate(context, settings)
+    // no types specified so we assume both types. Hence none passed to search API.
+    expect(isParamsNoLabel(context)).toBe(true)
+    expect(results.schedule.issues.length).toBe(1)
+    expect(results.schedule.pulls.length).toBe(1)
+    expect(results.status).toBe('pass')
+  })
+})
+
 test('will set the issues and pulls even when unsupported type is set', async () => {
   let settings = { do: 'stale', days: 10, type: ['junk1', 'junk2'] }
 
@@ -226,6 +306,13 @@ const isParamsNoType = (context) => {
   return context.github.search.issuesAndPullRequests.mock.calls
     .filter(
       param => param[0].q.includes('type:')
+    ).length === 0
+}
+
+const isParamsNoLabel = (context) => {
+  return context.github.search.issuesAndPullRequests.mock.calls
+    .filter(
+      param => param[0].q.includes('label:')
     ).length === 0
 }
 
