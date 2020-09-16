@@ -50,7 +50,87 @@ test('will set the issues and pulls appropriately when no type is set', async ()
   expect(results.schedule.pulls.length).toBe(1)
   expect(results.status).toBe('pass')
 })
+describe('metadata queries', () => {
+  beforeEach(() => {
 
+  })
+
+  test('will set milestones correctly', async () => {
+    let settings = { do: 'stale', days: 10, ignore_milestones: true }
+
+    let stale = new Stale()
+    let context = createMockContext([
+      { number: 1 },
+      { number: 2, pull_request: {} }
+    ])
+
+    let results = await stale.processValidate(context, settings)
+    // no types specified so we assume both types. Hence none passed to search API.
+    expect(isParamsNoType(context)).toBe(true)
+    expect(isParamsNoLabel(context)).toBe(true)
+    expect(isMetadataIncluded(context, false, true)).toBe(true)
+    expect(results.schedule.issues.length).toBe(1)
+    expect(results.schedule.pulls.length).toBe(1)
+    expect(results.status).toBe('pass')
+  })
+
+  test('will set projects correctly', async () => {
+    let settings = { do: 'stale', days: 10, ignore_projects: true }
+
+    let stale = new Stale()
+    let context = createMockContext([
+      { number: 1 },
+      { number: 2, pull_request: {} }
+    ])
+
+    let results = await stale.processValidate(context, settings)
+    // no types specified so we assume both types. Hence none passed to search API.
+    expect(isParamsNoType(context)).toBe(true)
+    expect(isParamsNoLabel(context)).toBe(true)
+    expect(isMetadataIncluded(context, true, false)).toBe(true)
+    expect(results.schedule.issues.length).toBe(1)
+    expect(results.schedule.pulls.length).toBe(1)
+    expect(results.status).toBe('pass')
+  })
+
+  test('will not set milestones and projects if not specified', async () => {
+    let settings = { do: 'stale', days: 10 }
+
+    let stale = new Stale()
+    let context = createMockContext([
+      { number: 1 },
+      { number: 2, pull_request: {} }
+    ])
+
+    let results = await stale.processValidate(context, settings)
+    // no types specified so we assume both types. Hence none passed to search API.
+    expect(isParamsNoType(context)).toBe(true)
+    expect(isParamsNoLabel(context)).toBe(true)
+    expect(isMetadataIncluded(context, false, false)).toBe(true)
+    expect(results.schedule.issues.length).toBe(1)
+    expect(results.schedule.pulls.length).toBe(1)
+    expect(results.status).toBe('pass')
+  })
+
+  test('will set projects and milestones correctly', async () => {
+    let settings = { do: 'stale', days: 10, ignore_projects: true, ignore_milestones: true }
+
+    let stale = new Stale()
+    let context = createMockContext([
+      { number: 1 },
+      { number: 2, pull_request: {} }
+    ])
+
+    let results = await stale.processValidate(context, settings)
+    // no types specified so we assume both types. Hence none passed to search API.
+    expect(isParamsNoType(context)).toBe(true)
+    expect(isParamsNoLabel(context)).toBe(true)
+    expect(isMetadataIncluded(context, true, true)).toBe(true)
+    expect(results.schedule.issues.length).toBe(1)
+    expect(results.schedule.pulls.length).toBe(1)
+    expect(results.status).toBe('pass')
+  })
+})
 describe('label queries', () => {
   beforeEach(() => {
 
@@ -314,6 +394,13 @@ const isParamsNoLabel = (context) => {
     .filter(
       param => param[0].q.includes('label:')
     ).length === 0
+}
+
+const isMetadataIncluded = (context, project, milestone) => {
+  return context.github.search.issuesAndPullRequests.mock.calls
+    .filter(
+      param => (milestone === param[0].q.includes('no:milestone')) && (project === param[0].q.includes('no:project'))
+    ).length !== 0
 }
 
 const createMockContext = (results) => {

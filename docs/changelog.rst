@@ -1,6 +1,8 @@
 CHANGELOG
 =====================================
 
+| September 16, 2020 : `stale` validator now supports optionally skipping items associated with a `project` or a `milestone` `#375 <https://github.com/mergeability/mergeable/issues/375>`_
+| September 16, 2020 : `stale` validator now supports labels for `match` or `ignore` `#372 <https://github.com/mergeability/mergeable/issues/372>`_
 | July 28, 2020 : owners file now support teams and limit.owners option added in `approvals` validator `#331 <https://github.com/mergeability/mergeable/issues/331>`_
 | July 12, 2020 : Allow usage of special annotation `@author` in comments and checks `#328 <https://github.com/mergeability/mergeable/issues/328>`_
 | July 1, 2020 : When config file is added/modified in base branch, mergeable will trigger for all PR against the base branch `#153 <https://github.com/mergeability/mergeable/issues/153>`_
@@ -17,5 +19,3 @@ CHANGELOG
 | May 6, 2020 : Ability to create multiple checks with ``named`` recipe, `#225 <https://github.com/mergeability/mergeable/issues/225>`_
 | May 5, 2020 : Added ability to configure config file name using ``CONFIG_PATH`` env variable, `#223 <https://github.com/mergeability/mergeable/issues/223>`_
 | April 22, 2020 : readthedoc documentation added, start of CHANGELOG
-
-
