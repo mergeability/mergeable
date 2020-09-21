@@ -1,6 +1,7 @@
 CHANGELOG
 =====================================
 
+| September 17, 2020 : Add support for `schedule.repository` event for`labels` and `close` actions `#379 <https://github.com/mergeability/mergeable/issues/379>`_
 | September 17, 2020 : Fix the comment action to work correctly with the scheduler `#376 <https://github.com/mergeability/mergeable/issues/376>`_
 | September 16, 2020 : `stale` validator now supports optionally skipping items associated with a `project` or a `milestone` `#375 <https://github.com/mergeability/mergeable/issues/375>`_
 | September 16, 2020 : `stale` validator now supports labels for `match` or `ignore` `#372 <https://github.com/mergeability/mergeable/issues/372>`_

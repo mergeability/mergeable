@@ -8,4 +8,4 @@ Close
 Supported Events:
 ::
 
-    'pull_request.*', 'issues.*'
+    'schedule.repository', 'pull_request.*', 'issues.*'
