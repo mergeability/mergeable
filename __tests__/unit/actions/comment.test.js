@@ -34,15 +34,15 @@ test('check that comment created when afterValidate is called with proper parame
 
 test('that comment is created three times when result contain three issues found to be acted on', async () => {
   const comment = new Comment()
-  const context = createMockContext()
-
-  result.validationSuites = [{
+  const context = createMockContext([], 'repository')
+  let schedulerResult = {...result}
+  schedulerResult.validationSuites = [{
     schedule: {
-      issues: [{number: 1}, {number: 2}, {number: 3}],
+      issues: [{number: 1, user: {login: 'scheduler'}}, {number: 2, user: {login: 'scheduler'}}, {number: 3, user: {login: 'scheduler'}}],
       pulls: []
     }
   }]
-  await comment.afterValidate(context, settings, '', result)
+  await comment.afterValidate(context, settings, '', schedulerResult)
   expect(context.github.issues.createComment.mock.calls.length).toBe(3)
 })
 
@@ -235,8 +235,8 @@ test('error handling includes removing old error comments and creating new error
   expect(context.github.issues.createComment.mock.calls[0][0].body).toBe('creator , do something!')
 })
 
-const createMockContext = (listComments) => {
-  let context = Helper.mockContext({listComments})
+const createMockContext = (listComments, event = undefined) => {
+  let context = Helper.mockContext({listComments, event})
 
   context.github.issues.createComment = jest.fn()
   context.github.issues.deleteComment = jest.fn()
