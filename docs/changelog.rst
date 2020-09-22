@@ -1,6 +1,7 @@
 CHANGELOG
 =====================================
 
+| September 22, 2020 : Allow support for customizing the scheduler interval via an enviroment variable `MERGEABLE_SCHEDULER_INTERVAL` `#383 <https://github.com/mergeability/mergeable/issues/383>`_
 | September 17, 2020 : Add support for `schedule.repository` event for`labels` and `close` actions `#377 <https://github.com/mergeability/mergeable/issues/377>`_
 | September 17, 2020 : Fix the comment action to work correctly with the scheduler `#376 <https://github.com/mergeability/mergeable/issues/376>`_
 | September 16, 2020 : Allow specifying files to `match` for the `size` validator `#371 <https://github.com/mergeability/mergeable/issues/371>`_
