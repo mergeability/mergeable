@@ -1,6 +1,7 @@
 CHANGELOG
 =====================================
 
+| September 24, 2020 : Add ability to delete or replace the labels on an issue `#380 <https://github.com/mergeability/mergeable/issues/380>`_
 | September 22, 2020 : Allow support for customizing the scheduler interval via an enviroment variable `MERGEABLE_SCHEDULER_INTERVAL` `#383 <https://github.com/mergeability/mergeable/issues/383>`_
 | September 17, 2020 : Add support for `schedule.repository` event for`labels` and `close` actions `#377 <https://github.com/mergeability/mergeable/issues/377>`_
 | September 17, 2020 : Fix the comment action to work correctly with the scheduler `#376 <https://github.com/mergeability/mergeable/issues/376>`_
