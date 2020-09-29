@@ -23,6 +23,42 @@ Milestone
          message: 'Come message...'
       # all of the message sub-option is optional
 
+::
+
+    - do: milestone
+      and:
+        - must_include:
+            regex: 'V1'
+            message: 'Custom message...'
+        - must_include:
+            regex: 'October'
+            message: 'Custom message...'
+      or:
+        - must_include:
+            regex: 'V2'
+            message: 'Custom message...'
+        - must_include:
+            regex: 'Non breaking Changes'
+            message: 'Custom message...'
+
+you can also nest ``and`` and ``or`` options
+
+::
+
+    - do: milestone
+      and:
+        - or:
+          - must_include:
+              regex: 'V1'
+              message: 'Custom message...'
+          - must_include:
+              regex: 'September'
+              message: 'Custom message...'
+        - must_include:
+            regex: 'V2'
+            message: 'Custom message...'
+
+
 .. note::
     When a closing keyword is used in the description of a pull request. The annotated issue will be validated against the conditions as well.
 

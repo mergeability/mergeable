@@ -23,6 +23,41 @@ Project
          message: 'Come message...'
          # all of the message sub-option is optional
 
+::
+
+    - do: title
+      and:
+        - must_include:
+            regex: '### Goals'
+            message: 'Custom message...'
+        - must_include:
+            regex: '### Changes'
+            message: 'Custom message...'
+      or:
+        - must_include:
+            regex: '### Goals'
+            message: 'Custom message...'
+        - must_include:
+            regex: '### Changes'
+            message: 'Custom message...'
+
+you can also nest ``and`` and ``or`` options
+
+::
+
+    - do: title
+      and:
+        - or:
+          - must_include:
+              regex: '### Goals'
+              message: 'Custom message...'
+          - must_include:
+              regex: '### Changes'
+              message: 'Custom message...'
+        - must_include:
+            regex: '### Changes'
+            message: 'Custom message...'
+
 
 Supported Events:
 ::

@@ -23,6 +23,42 @@ Label
          message: 'Come message...'
       # all of the message sub-option is optional
 
+::
+
+    - do: label
+      and:
+        - must_include:
+            regex: 'DO NOT MERGE'
+            message: 'Custom message...'
+        - must_include:
+            regex: 'type|chore|wont'
+            message: 'Custom message...'
+      or:
+        - must_include:
+            regex: 'type|chore|wont'
+            message: 'Custom message...'
+        - must_include:
+            regex: 'DO NOT MERGE'
+            message: 'Custom message...'
+
+you can also nest ``and`` and ``or`` options
+
+::
+
+    - do: label
+      and:
+        - or:
+          - must_include:
+              regex: 'Goals'
+              message: 'Custom message...'
+          - must_include:
+              regex: 'Changes'
+              message: 'Custom message...'
+        - must_include:
+            regex: 'Changes'
+            message: 'Custom message...'
+
+
 Supported Events:
 ::
 
