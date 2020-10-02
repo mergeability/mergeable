@@ -28,14 +28,14 @@ Label
     - do: label
       and:
         - must_include:
-            regex: 'DO NOT MERGE'
+            regex: 'big|medium|small'
             message: 'Custom message...'
         - must_include:
             regex: 'type|chore|wont'
             message: 'Custom message...'
       or:
         - must_include:
-            regex: 'type|chore|wont'
+            regex: 'Ready to merge'
             message: 'Custom message...'
         - must_include:
             regex: 'DO NOT MERGE'
@@ -49,13 +49,13 @@ you can also nest ``and`` and ``or`` options
       and:
         - or:
           - must_include:
-              regex: 'Goals'
+              regex: 'feat|fix|chore'
               message: 'Custom message...'
           - must_include:
-              regex: 'Changes'
+              regex: 'major|minor|patch'
               message: 'Custom message...'
         - must_include:
-            regex: 'Changes'
+            regex: 'Ready to merge'
             message: 'Custom message...'
 
 

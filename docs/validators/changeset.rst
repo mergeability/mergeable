@@ -34,14 +34,14 @@ you can use ``and`` and ``or`` options to create more complex validations
     - do: changeset # validate against the files in the PR
       and:
         - must_include:
-            regex: 'package.json'
+            regex: 'doc/.*'
             message: 'Custom message...'
         - must_include:
-            regex: 'yarn.lock'
+            regex: 'changelog.md'
             message: 'Custom message...'
       or:
         - must_include:
-            regex: 'package.json'
+            regex: 'package-lock.json'
             message: 'Custom message...'
         - must_include:
             regex: 'yarn.lock'
@@ -55,10 +55,10 @@ you can also nest ``and`` and ``or`` options
       and:
         - or:
           - must_include:
-              regex: 'package.json'
+              regex: 'package-lock.json'
               message: 'Custom message...'
           - must_include:
-              regex: 'yarn.lock'
+              regex: 'package.json'
               message: 'Custom message...'
         - must_include:
             regex: 'yarn.lock'

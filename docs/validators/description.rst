@@ -38,10 +38,10 @@ you can use ``and`` and ``or`` options to create more complex validations
             message: 'Custom message...'
       or:
         - must_include:
-            regex: '### Goals'
+            regex: '### Bug Description'
             message: 'Custom message...'
         - must_include:
-            regex: '### Changes'
+            regex: '### Feature Description'
             message: 'Custom message...'
 
 you can also nest ``and`` and ``or`` options
@@ -52,10 +52,10 @@ you can also nest ``and`` and ``or`` options
       and:
         - or:
           - must_include:
-              regex: '### Goals'
+              regex: '### Bug Description'
               message: 'Custom message...'
           - must_include:
-              regex: '### Changes'
+              regex: '### Feature Description'
               message: 'Custom message...'
         - must_include:
             regex: '### Changes'

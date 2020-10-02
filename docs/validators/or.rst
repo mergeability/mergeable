@@ -25,4 +25,4 @@ you can also creat nested ``And`` and ``Or``
             - do: label
               must_include: '[WIP]'
         - do: label
-          must_include: 'Ready to Merge'
+          must_include: 'DO NOT MERGE'

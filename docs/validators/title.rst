@@ -28,17 +28,17 @@ Project
     - do: title
       and:
         - must_include:
-            regex: '### Goals'
+            regex: 'ISSUE-\d+'
             message: 'Custom message...'
         - must_include:
-            regex: '### Changes'
+            regex: 'type:.+'
             message: 'Custom message...'
       or:
         - must_include:
-            regex: '### Goals'
+            regex: 'feat|chore|fix'
             message: 'Custom message...'
         - must_include:
-            regex: '### Changes'
+            regex: 'major|minor|patch'
             message: 'Custom message...'
 
 you can also nest ``and`` and ``or`` options
@@ -49,13 +49,13 @@ you can also nest ``and`` and ``or`` options
       and:
         - or:
           - must_include:
-              regex: '### Goals'
+              regex: 'feat|fix|chore'
               message: 'Custom message...'
           - must_include:
-              regex: '### Changes'
+              regex: 'major|minor|patch'
               message: 'Custom message...'
         - must_include:
-            regex: '### Changes'
+            regex: 'ISSUE-\d+'
             message: 'Custom message...'
 
 
