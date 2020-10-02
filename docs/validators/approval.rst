@@ -20,6 +20,10 @@ Approvals
         teams: ['org/team_slug'] # when the option is present, only the approvals from the team members will count
         owners: true # Optional boolean. When true, the file .github/CODEOWNER is read and only owners approval will count
 
+
+.. note::
+    If you receive an error for `Resource not accessible by integration' for Owners file, it means you haven't given mergeable read file permission
+
 .. note::
     ``owners`` file now support teams as well, make sure to use `@organization/team-slug` format.
 

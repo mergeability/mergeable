@@ -23,6 +23,41 @@ Project
          message: 'Come message...'
          # all of the message sub-option is optional
 
+::
+
+    - do: title
+      and:
+        - must_include:
+            regex: 'ISSUE-\d+'
+            message: 'Custom message...'
+        - must_include:
+            regex: 'type:.+'
+            message: 'Custom message...'
+      or:
+        - must_include:
+            regex: 'feat|chore|fix'
+            message: 'Custom message...'
+        - must_include:
+            regex: 'major|minor|patch'
+            message: 'Custom message...'
+
+you can also nest ``and`` and ``or`` options
+
+::
+
+    - do: title
+      and:
+        - or:
+          - must_include:
+              regex: 'feat|fix|chore'
+              message: 'Custom message...'
+          - must_include:
+              regex: 'major|minor|patch'
+              message: 'Custom message...'
+        - must_include:
+            regex: 'ISSUE-\d+'
+            message: 'Custom message...'
+
 
 Supported Events:
 ::
