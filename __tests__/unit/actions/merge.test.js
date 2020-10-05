@@ -5,6 +5,7 @@ test('check that merge is called if PR has not been merged', async () => {
   const merge = new Merge()
   const checkIfMerged = false
   const context = Helper.mockContext({ checkIfMerged })
+  context.github.pulls.get.mockReturnValue({ data: { mergeable_state: 'clean' } })
   const settings = {}
 
   await merge.afterValidate(context, settings)
@@ -16,6 +17,7 @@ test('check that merge is not called if PR has not been merged', async () => {
   const merge = new Merge()
   const checkIfMerged = true
   const context = Helper.mockContext({ checkIfMerged })
+  context.github.pulls.get.mockReturnValue({ data: { mergeable_state: 'clean' } })
   const settings = {}
 
   await merge.afterValidate(context, settings)
@@ -26,6 +28,7 @@ test('check that merge_method option works correctly', async () => {
   const merge = new Merge()
   const checkIfMerged = false
   const context = Helper.mockContext({ checkIfMerged })
+  context.github.pulls.get.mockReturnValue({ data: { mergeable_state: 'clean' } })
   const settings = {
     merge_method: 'squash'
   }
