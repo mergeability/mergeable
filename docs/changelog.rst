@@ -1,6 +1,7 @@
 CHANGELOG
 =====================================
 
+| October 11, 2020 : feat: Add the ability to auto-merge pull requests `#395 <https://github.com/mergeability/mergeable/issues/395>`_
 | October 6, 2020 : fix: Size validator - do not ignore hidden files by default `#401 <https://github.com/mergeability/mergeable/issues/401>`_
 | October 6, 2020 : Do not attempt to merge a pull request if the status is blocked `#389 <https://github.com/mergeability/mergeable/issues/389>`_
 | October 6, 2020 : fix: Fix undefined error with blank validators `#402 <https://github.com/mergeability/mergeable/issues/402>`_

@@ -139,7 +139,28 @@ Add a comment on a pull request when it is created
         name: "Greet a contributor"
         validate: []
         pass:
-        - do: comment
-          payload:
-              body: >
-              Thanks for creating a pull request! A maintainer will review your changes shortly. Please don't be discouraged if it takes a while.
+          - do: comment
+            payload:
+                body: >
+                Thanks for creating a pull request! A maintainer will review your changes shortly. Please don't be discouraged if it takes a while.
+
+
+Auto-merge pull requests once all checks pass
+"""""""""""""""""""""""""""""""""""""""""""""
+This recipe relies on the fact that the main branch has been protected and only allows merges
+when the required checks have passed or the required number of reviews/other conditions are met.
+This basically means that ``mergeable`` will merge the pull request as soon as it shows a green merged button
+on Github.
+
+Notice the blank validator which ensures that the merge event happens as soon as Github allows ``mergeable`` to merge the pull request.
+
+::
+
+    version: 2
+    mergeable:
+      - when: pull_request.*, pull_request_review.*, status.*, check_suite.*
+        name: "Automatically merge pull requests once it passes all checks"
+        validate: []
+        pass:
+          - do: merge
+            merge_method: "squash"

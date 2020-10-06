@@ -13,9 +13,17 @@ module.exports = {
       repo: (properties) => { return Object.assign({ owner: 'owner', repo: 'repo' }, properties) },
       event: (options.event) ? options.event : 'pull_request',
       payload: {
+        sha: 'sha1',
         action: 'opened',
         repository: {
           full_name: 'name'
+        },
+        check_suite: {
+          pull_requests: [
+            {
+              number: 1
+            }
+          ]
         },
         pull_request: {
           user: {
