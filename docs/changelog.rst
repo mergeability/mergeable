@@ -1,6 +1,7 @@
 CHANGELOG
 =====================================
 
+| October 6, 2020 : fix: Fix undefined error with blank validators `#402 <https://github.com/mergeability/mergeable/issues/402>`_
 | October 4, 2020 : fix Typo in header of title validator docs
 | October 2, 2020 : Don't throw merge error if required status are are the cause of the error `#389 <https://github.com/mergeability/mergeable/issues/389>`_
 | September 24, 2020 : Add ability to delete or replace the labels on an issue `#380 <https://github.com/mergeability/mergeable/issues/380>`_

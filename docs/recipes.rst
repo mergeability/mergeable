@@ -126,3 +126,20 @@ Detect issues and pull requests that are n days old (stale) and notify authors a
             payload:
               body: This is old. Is it still relevant?
 
+
+Greet a new contributor
+"""""""""""""""""""""""
+Add a comment on a pull request when it is created
+
+::
+
+    version: 2
+    mergeable:
+      - when: pull_request.opened
+        name: "Greet a contributor"
+        validate: []
+        pass:
+        - do: comment
+          payload:
+              body: >
+              Thanks for creating a pull request! A maintainer will review your changes shortly. Please don't be discouraged if it takes a while.
