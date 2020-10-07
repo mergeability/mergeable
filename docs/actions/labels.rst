@@ -1,4 +1,4 @@
-label
+Labels
 ^^^^^^^^
 
 You can also add a set of the labels on an item
