@@ -21,6 +21,7 @@
     "lodash": "^4.17.16",
     "minimatch": "^3.0.4",
     "moment-timezone": "^0.5.31",
+    "node-cache": "^5.1.2",
     "node-fetch": "^2.1.2",
     "probot": "^9.11.3",
     "probot-scheduler": "^2.0.0-beta.1"
@@ -45,6 +46,7 @@
     ]
   },
   "jest": {
+    "testTimeout": 15000,
     "setupFiles": [
       "./__fixtures__/setup/jestSetUp.js"
     ],
