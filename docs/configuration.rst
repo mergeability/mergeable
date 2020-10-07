@@ -93,7 +93,7 @@ Actions that mergeable is currently able to perform.
     actions/close.rst
     actions/comment.rst
     actions/merge.rst
-    actions/label.rst
+    actions/labels.rst
     actions/request_review.rst
 
 .. _organisation-wide-defaults:
