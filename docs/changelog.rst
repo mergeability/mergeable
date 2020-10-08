@@ -2,6 +2,7 @@ CHANGELOG
 =====================================
 
 | October 6, 2020 : fix: Size validator - do not ignore hidden files by default `#401 <https://github.com/mergeability/mergeable/issues/401>`_
+| October 6, 2020 : Do not attempt to merge a pull request if the status is blocked `#389 <https://github.com/mergeability/mergeable/issues/389>`_
 | October 6, 2020 : fix: Fix undefined error with blank validators `#402 <https://github.com/mergeability/mergeable/issues/402>`_
 | October 5, 2020 : fix Typo in header of labels action docs and corresponding rst file
 | October 4, 2020 : fix Typo in header of title validator docs
