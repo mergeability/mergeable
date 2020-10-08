@@ -203,6 +203,32 @@ describe('PR size validator', () => {
     expect(validation.validations[2].status).toBe('pass')
   })
 
+  test('match hidden files', async () => {
+    const size = new Size()
+    const settings = {
+      do: 'size',
+      lines: {
+        additions: {
+          count: 10,
+          message: 'Too big!'
+        }
+      }
+    }
+    const files = [
+      {
+        filename: '.test/thing.js',
+        status: 'modified',
+        additions: 20,
+        deletions: 5,
+        changes: 15
+      }
+    ]
+    let validation = await size.processValidate(createMockContext(files), settings)
+    expect(validation.status).toBe('fail')
+    expect(validation.validations[0].description).toBe('Too big!')
+    expect(validation.validations[0].status).toBe('fail')
+  })
+
   test('ignores glob patterns', async () => {
     const size = new Size()
     const settings = {
