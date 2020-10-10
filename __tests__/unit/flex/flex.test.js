@@ -1,6 +1,7 @@
 const executor = require('../../../lib/flex/flex')
 const Helper = require('../../../__fixtures__/unit/helper')
 const { Action } = require('../../../lib/actions/action')
+const Comment = require('../../../lib/actions/comment')
 
 describe('Test processBeforeValidate and processAfterValidate invocations', () => {
   let context
@@ -94,6 +95,59 @@ describe('Test processBeforeValidate and processAfterValidate invocations', () =
     expect(action.processAfterValidate.mock.calls.length).toBe(2)
   })
 
+  test('Expect pass action to be triggered on empty validator', async () => {
+    const config = `
+    version: 2
+    mergeable:
+      - when: pull_request.opened
+        name: "Greet a contributor"
+        validate: []
+        pass:
+          - do: comment
+            payload:
+              body: >
+                Thanks for creating a pull request! A maintainer will review your changes shortly. Please don't be discouraged if it takes a while.`
+
+    let context = Helper.mockContext()
+    let registry = { validators: new Map(), actions: new Map() }
+    Helper.mockConfigWithContext(context, config)
+    const commentAction = new Comment()
+    commentAction.supportedEvents = ['pull_request.opened', 'pull_request.edited', 'pull_request_review.submitted']
+    registry.actions.set('comment', commentAction)
+
+    context.event = 'pull_request'
+    context.payload.action = 'opened'
+    context.github.issues.createComment = jest.fn()
+    await executor(context, registry)
+    expect(context.github.issues.createComment.mock.calls.length).toBe(1)
+  })
+
+  test('Expect fail action to not be triggered on empty validator ', async () => {
+    const config = `
+    version: 2
+    mergeable:
+      - when: pull_request.opened
+        name: "Greet a contributor"
+        validate: []
+        fail:
+          - do: comment
+            payload:
+              body: >
+                Thanks for creating a pull request! A maintainer will review your changes shortly. Please don't be discouraged if it takes a while.`
+    let context = Helper.mockContext()
+    let registry = { validators: new Map(), actions: new Map() }
+    Helper.mockConfigWithContext(context, config)
+    const commentAction = new Comment()
+    commentAction.supportedEvents = ['pull_request.opened', 'pull_request.edited', 'pull_request_review.submitted']
+    registry.actions.set('comment', commentAction)
+
+    context.event = 'pull_request'
+    context.payload.action = 'opened'
+    context.github.issues.createComment = jest.fn()
+    await executor(context, registry)
+    expect(context.github.issues.createComment.mock.calls.length).toBe(0)
+  })
+
   test('processPreAction works correctly, two whens with same events but different actions', async () => {
     const config = `
     version: 2
@@ -107,7 +161,7 @@ describe('Test processBeforeValidate and processAfterValidate invocations', () =
           - do: label
             must_exclude:
               regex: wip|work in progress
-        fail: 
+        fail:
           - do: assign
             assignees: ['test user']
       - when: pull_request.*
