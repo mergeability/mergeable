@@ -23,11 +23,11 @@
     "moment-timezone": "^0.5.31",
     "node-fetch": "^2.1.2",
     "probot": "^9.11.3",
+    "handlebars": "^4.7.6",
     "probot-scheduler": "^2.0.0-beta.1"
   },
   "devDependencies": {
     "codecov": "^3.7.2",
-    "handlebars": "^4.7.6",
     "jest": "^24.0.0",
     "nock": "^11.7.2",
     "nodemon": "^2.0.3",
