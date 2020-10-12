@@ -190,6 +190,42 @@ describe('config file fetching', () => {
     expect(config).toEqual(parsedConfig)
   })
 
+  test('fetch from main branch if the event is PR relevant and PR is from a fork', async () => {
+    let configString = `
+          mergeable:
+            issues:
+              stale:
+                days: 20
+                message: Issue test
+            pull_requests:
+              stale:
+                days: 20
+                message: PR test
+        `
+    let prConfig = `
+          mergeable:
+            issues:
+              stale:
+                days: 20
+                message: Issue test
+        `
+    let parsedConfig = yaml.safeLoad(configString)
+
+    let context = createMockGhConfig(
+      configString,
+      prConfig,
+      { baseRepo: 'owner/test', headRepo: 'owner/not-test' }
+    )
+
+    context.event = 'pull_request'
+    let config = await Configuration.fetchConfigFile(context)
+    expect(config).toEqual(parsedConfig)
+
+    context.event = 'pull_request_review'
+    config = await Configuration.fetchConfigFile(context)
+    expect(config).toEqual(parsedConfig)
+  })
+
   test('fetch from head branch if the event is relevant to PR and file is modified or added', async () => {
     let configString = `
           mergeable:
