@@ -115,7 +115,7 @@ The final path of the file (including the repo name) should be ``<YOUR_ORG>/.git
 Mergeable will now use this file as the default when it cannot find one in a given
 repository or PR. It determines the file to use in the following order:
 
-1. A ``mergeable.yml`` inside the PR.
+1. A ``mergeable.yml`` inside the PR if the PR originates from the same repository. If it originates from a fork it is not loaded for security reasons. See `#406 <https://github.com/mergeability/mergeable/issues/406>`_ for more details.
 2. A ``mergeable.yml`` inside the repository the PR is for.
 3. A ``mergeable.yml`` at ``<YOUR_ORG>/.github/.github/mergeable.yml``.
 
@@ -133,5 +133,3 @@ The double nesting of the ``<YOUR_ORG>/.github/.github/mergeable.yml`` default
 file is unfortunately necessary. The GitHub app permissions model only lets you
 specify a single path for your probot to access, so it must be the same as in
 regular repositories.
-
-
