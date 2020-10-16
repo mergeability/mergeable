@@ -35,6 +35,7 @@ module.exports = {
           milestone: (options.milestone) ? options.milestone : null,
           requested_reviewers: options.requestedReviewers ? options.requestedReviewers : [],
           base: {
+            repo: { full_name: options.baseRepo ? options.baseRepo : 'owner/test' },
             ref: 'baseRef',
             sha: 'sha2'
           },
@@ -42,6 +43,7 @@ module.exports = {
             ref: 'test',
             sha: 'sha1',
             repo: {
+              full_name: options.headRepo ? options.headRepo : 'owner/test',
               issues_url: 'testRepo/issues{/number}'
             }},
           assignees: (options.assignees) ? options.assignees : []
