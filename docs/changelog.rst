@@ -1,6 +1,8 @@
 CHANGELOG
 =====================================
 
+
+| October 15, 2020 : feat: Add the ability to auto-merge pull requests `#395 <https://github.com/mergeability/mergeable/issues/395>`_
 | October 8, 2020 : feat: added BaseRef-validator to enforce stricter rules on certain branches `#343 <https://github.com/mergeability/mergeable/issues/343>`_
 | October 8, 2020 : feat: Do not load modified unsafe config files from forks `#406 <https://github.com/mergeability/mergeable/issues/406>`_
 | October 6, 2020 : fix: Size validator - do not ignore hidden files by default `#401 <https://github.com/mergeability/mergeable/issues/401>`_
