@@ -204,7 +204,7 @@ describe('config file fetching', () => {
         `
     process.env.USE_CONFIG_CACHE = true
     // intialize context with empty config
-    let emptyConfig = "{}"
+    let emptyConfig = '{}'
     let parsedConfig = yaml.safeLoad(configString)
     let context = createMockGhConfig(emptyConfig)
     let configCache = Configuration.getCache()
@@ -230,7 +230,7 @@ describe('config file fetching', () => {
         `
     process.env.USE_CONFIG_CACHE = true
     // intialize context with empty config
-    let emptyConfig = "{}"
+    let emptyConfig = '{}'
     let parsedConfig = yaml.safeLoad(configString)
     let context = createMockGhConfig(emptyConfig)
     let configCache = Configuration.getCache()
@@ -259,7 +259,7 @@ describe('config file fetching', () => {
         `
     process.env.USE_CONFIG_CACHE = true
     // intialize context with empty config
-    let emptyConfig = "{}"
+    let emptyConfig = '{}'
     let parsedConfig = yaml.safeLoad(configString)
     let context = createMockGhConfig(emptyConfig)
     let configCache = Configuration.getCache()
