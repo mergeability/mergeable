@@ -142,7 +142,7 @@ Add a comment on a pull request when it is created
           - do: comment
             payload:
                 body: >
-                Thanks for creating a pull request! A maintainer will review your changes shortly. Please don't be discouraged if it takes a while.
+                  Thanks for creating a pull request! A maintainer will review your changes shortly. Please don't be discouraged if it takes a while.
 
 
 Auto-merge pull requests once all checks pass
