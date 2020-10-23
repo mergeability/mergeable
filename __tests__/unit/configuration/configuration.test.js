@@ -136,6 +136,10 @@ describe('Loading bad configuration', () => {
 })
 
 describe('config file fetching', () => {
+  afterAll(() => {
+    process.env = {} // clean up env
+  })
+
   test('fetch from main branch if event is not pull_request', async () => {
     let configString = `
           mergeable:
@@ -152,6 +156,130 @@ describe('config file fetching', () => {
     let context = createMockGhConfig(configString)
     const config = await Configuration.fetchConfigFile(context)
     expect(config).toEqual(parsedConfig)
+  })
+
+  test('check config cache', async () => {
+    let configString = `
+          mergeable:
+            issues:
+              stale:
+                days: 20
+                message: Issue test
+            pull_requests:
+              stale:
+                days: 20
+                message: PR test
+        `
+    process.env.USE_CONFIG_CACHE = true
+    let parsedConfig = yaml.safeLoad(configString)
+    let context = createMockGhConfig(configString)
+    let configCache = Configuration.getCache()
+    let repo = context.repo()
+    // checking that the cache is empty before the call
+    expect(configCache.keys().length).toEqual(0)
+    expect(context.probotContext.config.mock.calls.length).toEqual(0)
+    const config = await Configuration.fetchConfigFile(context)
+    expect(context.probotContext.config.mock.calls.length).toEqual(1)
+    expect(config).toEqual(parsedConfig)
+    // checking that the cache is warmed up
+    expect(configCache.keys().length).toEqual(1)
+    expect(configCache.get(`${repo.owner}/${repo.repo}`)).toEqual(parsedConfig)
+    // checking that we are only fetching it once, even though we call it twice
+    const cachedConfig = await Configuration.fetchConfigFile(context)
+    expect(cachedConfig).toEqual(parsedConfig)
+    expect(context.probotContext.config.mock.calls.length).toEqual(1)
+  })
+
+  test('check config cache fetch', async () => {
+    let configString = `
+          mergeable:
+            issues:
+              stale:
+                days: 20
+                message: Issue test
+            pull_requests:
+              stale:
+                days: 20
+                message: PR test
+        `
+    process.env.USE_CONFIG_CACHE = true
+    // intialize context with empty config
+    let emptyConfig = '{}'
+    let parsedConfig = yaml.safeLoad(configString)
+    let context = createMockGhConfig(emptyConfig)
+    let configCache = Configuration.getCache()
+    let repo = context.repo()
+    configCache.set(`${repo.owner}/${repo.repo}`, parsedConfig)
+    expect(context.probotContext.config.mock.calls.length).toEqual(0)
+    const config = await Configuration.fetchConfigFile(context)
+    expect(context.probotContext.config.mock.calls.length).toEqual(0)
+    expect(config).toEqual(parsedConfig)
+  })
+
+  test('check config cache invalidated on push events', async () => {
+    let configString = `
+          mergeable:
+            issues:
+              stale:
+                days: 20
+                message: Issue test
+            pull_requests:
+              stale:
+                days: 20
+                message: PR test
+        `
+    process.env.USE_CONFIG_CACHE = true
+    // intialize context with empty config
+    let emptyConfig = '{}'
+    let parsedConfig = yaml.safeLoad(configString)
+    let context = createMockGhConfig(emptyConfig)
+    let configCache = Configuration.getCache()
+    let repo = context.repo()
+    configCache.set(`${repo.owner}/${repo.repo}`, parsedConfig)
+    context.event = 'push'
+    context.payload.head_commit = {added: ['.github/mergeable.yml']}
+    expect(context.probotContext.config.mock.calls.length).toEqual(0)
+    const config = await Configuration.fetchConfigFile(context)
+    expect(context.probotContext.config.mock.calls.length).toEqual(1)
+    expect(config).toEqual({})
+    expect(configCache.keys().length).toEqual(1)
+  })
+
+  test('check config cache for org invalidated on push events', async () => {
+    let configString = `
+          mergeable:
+            issues:
+              stale:
+                days: 20
+                message: Issue test
+            pull_requests:
+              stale:
+                days: 20
+                message: PR test
+        `
+    process.env.USE_CONFIG_CACHE = true
+    // intialize context with empty config
+    let emptyConfig = '{}'
+    let parsedConfig = yaml.safeLoad(configString)
+    let context = createMockGhConfig(emptyConfig)
+    let configCache = Configuration.getCache()
+    let repo = context.repo()
+    configCache.set(`${repo.owner}/${repo.repo}`, parsedConfig)
+    configCache.set(`${repo.owner}/another-repo`, parsedConfig)
+    configCache.set(`${repo.owner}/yet-another-repo`, parsedConfig)
+    expect(configCache.keys().length).toEqual(3)
+    context.event = 'push'
+    context.payload.head_commit = {added: ['.github/mergeable.yml']}
+    expect(context.probotContext.config.mock.calls.length).toEqual(0)
+    let config = await Configuration.fetchConfigFile(context)
+    expect(context.probotContext.config.mock.calls.length).toEqual(1)
+    expect(config).toEqual({})
+    expect(configCache.keys().length).toEqual(3)
+    context.repo = jest.fn().mockReturnValue({owner: repo.owner, repo: '.github'})
+    config = await Configuration.fetchConfigFile(context)
+    expect(context.probotContext.config.mock.calls.length).toEqual(2)
+    expect(config).toEqual({})
+    expect(configCache.keys().length).toEqual(1)
   })
 
   test('fetch from main branch if the event is PR relevant and file is not modified or added', async () => {
@@ -245,6 +373,48 @@ describe('config file fetching', () => {
                 days: 20
                 message: From PR Config
         `
+    let parsedConfig = yaml.safeLoad(prConfigString)
+    let files = {files: [
+      { filename: '.github/mergeable.yml', status: 'modified' }
+    ]}
+    let context = createMockGhConfig(configString, prConfigString, files)
+    context.event = 'pull_request'
+    let config = await Configuration.fetchConfigFile(context)
+    expect(config).toEqual(parsedConfig)
+
+    context.event = 'pull_request_review'
+    config = await Configuration.fetchConfigFile(context)
+    expect(config).toEqual(parsedConfig)
+
+    files = {files: [
+      { filename: '.github/mergeable.yml', status: 'added' }
+    ]}
+    context = createMockGhConfig(null, prConfigString, files)
+    context.event = 'pull_request'
+    config = await Configuration.fetchConfigFile(context)
+    expect(config).toEqual(parsedConfig)
+  })
+
+  test('fetch from head branch if the event is relevant to PR and file is modified or added and cache is enabled', async () => {
+    let configString = `
+          mergeable:
+            issues:
+              stale:
+                days: 20
+                message: Issue test
+            pull_requests:
+              stale:
+                days: 20
+                message: from HEAD
+        `
+    let prConfigString = `
+          mergeable:
+            issues:
+              stale:
+                days: 20
+                message: From PR Config
+        `
+    process.env.USE_CONFIG_CACHE = true
     let parsedConfig = yaml.safeLoad(prConfigString)
     let files = {files: [
       { filename: '.github/mergeable.yml', status: 'modified' }
