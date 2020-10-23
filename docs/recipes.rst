@@ -141,7 +141,7 @@ Add a comment on a pull request when it is created
         pass:
           - do: comment
             payload:
-                body: >
+              body: >
                 Thanks for creating a pull request! A maintainer will review your changes shortly. Please don't be discouraged if it takes a while.
 
 
