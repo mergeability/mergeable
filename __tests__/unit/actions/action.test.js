@@ -33,18 +33,18 @@ describe('Action#getActionables', () => {
     }
 
     expect(action.getActionables(
-      Helper.mockContext(),
+      Helper.mockContext({ event: 'schedule' }),
       schedulerResult).length
     ).toBe(1)
   })
 
-  test('Returns correct items when there is validation', () => {
+  test('Returns correct items when there is validation and the event is schedule', () => {
     let schedulerResult = {
-      validationSuites: [{status: {}}]
+      validationSuites: [{ status: {} }]
     }
 
     expect(action.getActionables(
-      Helper.mockContext(),
+      Helper.mockContext({ event: 'schedule' }),
       schedulerResult).length
     ).toBe(1)
 
@@ -57,8 +57,19 @@ describe('Action#getActionables', () => {
       }]
     }
     expect(action.getActionables(
-      Helper.mockContext(),
+      Helper.mockContext({event: 'schedule'}),
       schedulerResult).length
     ).toBe(3)
+  })
+
+  test('when event is not schedule', () => {
+    let schedulerResult = {
+      validationSuites: [{status: {}}]
+    }
+
+    expect(action.getActionables(
+      Helper.mockContext(),
+      schedulerResult).length
+    ).toBe(1)
   })
 })

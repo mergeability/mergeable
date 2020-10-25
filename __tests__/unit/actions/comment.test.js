@@ -35,6 +35,7 @@ test('check that comment created when afterValidate is called with proper parame
 test('that comment is created three times when result contain three issues found to be acted on', async () => {
   const comment = new Comment()
   const context = createMockContext([], 'repository')
+  context.event = 'schedule'
   let schedulerResult = {...result}
   schedulerResult.validationSuites = [{
     schedule: {
