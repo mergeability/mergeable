@@ -188,9 +188,7 @@ module.exports = {
         }
       },
       probotContext: {
-        config: () => {
-          return Promise.resolve(options.configJson)
-        }
+        config: jest.fn().mockResolvedValue(options.configJson)
       }
     }
   },
