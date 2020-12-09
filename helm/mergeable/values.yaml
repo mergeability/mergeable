@@ -15,6 +15,7 @@ image:
   tag: ""
 
 ContainerPort: 3000
+ContainerEnvs: {}
 
 imagePullSecrets: []
 nameOverride: ""

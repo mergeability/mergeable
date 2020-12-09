@@ -33,6 +33,21 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            {{- range $envName, $envValue := .Values.ContainerEnvs }}
+          - name: {{ $envName }}
+            {{- if eq (printf "%T" $envValue) "map[string]interface {}" }}
+            valueFrom:
+              {{ $envValue.type }}:
+                {{- if $envValue.prefixFullName }}
+                name: {{ template "<CHARTNAME>.fullname" $ }}{{ $envValue.name }}
+                {{- else }}
+                name: {{ $envValue.name }}
+                {{- end }}
+                key: {{ $envValue.key }}
+            {{- else }}
+            value: {{ $envValue | quote }}
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.ContainerPort}}
