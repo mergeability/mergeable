@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "mergeable.fullname" . }}-test-connection"
+  labels:
+    {{- include "mergeable.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "mergeable.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
