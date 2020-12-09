@@ -1,0 +1,9 @@
+{{- if .Values.namespace.enabled }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ include "mergeable.fullname" . }}
+  {{- with .Values.namespace.annotations }}
+  annotations: {{- toYaml . | nindent 8 }}
+  {{- end }}
+{{- end }}
