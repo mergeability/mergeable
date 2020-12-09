@@ -7,6 +7,7 @@ replicaCount: 1
 namespace:
   enabled: true
   annotations: {}
+  labels: {}
 
 image:
   repository: 489198589229.dkr.ecr.eu-west-1.amazonaws.com/mergeable
