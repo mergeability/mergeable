@@ -11,9 +11,6 @@ FROM gcr.io/distroless/nodejs:14
 
 COPY --from=build /app /app
 
-
-RUN echo "test"
-
 EXPOSE 3000
 USER 1000:1000
 
