@@ -55,11 +55,11 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /probot
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: /probot
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
