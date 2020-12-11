@@ -48,6 +48,7 @@ spec:
             {{- else }}
             value: {{ $envValue | quote }}
             {{- end }}
+          {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.ContainerPort}}
