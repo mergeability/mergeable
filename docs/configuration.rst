@@ -66,11 +66,13 @@ Validator List
 .. toctree::
     validators/approval.rst
     validators/assignee.rst
+    validators/baseRef.rst
     validators/changeset.rst
     validators/commit.rst
     validators/contents.rst
     validators/dependent.rst
     validators/description.rst
+    validators/headRef.rst
     validators/label.rst
     validators/milestone.rst
     validators/project.rst
