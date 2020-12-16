@@ -5,7 +5,7 @@ HeadRef
 
     - do: headRef
       must_include:
-         regex: 'master|feature-branch1'
+         regex: 'feature-branch1'
          regex_flag: 'none' # Optional. Specify the flag for Regex. default is 'i', to disable default use 'none'
          message: 'Custom message...'
       must_exclude:
@@ -18,9 +18,10 @@ Simple example:
 ::
 
     - do: headRef
-      must_exclude:
-        regex: 'master'
-        message: 'Merging into repo:master is forbidden'
+      must_include:
+        regex: '^(feature|hotfix)\/.+$'
+        message: |
+            Your pull request doesn't adhere to the branch naming convention described <a href="some link">there</a>!k
 
 
 Supported Events:
