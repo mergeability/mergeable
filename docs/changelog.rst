@@ -2,6 +2,7 @@ CHANGELOG
 =====================================
 
 
+| December 17, 2020 : feat: Add docker image build and push `#427 <https://github.com/mergeability/mergeable/issues/427>`_
 | December 14, 2020 : feat: Add branch validator `#438 <https://github.com/mergeability/mergeable/issues/438>`_
 | December 11, 2020 : feat: Add env to control which configuration file to use `#429 <https://github.com/mergeability/mergeable/issues/429>`_
 | October 20, 2020 : feat: Add a config cache which can be enabled via MERGEABLE_ENABLE_CONFIG_CACHE env var `#407 <https://github.com/mergeability/mergeable/issues/407>`_
