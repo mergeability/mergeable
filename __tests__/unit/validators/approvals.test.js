@@ -2,11 +2,6 @@ const Helper = require('../../../__fixtures__/unit/helper')
 const Approval = require('../../../lib/validators/approvals')
 const Teams = require('../../../lib/validators/options_processor/teams')
 const Owners = require('../../../lib/validators/options_processor/owners')
-const TeamNotFoundError = require('../../../lib/errors/teamNotFoundError')
-
-jest.mock('../../../lib/validators/options_processor/teams', () => ({
-  extractTeamMembers: jest.fn()
-}))
 
 jest.mock('../../../lib/validators/options_processor/teams', () => ({
   extractTeamMemberships: jest.fn()
