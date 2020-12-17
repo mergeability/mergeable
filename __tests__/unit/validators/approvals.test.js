@@ -636,7 +636,6 @@ test('returns proper error when team provided is not found', async () => {
     }
   }
 
-
   let validation = await approval.processValidate(createMockContext(5, reviewList, null, null, false), settings, [])
   expect(validation.validations.length).toBe(1)
   expect(validation.validations[0].description).toBe('approval: userA required')
