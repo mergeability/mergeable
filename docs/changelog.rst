@@ -2,6 +2,7 @@ CHANGELOG
 =====================================
 
 
+| December 18, 2020 : feat: Better logs for failures in PR home page without going to details `#446 <https://github.com/mergeability/mergeable/issues/446>`_
 | December 14, 2020 : feat: Add branch validator `#438 <https://github.com/mergeability/mergeable/issues/438>`_
 | December 11, 2020 : feat: Helm Chart implemantation for kubernetes `#435 <https://github.com/mergeability/mergeable/issues/435>`_
 | December 11, 2020 : feat: Add env to control which configuration file to use `#429 <https://github.com/mergeability/mergeable/issues/429>`_
