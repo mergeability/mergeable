@@ -22,3 +22,14 @@ jobs:
     - run: npm run test-coverage
       env:
         CI: true
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        directory: ./coverage/
+        flags: unittests
+        env_vars: OS,PYTHON
+        name: codecov-mergeable
+        fail_ci_if_error: true
+        path_to_write_report: ./coverage/codecov_report.txt
+        verbose: true
