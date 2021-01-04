@@ -1,4 +1,4 @@
-FROM node:14 AS build
+FROM node:12.16.0
 
 WORKDIR /app
 
