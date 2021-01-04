@@ -3,7 +3,7 @@ const owners = require('../../../../lib/validators/options_processor/owners')
 const teams = require('../../../../lib/validators/options_processor/teams')
 
 jest.mock('../../../../lib/validators/options_processor/teams', () => ({
-  extractTeamMembers: jest.fn()
+  extractTeamMemberships: jest.fn()
 }))
 
 test('that * works', async () => {
@@ -166,7 +166,7 @@ test('teams owners are processed correctly', async () => {
   let codeowner = `*.js @bob/test-team`
   let commitDiffs = createCommitDiffs(['/docs/test.js'])
 
-  teams.extractTeamMembers = jest.fn().mockReturnValue(['teamMember1', 'member2'])
+  teams.extractTeamMemberships = jest.fn().mockReturnValue(['teamMember1', 'member2'])
 
   let res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs))
   expect(res.length).toBe(2)
@@ -178,7 +178,7 @@ test('teams owners and individuals are processed correctly', async () => {
   let codeowner = `*.js @bob/test-team @hope`
   let commitDiffs = createCommitDiffs(['/docs/test.js'])
 
-  teams.extractTeamMembers = jest.fn().mockReturnValue(['teamMember1', 'member2'])
+  teams.extractTeamMemberships = jest.fn().mockReturnValue(['teamMember1', 'member2'])
 
   let res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs))
   expect(res.length).toBe(3)
