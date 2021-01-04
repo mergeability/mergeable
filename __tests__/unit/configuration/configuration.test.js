@@ -665,6 +665,34 @@ describe('with version 1', () => {
     expect(config.settings[0].fail).toBeDefined()
     expect(config.settings[0].error).toBeDefined()
   })
+
+  test('that fetchConfigFile returns the right Configuration depending on USE_CONFIG_FROM_PULL_REQUEST env', async () => {
+    let configString = `
+          mergeable:
+            issues:
+              stale:
+                days: 20
+                message: From HEAD Config
+        `
+    let prConfigString = `
+          mergeable:
+            issues:
+              stale:
+                days: 20
+                message: From PR Config
+        `
+    let files = {files: [
+      { filename: '.github/mergeable.yml', status: 'modified' }
+    ]}
+
+    let context = createMockGhConfig(configString, prConfigString, files)
+    context.event = 'pull_request'
+
+    process.env.USE_CONFIG_FROM_PULL_REQUEST = 'false'
+    let config = await Configuration.fetchConfigFile(context)
+    let parsedConfig = yaml.safeLoad(configString)
+    expect(config).toEqual(parsedConfig)
+  })
 })
 
 // helper method to return mocked configiration.
