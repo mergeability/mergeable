@@ -2,10 +2,9 @@ const Helper = require('../../../__fixtures__/unit/helper')
 const Approval = require('../../../lib/validators/approvals')
 const Teams = require('../../../lib/validators/options_processor/teams')
 const Owners = require('../../../lib/validators/options_processor/owners')
-const TeamNotFoundError = require('../../../lib/errors/teamNotFoundError')
 
 jest.mock('../../../lib/validators/options_processor/teams', () => ({
-  extractTeamMembers: jest.fn()
+  extractTeamMemberships: jest.fn()
 }))
 
 jest.mock('../../../lib/validators/options_processor/owners', () => ({
@@ -637,12 +636,9 @@ test('returns proper error when team provided is not found', async () => {
     }
   }
 
-  Teams.extractTeamMembers = jest.fn().mockRejectedValue(new TeamNotFoundError('org/test-team'))
-
-  let validation = await approval.processValidate(createMockContext(5, reviewList, null, null, false), settings)
+  let validation = await approval.processValidate(createMockContext(5, reviewList, null, null, false), settings, [])
   expect(validation.validations.length).toBe(1)
-  expect(validation.validations[0].description).toBe('TeamNotFoundError')
-  expect(validation.status).toBe('error')
+  expect(validation.validations[0].description).toBe('approval: userA required')
 })
 
 describe('required.owners ', () => {
