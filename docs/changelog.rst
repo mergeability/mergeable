@@ -2,9 +2,11 @@ CHANGELOG
 =====================================
 
 
+| January 5, 2021 : fix: Shift fix in team slug pagination
 | January 4, 2021 : feat: GitHub actions `#450 <https://github.com/mergeability/mergeable/issues/450>`_
 | December 18, 2020 : feat: Better logs for failures in PR home page without going to details `#446 <https://github.com/mergeability/mergeable/issues/446>`_
 | December 17, 2020 : fix: Members in Org listing pagination bug `#442 <https://github.com/mergeability/mergeable/issues/442>`_
+| December 17, 2020 : feat: Add docker image build and push `#427 <https://github.com/mergeability/mergeable/issues/427>`_
 | December 14, 2020 : feat: Add branch validator `#438 <https://github.com/mergeability/mergeable/issues/438>`_
 | December 11, 2020 : feat: Helm Chart implemantation for kubernetes `#435 <https://github.com/mergeability/mergeable/issues/435>`_
 | December 11, 2020 : feat: Add env to control which configuration file to use `#429 <https://github.com/mergeability/mergeable/issues/429>`_
