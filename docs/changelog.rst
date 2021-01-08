@@ -2,6 +2,7 @@ CHANGELOG
 =====================================
 
 
+| January 8, 2021 : fix: Prevent add comma on last list element
 | January 5, 2021 : fix: Shift fix in team slug pagination
 | December 18, 2020 : feat: Better logs for failures in PR home page without going to details `#446 <https://github.com/mergeability/mergeable/issues/446>`_
 | December 17, 2020 : fix: Members in Org listing pagination bug `#442 <https://github.com/mergeability/mergeable/issues/442>`_
