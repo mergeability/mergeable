@@ -40,7 +40,7 @@ test('that beforeValidate stores the name correctly', async () => {
   expect(checks.checkRunResult.has(name)).toBe(true)
 })
 
-test('that afterValidate set pending status when failing only approvals', async () => {
+test('that `conclusion` and `completed_at` fields are not set when `settings.state` is not `completed`', async () => {
   const checks = new Checks()
   const context = createMockContext()
   const result = {
@@ -51,8 +51,8 @@ test('that afterValidate set pending status when failing only approvals', async 
     }]
   }
   const settings = {
-    state: 'fail',
-    status: 'completed',
+    state: 'in_progress',
+    status: null,
     payload: {
       title: `This is the title`,
       summary: 'This is the summary'
