@@ -53,7 +53,7 @@ mergeable:
     let updateCheckOptions = {expectedBody: { name: 'Mergeable',
       status: 'completed',
       output:
-      { title: '1/1 Fail(s):  TITLE,  ',
+      { title: '1/1 Fail(s):  TITLE',
         summary:
             '### Status: FAIL\n\n        Here are some stats of the run:\n        1 validations were ran.\n        0 PASSED\n        1 FAILED\n      ',
         text:
