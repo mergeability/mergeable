@@ -1,7 +1,7 @@
 CHANGELOG
 =====================================
 
-
+| January 12, 2021 : fix: validators not running in certain pull_request events `#431 <https://github.com/mergeability/mergeable/issues/431>`_
 | January 8, 2021 : fix: Prevent add comma on last list element
 | January 5, 2021 : fix: Shift fix in team slug pagination
 | December 18, 2020 : feat: Better logs for failures in PR home page without going to details `#446 <https://github.com/mergeability/mergeable/issues/446>`_
