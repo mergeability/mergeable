@@ -7,7 +7,7 @@ test('#valid', () => {
   let context = Helper.mockContext()
   expect(milestoned.valid(context)).toBe(false)
 
-  context.event = 'issues'
+  context.eventName = 'issues'
   expect(milestoned.valid(context)).toBe(false)
 
   context.payload.issue = {}
@@ -26,16 +26,16 @@ test('#valid', () => {
 
 test('#process', async () => {
   let context = Helper.mockContext()
-  context.event = 'issues'
+  context.eventName = 'issues'
   context.payload.action = 'milestoned'
   Object.set(context, 'payload.issue.pull_request', {})
   context.payload.issue.number = 12
-  context.github.pulls.get.mockReturnValue({ data: { number: 12 } })
+  context.octokit.pulls.get.mockReturnValue({ data: { number: 12 } })
 
   // make sure we setup context correctly.
   expect(milestoned.valid(context)).toBe(true)
 
   context = await milestoned.process(context)
   expect(context.payload.pull_request.number).toBe(12)
-  expect(context.event).toBe('pull_request')
+  expect(context.eventName).toBe('pull_request')
 })

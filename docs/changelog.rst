@@ -1,7 +1,7 @@
 CHANGELOG
 =====================================
 
-
+| January 12, 2021 : feat: upgrade probot to v11.0.1
 | January 8, 2021 : fix: Prevent add comma on last list element
 | January 5, 2021 : fix: Shift fix in team slug pagination
 | December 18, 2020 : feat: Better logs for failures in PR home page without going to details `#446 <https://github.com/mergeability/mergeable/issues/446>`_

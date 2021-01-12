@@ -55,7 +55,7 @@ test('files ignore option works correctly', async () => {
 test('fail gracefully if content is not found', async () => {
   const context = Helper.mockContext({files: ['package.json']})
 
-  context.github.repos.getContents = jest.fn().mockReturnValue(
+  context.octokit.repos.getContent = jest.fn().mockReturnValue(
     Promise.reject(
       new HttpError(
         '{"message":"Not Found","documentation_url":"https://developer.github.com/v3/repos/contents/#get-contents"}',
@@ -83,7 +83,7 @@ test('fail gracefully if content is not found', async () => {
 const createMockContext = (files, fileContent) => {
   const context = Helper.mockContext({files: files})
 
-  context.github.repos.getContents = () => {
+  context.octokit.repos.getContent = () => {
     return Promise.resolve({ data: {
       content: Buffer.from(fileContent).toString('base64') }
     })

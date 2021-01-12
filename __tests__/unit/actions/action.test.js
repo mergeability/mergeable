@@ -33,7 +33,7 @@ describe('Action#getActionables', () => {
     }
 
     expect(action.getActionables(
-      Helper.mockContext({ event: 'schedule' }),
+      Helper.mockContext({ eventName: 'schedule' }),
       schedulerResult).length
     ).toBe(1)
   })
@@ -44,7 +44,7 @@ describe('Action#getActionables', () => {
     }
 
     expect(action.getActionables(
-      Helper.mockContext({ event: 'schedule' }),
+      Helper.mockContext({ eventName: 'schedule' }),
       schedulerResult).length
     ).toBe(1)
 
@@ -57,7 +57,7 @@ describe('Action#getActionables', () => {
       }]
     }
     expect(action.getActionables(
-      Helper.mockContext({event: 'schedule'}),
+      Helper.mockContext({eventName: 'schedule'}),
       schedulerResult).length
     ).toBe(3)
   })

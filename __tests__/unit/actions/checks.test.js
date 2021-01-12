@@ -6,7 +6,7 @@ test('run', async () => {
   const checks = new Checks()
   const context = createMockContext()
   await checks.run({ context, payload: {} })
-  expect(context.github.checks.create.mock.calls.length).toBe(1)
+  expect(context.octokit.checks.create.mock.calls.length).toBe(1)
 })
 
 test('check that checks created when doPostAction is called with proper parameter', async () => {
@@ -15,7 +15,7 @@ test('check that checks created when doPostAction is called with proper paramete
   const settings = { name: 'test' }
 
   await checks.beforeValidate(context, settings)
-  expect(context.github.checks.create.mock.calls.length).toBe(1)
+  expect(context.octokit.checks.create.mock.calls.length).toBe(1)
 })
 
 test('that beforeValidate stores the name correctly', async () => {
@@ -34,8 +34,8 @@ test('that beforeValidate stores the name correctly', async () => {
   checks.checkRunResult = new Map()
 
   await checks.beforeValidate(context, settings, name)
-  expect(context.github.checks.create.mock.calls.length).toBe(1)
-  let callParams = context.github.checks.create.mock.calls[0][0]
+  expect(context.octokit.checks.create.mock.calls.length).toBe(1)
+  let callParams = context.octokit.checks.create.mock.calls[0][0]
   expect(callParams.name).toBe('Mergeable: test recipe')
   expect(checks.checkRunResult.has(name)).toBe(true)
 })
@@ -68,8 +68,8 @@ test('that afterValidate is called with properly and output is correct', async (
   })
 
   await checks.afterValidate(context, settings, name, result)
-  let output = context.github.checks.update.mock.calls[0][0].output
-  expect(context.github.checks.update.mock.calls.length).toBe(1)
+  let output = context.octokit.checks.update.mock.calls[0][0].output
+  expect(context.octokit.checks.update.mock.calls.length).toBe(1)
   expect(output.summary).toBe('This is the summary')
   expect(output.title).toBe('Your run has returned the following status: pass')
   expect(MetaData.exists(output.text)).toBe(false)
@@ -104,8 +104,8 @@ test('that afterValidate is correct when validation fails', async () => {
   })
 
   await checks.afterValidate(context, settings, name, result)
-  let output = context.github.checks.update.mock.calls[0][0].output
-  expect(context.github.checks.update.mock.calls.length).toBe(1)
+  let output = context.octokit.checks.update.mock.calls[0][0].output
+  expect(context.octokit.checks.update.mock.calls.length).toBe(1)
   expect(output.summary).toBe('This is the summary')
   expect(output.title).toBe('Your run has returned the following status: fail')
   expect(MetaData.exists(output.text)).toBe(true)
@@ -140,9 +140,9 @@ test('that correct name is used afterValidate payload', async () => {
   })
 
   await checks.afterValidate(context, settings, name, result)
-  let output = context.github.checks.update.mock.calls[0][0].output
-  expect(context.github.checks.update.mock.calls.length).toBe(1)
-  let payload = context.github.checks.update.mock.calls[0][0]
+  let output = context.octokit.checks.update.mock.calls[0][0].output
+  expect(context.octokit.checks.update.mock.calls.length).toBe(1)
+  let payload = context.octokit.checks.update.mock.calls[0][0]
   expect(payload.name).toBe(`Mergeable: ${name}`)
   expect(MetaData.exists(output.text)).toBe(true)
 })
@@ -150,7 +150,7 @@ test('that correct name is used afterValidate payload', async () => {
 const createMockContext = () => {
   let context = Helper.mockContext()
   context.payload.action = 'actionName'
-  context.github.checks.create = jest.fn()
-  context.github.checks.update = jest.fn()
+  context.octokit.checks.create = jest.fn()
+  context.octokit.checks.update = jest.fn()
   return context
 }
