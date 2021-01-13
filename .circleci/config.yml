@@ -5,15 +5,9 @@ jobs: # a collection of steps
       - image: circleci/node:12.16.0 # ...with this image as the primary container; this is where all `steps` will run
     steps: # a collection of executable commands
       - checkout # special step to check out source code to working directory
-      - run:
-          name: test npm version
-          command: 'npm --version'
-      - run:
-          name: update-npm
-          command: 'sudo npm install -g npm@latest'
-      - run:
-          name: test npm version
-          command: 'npm --version'
+      # - run:
+      #     name: update-npm
+      #     command: 'sudo npm install -g npm@latest'
       - restore_cache: # special step to restore the dependency cache
           # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
           key: dependency-cache-{{ checksum "package-lock.json" }}
