@@ -2,6 +2,7 @@ CHANGELOG
 =====================================
 
 
+| January 8, 2021 : fix: Prevent add comma on last list element
 | January 5, 2021 : fix: Shift fix in team slug pagination
 | January 4, 2021 : feat: GitHub actions `#450 <https://github.com/mergeability/mergeable/issues/450>`_
 | December 18, 2020 : feat: Better logs for failures in PR home page without going to details `#446 <https://github.com/mergeability/mergeable/issues/446>`_
