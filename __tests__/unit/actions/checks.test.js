@@ -69,8 +69,8 @@ test('that `conclusion` and `completed_at` fields are not set when `settings.sta
   })
 
   await checks.afterValidate(context, settings, name, result)
-  let response = context.github.checks.update.mock.calls[0][0]
-  expect(context.github.checks.update.mock.calls.length).toBe(1)
+  let response = context.octokit.checks.update.mock.calls[0][0]
+  expect(context.octokit.checks.update.mock.calls.length).toBe(1)
   expect(response.status).toBe('in_progress')
   expect(MetaData.exists(response.conclusion)).toBe(false)
   expect(MetaData.exists(response.completed_at)).toBe(false)
