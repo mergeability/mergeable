@@ -64,7 +64,6 @@ Validators are checks that mergeable will process in order to determine whether 
 Validator List
 
 .. toctree::
-    validators/and.rst
     validators/approval.rst
     validators/assignee.rst
     validators/baseRef.rst
@@ -76,7 +75,6 @@ Validator List
     validators/headRef.rst
     validators/label.rst
     validators/milestone.rst
-    validators/or.rst
     validators/project.rst
     validators/size.rst
     validators/stale.rst
