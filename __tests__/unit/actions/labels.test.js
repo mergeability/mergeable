@@ -51,7 +51,6 @@ test('check that set mode works', async () => {
   await labels.afterValidate(context, settings)
   expect(context.octokit.issues.setLabels.mock.calls.length).toBe(1)
   expect(context.octokit.issues.setLabels.mock.calls[0][0].labels).toStrictEqual({'labels': ['testLabel', '2ndTestLabel']})
-
 })
 
 test('check that delete mode works', async () => {
