@@ -179,7 +179,7 @@ module.exports = {
           listComments: () => {
             return { data: (options.listComments) ? options.listComments : [] }
           },
-          replaceLabels: jest.fn(),
+          setLabels: jest.fn(),
           addLabels: jest.fn(),
           update: jest.fn(),
           get: () => {
