@@ -9,6 +9,7 @@ on:
 
 jobs:
   build:
+    if: ${{ secrets.DOCKERHUB_PUSH }}
     name: Build and push Docker image
     runs-on: ubuntu-latest
     steps:
