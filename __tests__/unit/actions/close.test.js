@@ -6,13 +6,13 @@ test('check that issue is closed', async () => {
   const context = Helper.mockContext()
 
   await close.afterValidate(context)
-  expect(context.github.issues.update.mock.calls.length).toBe(1)
-  expect(context.github.issues.update.mock.calls[0][0].state).toBe('closed')
+  expect(context.octokit.issues.update.mock.calls.length).toBe(1)
+  expect(context.octokit.issues.update.mock.calls[0][0].state).toBe('closed')
 })
 
 test('check that issues from scheduler are closed', async () => {
   const close = new Close()
-  const context = Helper.mockContext({event: 'schedule'})
+  const context = Helper.mockContext({eventName: 'schedule'})
   let schedulerResult = {}
   schedulerResult.validationSuites = [{
     schedule: {
@@ -21,8 +21,8 @@ test('check that issues from scheduler are closed', async () => {
     }
   }]
   await close.afterValidate(context, {}, '', schedulerResult)
-  expect(context.github.issues.update.mock.calls.length).toBe(3)
-  expect(context.github.issues.update.mock.calls[0][0].state).toBe('closed')
-  expect(context.github.issues.update.mock.calls[1][0].state).toBe('closed')
-  expect(context.github.issues.update.mock.calls[2][0].state).toBe('closed')
+  expect(context.octokit.issues.update.mock.calls.length).toBe(3)
+  expect(context.octokit.issues.update.mock.calls[0][0].state).toBe('closed')
+  expect(context.octokit.issues.update.mock.calls[1][0].state).toBe('closed')
+  expect(context.octokit.issues.update.mock.calls[2][0].state).toBe('closed')
 })
