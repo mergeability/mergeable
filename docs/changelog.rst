@@ -2,6 +2,7 @@ CHANGELOG
 =====================================
 
 | January 14, 2021 : fix: validators not running in certain pull_request events `#431 <https://github.com/mergeability/mergeable/issues/431>`_
+| January 14, 2021 : fix: remove unsupported settings from title, description and milestone validator
 | January 14, 2021 : feat: Allow to have pending checks `#454 <https://github.com/mergeability/mergeable/issues/454>`_
 | January 13, 2021 : fix: GH Action workflows for pushing to dockerhub.
 | January 12, 2021 : feat: upgrade probot to v11.0.1
