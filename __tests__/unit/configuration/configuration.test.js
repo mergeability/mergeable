@@ -699,6 +699,44 @@ describe('with version 1', () => {
     config = await Configuration.fetchConfigFile(context)
     expect(config).toEqual(yaml.safeLoad(prConfigString))
   })
+
+  test('that env USE_ORG_AS_DEFAULT_CONFIG correctly use org-wide config', async () => {
+    let repoConfig = `
+      version: 2
+      mergeable:
+        - when: pull_request.*, pull_request_review.*
+          name: 'repository rules'
+          validate:
+            - do: title
+              must_include:
+                regex: 'something'`
+
+    let orgConfig = `
+      version: 2
+      mergeable:
+        - when: pull_request.*, pull_request_review.*
+          name: 'organization rules'
+          validate:
+            - do: title
+              must_include:
+                regex: 'nothing'`
+
+    let context = createMockGhConfig(repoConfig, orgConfig)
+    context.event = 'pull_request'
+
+    let config = null
+
+    process.env.USE_ORG_AS_DEFAULT_CONFIG = 'true'
+    config = await Configuration.fetchConfigFile(context)
+    expect(config.mergeable.length).toEqual(2)
+    expect(config.mergeable[0].name).toBe('repository rules')
+    expect(config.mergeable[1].name).toBe('organization rules')
+
+    process.env.USE_ORG_AS_DEFAULT_CONFIG = 'false'
+    config = await Configuration.fetchConfigFile(context)
+    expect(config.mergeable.length).toEqual(1)
+    expect(config.mergeable[0].name).toBe('repository rules')
+  })
 })
 
 // helper method to return mocked configiration.
