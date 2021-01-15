@@ -1,6 +1,7 @@
 CHANGELOG
 =====================================
 
+| January 15, 2021 : feat: add prometheus templates for easy alerting setup
 | January 14, 2021 : fix: validators not running in certain pull_request events `#431 <https://github.com/mergeability/mergeable/issues/431>`_
 | January 14, 2021 : fix: remove unsupported settings from title, description and milestone validator
 | January 14, 2021 : feat: Allow to have pending checks `#454 <https://github.com/mergeability/mergeable/issues/454>`_
