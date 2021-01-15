@@ -16,7 +16,7 @@ test('teams members are extracted properly', async () => {
 
 test('throws teamNotFound error if at least one team is not found', async () => {
   let context = createMockContext()
-  context.github.teams.listMembersInOrg = () => {
+  context.octokit.teams.listMembersInOrg = () => {
     let error = new Error('404 error')
     error.status = 404
     throw error

@@ -236,7 +236,7 @@ describe('config file fetching', () => {
     let configCache = Configuration.getCache()
     let repo = context.repo()
     configCache.set(`${repo.owner}/${repo.repo}`, parsedConfig)
-    context.event = 'push'
+    context.eventName = 'push'
     context.payload.head_commit = {added: ['.github/mergeable.yml']}
     expect(context.probotContext.config.mock.calls.length).toEqual(0)
     const config = await Configuration.fetchConfigFile(context)
@@ -268,7 +268,7 @@ describe('config file fetching', () => {
     configCache.set(`${repo.owner}/another-repo`, parsedConfig)
     configCache.set(`${repo.owner}/yet-another-repo`, parsedConfig)
     expect(configCache.keys().length).toEqual(3)
-    context.event = 'push'
+    context.eventName = 'push'
     context.payload.head_commit = {added: ['.github/mergeable.yml']}
     expect(context.probotContext.config.mock.calls.length).toEqual(0)
     let config = await Configuration.fetchConfigFile(context)
@@ -309,11 +309,11 @@ describe('config file fetching', () => {
       { files: [ { filename: 'someFile', status: 'modified' } ] }
     )
 
-    context.event = 'pull_request'
+    context.eventName = 'pull_request'
     let config = await Configuration.fetchConfigFile(context)
     expect(config).toEqual(parsedConfig)
 
-    context.event = 'pull_request_review'
+    context.eventName = 'pull_request_review'
     config = await Configuration.fetchConfigFile(context)
     expect(config).toEqual(parsedConfig)
   })
@@ -345,11 +345,11 @@ describe('config file fetching', () => {
       { baseRepo: 'owner/test', headRepo: 'owner/not-test' }
     )
 
-    context.event = 'pull_request'
+    context.eventName = 'pull_request'
     let config = await Configuration.fetchConfigFile(context)
     expect(config).toEqual(parsedConfig)
 
-    context.event = 'pull_request_review'
+    context.eventName = 'pull_request_review'
     config = await Configuration.fetchConfigFile(context)
     expect(config).toEqual(parsedConfig)
   })
@@ -378,11 +378,11 @@ describe('config file fetching', () => {
       { filename: '.github/mergeable.yml', status: 'modified' }
     ]}
     let context = createMockGhConfig(configString, prConfigString, files)
-    context.event = 'pull_request'
+    context.eventName = 'pull_request'
     let config = await Configuration.fetchConfigFile(context)
     expect(config).toEqual(parsedConfig)
 
-    context.event = 'pull_request_review'
+    context.eventName = 'pull_request_review'
     config = await Configuration.fetchConfigFile(context)
     expect(config).toEqual(parsedConfig)
 
@@ -390,7 +390,7 @@ describe('config file fetching', () => {
       { filename: '.github/mergeable.yml', status: 'added' }
     ]}
     context = createMockGhConfig(null, prConfigString, files)
-    context.event = 'pull_request'
+    context.eventName = 'pull_request'
     config = await Configuration.fetchConfigFile(context)
     expect(config).toEqual(parsedConfig)
   })
@@ -420,11 +420,11 @@ describe('config file fetching', () => {
       { filename: '.github/mergeable.yml', status: 'modified' }
     ]}
     let context = createMockGhConfig(configString, prConfigString, files)
-    context.event = 'pull_request'
+    context.eventName = 'pull_request'
     let config = await Configuration.fetchConfigFile(context)
     expect(config).toEqual(parsedConfig)
 
-    context.event = 'pull_request_review'
+    context.eventName = 'pull_request_review'
     config = await Configuration.fetchConfigFile(context)
     expect(config).toEqual(parsedConfig)
 
@@ -432,7 +432,7 @@ describe('config file fetching', () => {
       { filename: '.github/mergeable.yml', status: 'added' }
     ]}
     context = createMockGhConfig(null, prConfigString, files)
-    context.event = 'pull_request'
+    context.eventName = 'pull_request'
     config = await Configuration.fetchConfigFile(context)
     expect(config).toEqual(parsedConfig)
   })
@@ -635,8 +635,8 @@ describe('with version 1', () => {
       { filename: '.github/mergeable.yml', status: 'modified' }
     ]}
     let context = createMockGhConfig(null, prConfigString, files)
-    context.event = 'pull_request'
-    context.github.repos.getContents = jest.fn().mockReturnValue(
+    context.eventName = 'pull_request'
+    context.octokit.repos.getContent = jest.fn().mockReturnValue(
       Promise.reject(
         new HttpError(
           '{"message":"Not Found","documentation_url":"https://developer.github.com/v3/repos/contents/#get-contents"}',
@@ -686,7 +686,7 @@ describe('with version 1', () => {
     ]}
 
     let context = createMockGhConfig(configString, prConfigString, files)
-    context.event = 'pull_request'
+    context.eventName = 'pull_request'
 
     process.env.USE_CONFIG_FROM_PULL_REQUEST = 'false'
     let config = await Configuration.fetchConfigFile(context)
@@ -699,7 +699,7 @@ describe('with version 1', () => {
 const createMockGhConfig = (config, prConfig, options) => {
   const context = Helper.mockContext(options)
 
-  context.github.repos.getContents = () => {
+  context.octokit.repos.getContent = () => {
     return Promise.resolve({ data: {
       content: Buffer.from(prConfig).toString('base64') }
     })

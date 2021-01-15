@@ -11,7 +11,7 @@ module.exports = {
   mockContext: (options = {}) => {
     return {
       repo: (properties) => { return Object.assign({ owner: 'owner', repo: 'repo' }, properties) },
-      event: (options.event) ? options.event : 'pull_request',
+      eventName: (options.eventName) ? options.eventName : 'pull_request',
       payload: {
         sha: 'sha1',
         action: 'opened',
@@ -64,13 +64,13 @@ module.exports = {
           }
         }
       },
-      github: {
+      octokit: {
         repos: {
           createStatus: () => {},
           listCollaborators: () => {
             return { data: (options.collaborators) ? options.collaborators : [] }
           },
-          getContents: ({ path }) => {
+          getContent: ({ path }) => {
             return new Promise((resolve, reject) => {
               if (path === '.github/mergeable.yml') {
                 throwNotFound()
@@ -171,7 +171,7 @@ module.exports = {
           listLabelsOnIssue: () => {
             return { data: (options.labels) ? options.labels : [] }
           },
-          checkAssignee: () => {
+          checkUserCanBeAssigned: () => {
             return new Promise((resolve) => {
               resolve({ status: 204 })
             })
@@ -179,7 +179,7 @@ module.exports = {
           listComments: () => {
             return { data: (options.listComments) ? options.listComments : [] }
           },
-          replaceLabels: jest.fn(),
+          setLabels: jest.fn(),
           addLabels: jest.fn(),
           update: jest.fn(),
           get: () => {
@@ -207,7 +207,7 @@ module.exports = {
   },
 
   mockConfigWithContext: (context, configString, options) => {
-    context.github.repos.getContents = () => {
+    context.octokit.repos.getContent = () => {
       return Promise.resolve({ data: {
         content: Buffer.from(configString).toString('base64') }
       })
