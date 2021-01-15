@@ -3,7 +3,6 @@ const fs = require('fs')
 
 const checkUpdateResponse = require('./check.update.response.json')
 const checkCreateResponse = require('./check.create.response.json')
-const configResponse = require('./config.response.json')
 const prListFilesResponse = require('./pr.listFile.response.json')
 const issueCommentResponse = require('./issue.listComment.response.json')
 const defaultConfig = fs.readFileSync('./__fixtures__/e2e/config.v1.default.yml', 'utf8')
@@ -41,11 +40,10 @@ class MockHelper {
 
   mockFetchConfigCall (options = {}) {
     const configString = options.config ? options.config : defaultConfig
-    configResponse.content = Buffer.from(configString).toString('base64')
-    const path = `/repos/${this.repo.owner.login}/${this.repo.name}/contents/.github/mergeable.yml`
+    const path = `/repos/${this.repo.owner.login}/${this.repo.name}/contents/.github%2Fmergeable.yml`
     return nock('https://api.github.com')
       .get(path)
-      .reply(200, configResponse)
+      .reply(200, configString)
   }
 
   mockPRListFileCall (options = {}) {

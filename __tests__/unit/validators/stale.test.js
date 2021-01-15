@@ -376,28 +376,28 @@ describe('limit option', () => {
 })
 
 const getFilteredParams = (context, filter = '', days = 10) => {
-  let callParams = context.github.search.issuesAndPullRequests.mock.calls
+  let callParams = context.octokit.search.issuesAndPullRequests.mock.calls
   let timestamp = (new Date(new Date() - days * 24 * 60 * 60 * 1000)).toISOString().replace(/\.\d{3}\w$/, '')
   let q = `repo:owner/repo is:open updated:<${timestamp} ${filter}`.trim()
   return callParams.filter(param => param[0].q === q)
 }
 
 const isParamsNoType = (context) => {
-  return context.github.search.issuesAndPullRequests.mock.calls
+  return context.octokit.search.issuesAndPullRequests.mock.calls
     .filter(
       param => param[0].q.includes('type:')
     ).length === 0
 }
 
 const isParamsNoLabel = (context) => {
-  return context.github.search.issuesAndPullRequests.mock.calls
+  return context.octokit.search.issuesAndPullRequests.mock.calls
     .filter(
       param => param[0].q.includes('label:')
     ).length === 0
 }
 
 const isMetadataIncluded = (context, project, milestone) => {
-  return context.github.search.issuesAndPullRequests.mock.calls
+  return context.octokit.search.issuesAndPullRequests.mock.calls
     .filter(
       param => (milestone === param[0].q.includes('no:milestone')) && (project === param[0].q.includes('no:project'))
     ).length !== 0
@@ -406,7 +406,7 @@ const isMetadataIncluded = (context, project, milestone) => {
 const createMockContext = (results) => {
   let context = Helper.mockContext()
 
-  context.github.search = {
+  context.octokit.search = {
     issuesAndPullRequests: jest.fn().mockReturnValue({
       data: { items: results }
     })
