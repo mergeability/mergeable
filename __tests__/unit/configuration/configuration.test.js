@@ -689,10 +689,15 @@ describe('with version 1', () => {
     let context = createMockGhConfig(configString, prConfigString, files)
     context.eventName = 'pull_request'
 
+    let config = null
+
     process.env.USE_CONFIG_FROM_PULL_REQUEST = 'false'
-    let config = await Configuration.fetchConfigFile(context)
-    let parsedConfig = yaml.safeLoad(configString)
-    expect(config).toEqual(parsedConfig)
+    config = await Configuration.fetchConfigFile(context)
+    expect(config).toEqual(yaml.safeLoad(configString))
+
+    process.env.USE_CONFIG_FROM_PULL_REQUEST = 'true'
+    config = await Configuration.fetchConfigFile(context)
+    expect(config).toEqual(yaml.safeLoad(prConfigString))
   })
 })
 
