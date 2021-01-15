@@ -1,6 +1,7 @@
 const yaml = require('js-yaml')
 const Helper = require('../../../__fixtures__/unit/helper')
 const Configuration = require('../../../lib/configuration/configuration')
+const deepmerge = require('deepmerge')
 
 describe('Loading bad configuration', () => {
   test('bad YML', async () => {
@@ -704,7 +705,13 @@ const createMockGhConfig = (config, prConfig, options) => {
       content: Buffer.from(prConfig).toString('base64') }
     })
   }
-  context.probotContext.config = jest.fn().mockResolvedValue(yaml.safeLoad(config))
+  context.probotContext.config = jest.fn().mockImplementation((fileName, defaultConfig, deepMergeOptions) => {
+    if (defaultConfig) {
+      let configs = [yaml.safeLoad(config), defaultConfig]
+      return deepmerge.all(configs, deepMergeOptions)
+    }
+    return yaml.safeLoad(config)
+  })
   return context
 }
 
