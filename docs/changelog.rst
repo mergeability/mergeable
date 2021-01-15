@@ -1,6 +1,7 @@
 CHANGELOG
 =====================================
 
+| January 14, 2021 : feat: Allow to have pending checks `#454 <https://github.com/mergeability/mergeable/issues/454>`_
 | January 13, 2021 : fix: GH Action workflows for pushing to dockerhub.
 | January 12, 2021 : feat: upgrade probot to v11.0.1
 | January 8, 2021 : fix: Prevent add comma on last list element
