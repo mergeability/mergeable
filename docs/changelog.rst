@@ -1,6 +1,7 @@
 CHANGELOG
 =====================================
 
+| January 15, 2021 : feat: Support use organization-wide configuration as default `#470 <https://github.com/mergeability/mergeable/issues/470>`_
 | January 14, 2021 : fix: remove unsupported settings from title, description and milestone validator
 | January 14, 2021 : feat: Allow to have pending checks `#454 <https://github.com/mergeability/mergeable/issues/454>`_
 | January 13, 2021 : fix: GH Action workflows for pushing to dockerhub.
