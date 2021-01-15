@@ -1,10 +1,10 @@
-name: Node.js CI
+name: CI
 
 on: [push]
 
 jobs:
   build:
-
+    name: Tests and Code Coverage
     runs-on: ubuntu-latest
 
     strategy:
