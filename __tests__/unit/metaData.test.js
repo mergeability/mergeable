@@ -1,23 +1,23 @@
 const MetaData = require('../../lib/metaData')
 
-const dataText = '<!-- #mergeable-data {"id":1,"event":"issues","action":"milestoned"} #mergeable-data -->'
+const dataText = '<!-- #mergeable-data {"id":1,"eventName":"issues","action":"milestoned"} #mergeable-data -->'
 
 test('#deserialize', () => {
   let json = MetaData.deserialize(`
     #### :x: Validator: TITLE * :x:
       ***title must begins with "feat,test,chore"
       *** Input : use-case: title Settings : \`\`\`{"begins_with":{"match":["feat","test","chore"]}}\`\`\`
-      <!-- #mergeable-data { "id": 1, "event": "pull_request", "action": "unlabeled" } #mergeable-data -->
+      <!-- #mergeable-data { "id": 1, "eventName": "pull_request", "action": "unlabeled" } #mergeable-data -->
   `)
   expect(json.id).toBe(1)
-  expect(json.event).toBe('pull_request')
+  expect(json.eventName).toBe('pull_request')
   expect(json.action).toBe('unlabeled')
 })
 
 test('#serialize', () => {
   let obj = {
     id: 1,
-    event: 'issues',
+    eventName: 'issues',
     action: 'milestoned'
   }
 

@@ -41,7 +41,7 @@ describe('Test processBeforeValidate and processAfterValidate invocations', () =
   })
 
   test('when event is in configuration', async () => {
-    context.event = 'pull_request'
+    context.eventName = 'pull_request'
     context.payload.action = 'opened'
     await executor(context, registry)
     expect(action.processBeforeValidate.mock.calls.length).toBe(1)
@@ -49,7 +49,7 @@ describe('Test processBeforeValidate and processAfterValidate invocations', () =
   })
 
   test('when event is not in configuration', async () => {
-    context.event = 'pull_request_review'
+    context.eventName = 'pull_request_review'
     context.payload.action = 'submitted'
     await executor(context, registry)
     expect(action.processBeforeValidate.mock.calls.length).toBe(0)
@@ -58,7 +58,7 @@ describe('Test processBeforeValidate and processAfterValidate invocations', () =
 
   test('when event is in configuration with multiple whens', async () => {
     Helper.mockConfigWithContext(context, configWithMultiple)
-    context.event = 'pull_request_review'
+    context.eventName = 'pull_request_review'
     context.payload.action = 'submitted'
     await executor(context, registry)
     expect(action.processBeforeValidate.mock.calls.length).toBe(1)
@@ -88,7 +88,7 @@ describe('Test processBeforeValidate and processAfterValidate invocations', () =
             must_exclude:
               regex: wip|work in progress`
     Helper.mockConfigWithContext(context, config)
-    context.event = 'pull_request'
+    context.eventName = 'pull_request'
     context.payload.action = 'opened'
     await executor(context, registry)
     expect(action.processBeforeValidate.mock.calls.length).toBe(2)
@@ -115,11 +115,11 @@ describe('Test processBeforeValidate and processAfterValidate invocations', () =
     commentAction.supportedEvents = ['pull_request.opened', 'pull_request.edited', 'pull_request_review.submitted']
     registry.actions.set('comment', commentAction)
 
-    context.event = 'pull_request'
+    context.eventName = 'pull_request'
     context.payload.action = 'opened'
-    context.github.issues.createComment = jest.fn()
+    context.octokit.issues.createComment = jest.fn()
     await executor(context, registry)
-    expect(context.github.issues.createComment.mock.calls.length).toBe(1)
+    expect(context.octokit.issues.createComment.mock.calls.length).toBe(1)
   })
 
   test('Expect fail action to not be triggered on empty validator ', async () => {
@@ -141,11 +141,11 @@ describe('Test processBeforeValidate and processAfterValidate invocations', () =
     commentAction.supportedEvents = ['pull_request.opened', 'pull_request.edited', 'pull_request_review.submitted']
     registry.actions.set('comment', commentAction)
 
-    context.event = 'pull_request'
+    context.eventName = 'pull_request'
     context.payload.action = 'opened'
-    context.github.issues.createComment = jest.fn()
+    context.octokit.issues.createComment = jest.fn()
     await executor(context, registry)
-    expect(context.github.issues.createComment.mock.calls.length).toBe(0)
+    expect(context.octokit.issues.createComment.mock.calls.length).toBe(0)
   })
 
   test('processPreAction works correctly, two whens with same events but different actions', async () => {
@@ -193,7 +193,7 @@ describe('Test processBeforeValidate and processAfterValidate invocations', () =
     registry.actions.set('assign', assignAction)
 
     Helper.mockConfigWithContext(context, config)
-    context.event = 'pull_request'
+    context.eventName = 'pull_request'
     context.payload.action = 'opened'
     await executor(context, registry)
 
@@ -205,7 +205,7 @@ describe('Test processBeforeValidate and processAfterValidate invocations', () =
 describe('#executor', () => {
   test('Bad YML', async () => {
     let context = Helper.mockContext()
-    context.event = 'pull_request'
+    context.eventName = 'pull_request'
     context.payload.action = 'opened'
     Helper.mockConfigWithContext(context, `
       version: 2
@@ -215,16 +215,16 @@ describe('#executor', () => {
     {files: ['.github/mergeable.yml']}
     )
 
-    context.event = 'pull_request'
+    context.eventName = 'pull_request'
     context.payload.action = 'opened'
-    context.github.checks.create = jest.fn()
-    context.github.checks.update = jest.fn()
+    context.octokit.checks.create = jest.fn()
+    context.octokit.checks.update = jest.fn()
 
     await executor(context, { validators: new Map(), actions: new Map() })
-    expect(context.github.checks.update.mock.calls.length).toBe(0)
-    expect(context.github.checks.create.mock.calls.length).toBe(1)
+    expect(context.octokit.checks.update.mock.calls.length).toBe(0)
+    expect(context.octokit.checks.create.mock.calls.length).toBe(1)
 
-    const theCall = context.github.checks.create.mock.calls[0][0]
+    const theCall = context.octokit.checks.create.mock.calls[0][0]
     expect(theCall.status).toBe('completed')
     expect(theCall.conclusion).toBe('cancelled')
   })
@@ -258,7 +258,7 @@ describe('#executor', () => {
     `)
 
     let registry = { validators: new Map(), actions: new Map() }
-    context.event = 'pull_request'
+    context.eventName = 'pull_request'
     context.payload.action = 'opened'
     await executor(context, registry)
     // test that the registry will register dynamicly.
@@ -335,7 +335,7 @@ describe('#executor', () => {
     }
     registry.actions.set('checks', checks)
 
-    context.event = 'pull_request'
+    context.eventName = 'pull_request'
     context.payload.action = 'opened'
     await executor(context, registry)
     expect(title.processValidate).toHaveBeenCalledTimes(1)
@@ -345,7 +345,7 @@ describe('#executor', () => {
     expect(checks.processBeforeValidate).toHaveBeenCalledTimes(1)
     expect(checks.processAfterValidate).toHaveBeenCalledTimes(1)
 
-    context.event = 'issues'
+    context.eventName = 'issues'
     context.payload.action = 'opened'
     await executor(context, registry)
     expect(title.processValidate).toHaveBeenCalledTimes(2)
@@ -416,7 +416,7 @@ describe('#executor', () => {
     }
     registry.actions.set('checks', checks)
 
-    context.event = 'pull_request'
+    context.eventName = 'pull_request'
     context.payload.action = 'opened'
     await executor(context, registry)
     expect(title.processValidate).toHaveBeenCalledTimes(1)
@@ -424,7 +424,7 @@ describe('#executor', () => {
     expect(checks.processBeforeValidate).toHaveBeenCalledTimes(1)
     expect(checks.processAfterValidate).toHaveBeenCalledTimes(1)
 
-    context.event = 'issues'
+    context.eventName = 'issues'
     await executor(context, registry)
     expect(title.processValidate).toHaveBeenCalledTimes(2)
     expect(label.processValidate).toHaveBeenCalledTimes(1)
@@ -492,7 +492,7 @@ describe('#executor', () => {
     }
     registry.actions.set('checks', checks)
 
-    context.event = 'pull_request_review'
+    context.eventName = 'pull_request_review'
     context.payload.action = 'opened'
     await executor(context, registry)
     expect(title.processValidate).toHaveBeenCalledTimes(0)
@@ -500,7 +500,7 @@ describe('#executor', () => {
     expect(checks.processBeforeValidate).toHaveBeenCalledTimes(0)
     expect(checks.processAfterValidate).toHaveBeenCalledTimes(0)
 
-    context.event = 'pull_request'
+    context.eventName = 'pull_request'
     await executor(context, registry)
     expect(title.processValidate).toHaveBeenCalledTimes(1)
     expect(label.processValidate).toHaveBeenCalledTimes(0)
@@ -540,7 +540,7 @@ describe('#executor', () => {
           error:
             - do: error_action
     `)
-    context.event = 'pull_request'
+    context.eventName = 'pull_request'
     context.payload.action = 'opened'
     await executor(context, registry)
 

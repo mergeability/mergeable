@@ -1,9 +1,14 @@
 CHANGELOG
 =====================================
 
-
+| January 14, 2021 : fix: validators not running in certain pull_request events `#431 <https://github.com/mergeability/mergeable/issues/431>`_
+| January 14, 2021 : fix: remove unsupported settings from title, description and milestone validator
+| January 14, 2021 : feat: Allow to have pending checks `#454 <https://github.com/mergeability/mergeable/issues/454>`_
+| January 13, 2021 : fix: GH Action workflows for pushing to dockerhub.
+| January 12, 2021 : feat: upgrade probot to v11.0.1
 | January 8, 2021 : fix: Prevent add comma on last list element
 | January 5, 2021 : fix: Shift fix in team slug pagination
+| January 4, 2021 : feat: GitHub actions `#450 <https://github.com/mergeability/mergeable/issues/450>`_
 | December 18, 2020 : feat: Better logs for failures in PR home page without going to details `#446 <https://github.com/mergeability/mergeable/issues/446>`_
 | December 17, 2020 : fix: Members in Org listing pagination bug `#442 <https://github.com/mergeability/mergeable/issues/442>`_
 | December 17, 2020 : feat: Add docker image build and push `#427 <https://github.com/mergeability/mergeable/issues/427>`_
