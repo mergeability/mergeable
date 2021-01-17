@@ -40,6 +40,42 @@ test('that beforeValidate stores the name correctly', async () => {
   expect(checks.checkRunResult.has(name)).toBe(true)
 })
 
+test('that `conclusion` and `completed_at` fields are not set when `settings.state` is not `completed`', async () => {
+  const checks = new Checks()
+  const context = createMockContext()
+  const result = {
+    errorCount: 0,
+    failCount: 1,
+    failures: [{
+      name: 'approvals'
+    }]
+  }
+  const settings = {
+    state: 'in_progress',
+    status: null,
+    payload: {
+      title: `This is the title`,
+      summary: 'This is the summary'
+    }
+  }
+
+  const name = undefined
+
+  checks.checkRunResult = new Map()
+  checks.checkRunResult.set(name, {
+    data: {
+      id: '3'
+    }
+  })
+
+  await checks.afterValidate(context, settings, name, result)
+  let response = context.octokit.checks.update.mock.calls[0][0]
+  expect(context.octokit.checks.update.mock.calls.length).toBe(1)
+  expect(response.status).toBe('in_progress')
+  expect(MetaData.exists(response.conclusion)).toBe(false)
+  expect(MetaData.exists(response.completed_at)).toBe(false)
+})
+
 test('that afterValidate is called with properly and output is correct', async () => {
   const checks = new Checks()
   const context = createMockContext()
