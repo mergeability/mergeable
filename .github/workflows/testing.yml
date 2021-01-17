@@ -5,7 +5,7 @@ on:
     branches: [ $default-branch ]
   pull_request:
     branches: [ $default-branch ]
-    types: [push, synchronize]
+    types: [push, synchronize, opened]
 
 jobs:
   build:
