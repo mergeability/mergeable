@@ -80,6 +80,17 @@ Validator List
     validators/stale.rst
     validators/title.rst
 
+Operators
+------------
+
+These operators can help create more complex logic of validations
+
+Operator List
+
+.. toctree::
+    validators/and.rst
+    validators/or.rst
+
 
 Actions
 ------------
