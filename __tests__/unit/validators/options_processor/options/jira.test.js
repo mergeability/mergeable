@@ -20,12 +20,10 @@ const validatorContext = {
 }
 
 test('Return false with wrong ticket with findIssue', async () => {
-
   mockedJiraClient.prototype.findIssue.mockImplementation(() => {
     throw new Error('test error message')
-  });
-   
-  let res = await jira.checkTicketStatus("wrong-ticket-number")
+  })
+  let res = await jira.checkTicketStatus('wrong-ticket-number')
   expect(mockedJiraClient).toHaveBeenCalled()
   expect(res).toBe(false)
 })
@@ -88,4 +86,3 @@ test('return fail if JIRA Ticket ID couldn\'t be found', async () => {
   expect(checkTicketStatus).toHaveBeenCalled()
   expect(res.status).toBe('fail')
 })
-
