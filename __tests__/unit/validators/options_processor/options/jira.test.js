@@ -1,3 +1,6 @@
+jest.mock('jira-client')
+let mockedJiraClient = require('jira-client')
+
 const jira = require('../../../../../lib/validators/options_processor/options/jira')
 
 const validatorContext = {
@@ -15,6 +18,17 @@ const validatorContext = {
     'required',
     'jira']
 }
+
+test('Return false with wrong ticket with findIssue', async () => {
+
+  mockedJiraClient.prototype.findIssue.mockImplementation(() => {
+    throw new Error('test error message')
+  });
+   
+  let res = await jira.checkTicketStatus("wrong-ticket-number")
+  expect(mockedJiraClient).toHaveBeenCalled()
+  expect(res).toBe(false)
+})
 
 test('return error if inputs are not in expected format', async () => {
   const rule = { jira: { regex: 'the' } }
@@ -62,3 +76,16 @@ test('return fail if JIRA Ticket ID couldn\'t be found', async () => {
   expect(checkTicketStatus).toHaveBeenCalled()
   expect(res.status).toBe('fail')
 })
+
+test('return fail if JIRA Ticket ID couldn\'t be found', async () => {
+  // Mock wrong JIRA Call
+  const checkTicketStatus = jest.fn().mockReturnValue(false)
+  jira.checkTicketStatus = checkTicketStatus
+
+  const rule = { jira: { enabled: true, regex: 'test' } }
+  let input = 'test-123123'
+  let res = await jira.process(validatorContext, input, rule)
+  expect(checkTicketStatus).toHaveBeenCalled()
+  expect(res.status).toBe('fail')
+})
+
