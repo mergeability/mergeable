@@ -1,6 +1,7 @@
 CHANGELOG
 =====================================
 
+| January 19, 2021 : feat: Async Options `#480 <https://github.com/mergeability/mergeable/issues/480>`_
 | January 17, 2021 : fix: `required-status-check` bug in merge action
 | January 14, 2021 : fix: validators not running in certain pull_request events `#431 <https://github.com/mergeability/mergeable/issues/431>`_
 | January 14, 2021 : fix: remove unsupported settings from title, description and milestone validator
