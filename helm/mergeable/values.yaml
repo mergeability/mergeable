@@ -84,3 +84,19 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+prometheus:
+  enabled: false
+  rules: {}
+    # - name: mergeable
+    #   rules:
+    #   - alert: mergeable-ErrorRateTooHigh-Warning
+    #     expr: sum(rate(nginx_ingress_controller_requests{ingress="mergeable",status=~"5.{2}|4[1-9].|40[^14]"}[1m])) / sum(rate(nginx_ingress_controller_requests{ingress="mergeable"}[1m])) > 0.01
+    #     for: 10m
+    #     labels:
+    #       slack: $channel
+    #       severity: warning
+    #     annotations:
+    #       summary: Mergeable error rate greater than 1% in the last 10m
+    #       description: Mergeable has an HTTP error response rate of {{ $value }}% in the last 10m
+
