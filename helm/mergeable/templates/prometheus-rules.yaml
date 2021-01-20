@@ -1,0 +1,13 @@
+{{- if .Values.prometheus.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ include "mergeable.fullname" . }}
+  labels:
+    {{- include "mergeable.labels" . | nindent 4 }}
+    prometheus: kube-prometheus
+    role: alert-rules
+spec:
+  groups:
+{{ toYaml .Values.prometheus.rules | nindent 4 }}
+{{- end }}
