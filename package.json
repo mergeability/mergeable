@@ -1,6 +1,6 @@
 {
   "name": "mergeable",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "",
   "author": "Justin Law <hello@justinlaw.org> (https://github.io/mergeability/mergeable), Shine Lee <aungshine@gmail.com>",
   "license": "AGPL-3.0-only",
@@ -37,8 +37,7 @@
     "standard": "^11.0.0"
   },
   "engines": {
-    "node": ">= 7.7.0",
-    "npm": ">= 4.0.0"
+    "node": "14.15.4"
   },
   "standard": {
     "env": [
