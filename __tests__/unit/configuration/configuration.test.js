@@ -1,6 +1,7 @@
 const yaml = require('js-yaml')
 const Helper = require('../../../__fixtures__/unit/helper')
 const Configuration = require('../../../lib/configuration/configuration')
+const deepmerge = require('deepmerge')
 
 describe('Loading bad configuration', () => {
   test('bad YML', async () => {
@@ -688,10 +689,53 @@ describe('with version 1', () => {
     let context = createMockGhConfig(configString, prConfigString, files)
     context.eventName = 'pull_request'
 
+    let config = null
+
     process.env.USE_CONFIG_FROM_PULL_REQUEST = 'false'
-    let config = await Configuration.fetchConfigFile(context)
-    let parsedConfig = yaml.safeLoad(configString)
-    expect(config).toEqual(parsedConfig)
+    config = await Configuration.fetchConfigFile(context)
+    expect(config).toEqual(yaml.safeLoad(configString))
+
+    process.env.USE_CONFIG_FROM_PULL_REQUEST = 'true'
+    config = await Configuration.fetchConfigFile(context)
+    expect(config).toEqual(yaml.safeLoad(prConfigString))
+  })
+
+  test('that env USE_ORG_AS_DEFAULT_CONFIG correctly use org-wide config', async () => {
+    let repoConfig = `
+      version: 2
+      mergeable:
+        - when: pull_request.*, pull_request_review.*
+          name: 'repository rules'
+          validate:
+            - do: title
+              must_include:
+                regex: 'something'`
+
+    let orgConfig = `
+      version: 2
+      mergeable:
+        - when: pull_request.*, pull_request_review.*
+          name: 'organization rules'
+          validate:
+            - do: title
+              must_include:
+                regex: 'nothing'`
+
+    let context = createMockGhConfig(repoConfig, orgConfig)
+    context.event = 'pull_request'
+
+    let config = null
+
+    process.env.USE_ORG_AS_DEFAULT_CONFIG = 'true'
+    config = await Configuration.fetchConfigFile(context)
+    expect(config.mergeable.length).toEqual(2)
+    expect(config.mergeable[0].name).toBe('repository rules')
+    expect(config.mergeable[1].name).toBe('organization rules')
+
+    process.env.USE_ORG_AS_DEFAULT_CONFIG = 'false'
+    config = await Configuration.fetchConfigFile(context)
+    expect(config.mergeable.length).toEqual(1)
+    expect(config.mergeable[0].name).toBe('repository rules')
   })
 })
 
@@ -704,7 +748,13 @@ const createMockGhConfig = (config, prConfig, options) => {
       content: Buffer.from(prConfig).toString('base64') }
     })
   }
-  context.probotContext.config = jest.fn().mockResolvedValue(yaml.safeLoad(config))
+  context.probotContext.config = jest.fn().mockImplementation((fileName, defaultConfig, deepMergeOptions) => {
+    if (defaultConfig) {
+      let configs = [yaml.safeLoad(config), defaultConfig]
+      return deepmerge.all(configs, deepMergeOptions)
+    }
+    return yaml.safeLoad(config)
+  })
   return context
 }
 
