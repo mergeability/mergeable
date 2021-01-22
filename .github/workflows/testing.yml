@@ -2,10 +2,9 @@ name: CI
 
 on:
   push:
-    branches: ['**']
+    branches: ['master']
   pull_request:
     branches: ['**']
-    types: [synchronize]
 
 jobs:
   build:
