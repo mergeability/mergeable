@@ -2,11 +2,8 @@ name: CI
 
 on:
   push:
-    branches: ['master']
-  pull_request:
     branches: ['**']
-    types: [synchronize, opened]
-
+  
 jobs:
   build:
     name: Tests and Code Coverage
@@ -14,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [14.15.4]
 
     steps:
     - uses: actions/checkout@v2
@@ -27,11 +24,3 @@ jobs:
     - run: npm run test-coverage
       env:
         CI: true
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
-      with:
-        directory: ./coverage/
-        name: codecov-mergeable
-        fail_ci_if_error: true
-        path_to_write_report: ./coverage/codecov_report.txt
-        verbose: true
