@@ -25,6 +25,7 @@
     "node-cache": "^5.1.2",
     "node-fetch": "^2.6.1",
     "probot": "11.0.1",
+    "p-iteration": "^1.1.8",
     "probot-scheduler": "^2.0.0-beta.1"
   },
   "devDependencies": {
