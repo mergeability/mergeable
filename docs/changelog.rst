@@ -1,8 +1,13 @@
 CHANGELOG
 =====================================
 
+| January 21, 2021 : fix: request_review action failing when the reviewer is PR author `#486 <https://github.com/mergeability/mergeable/issues/486>`_
+| January 20, 2021 : fix: deep validation bug that is causing HttpError `#488 <https://github.com/mergeability/mergeable/issues/488>`_
+| January 19, 2021 : feat: Async Options `#480 <https://github.com/mergeability/mergeable/issues/480>`_
+| January 19, 2021 : feat: Support use organization-wide configuration as default `#470 <https://github.com/mergeability/mergeable/issues/470>`_
 | January 19, 2021 : feat: Jira Validator Option `#482 <https://github.com/mergeability/mergeable/issues/482>`_
 | January 17, 2021 : fix: `required-status-check` bug in merge action
+| January 15, 2021 : feat: add prometheus templates for easy alerting setup
 | January 14, 2021 : fix: validators not running in certain pull_request events `#431 <https://github.com/mergeability/mergeable/issues/431>`_
 | January 14, 2021 : fix: remove unsupported settings from title, description and milestone validator
 | January 14, 2021 : feat: Allow to have pending checks `#454 <https://github.com/mergeability/mergeable/issues/454>`_
