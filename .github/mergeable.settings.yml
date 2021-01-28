@@ -1,3 +1,4 @@
+---
 version: 1
 mergeable:
   use_config_from_pull_request: true
