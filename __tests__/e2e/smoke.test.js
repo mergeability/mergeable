@@ -76,8 +76,6 @@ mergeable:
     const listCommentsCall = Helper.mockIssueListCommentsCall()
     const fetchConfigCall = Helper.mockFetchConfigCall({config})
 
-    console.log(probot)
-
     // Receive a webhook event
     await probot.receive({ name: 'pull_request', payload: prPayload })
 
