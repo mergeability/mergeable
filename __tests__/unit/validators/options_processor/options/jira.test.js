@@ -29,13 +29,13 @@ test('Return false with wrong ticket with findIssue', async () => {
 })
 
 test('return error if inputs are not in expected format', async () => {
-  const rule = { jira: { regex: 'the' } }
+  const rule = { jira: { } }
   const input = 'the test'
   try {
     let config = await jira.process(validatorContext, input, rule)
     expect(config).toBeUndefined()
   } catch (e) {
-    expect(e.message).toBe(`Failed to run the test because 'enabled' is not provided for 'jira' option. Please check README for more information about configuration`)
+    expect(e.message).toBe(`Failed to run the test because 'regex' is not provided for 'jira' option. Please check README for more information about configuration`)
   }
 })
 
