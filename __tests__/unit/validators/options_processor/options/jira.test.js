@@ -44,7 +44,7 @@ test('return pass if input meets the criteria', async () => {
   const checkTicketStatus = jest.fn().mockReturnValue(true)
   jira.checkTicketStatus = checkTicketStatus
 
-  const rule = { jira: { enabled: true, regex: 'test' } }
+  const rule = { jira: { regex: 'test' } }
   let input = 'test-123123'
   let res = await jira.process(validatorContext, input, rule)
   expect(checkTicketStatus).toHaveBeenCalled()
@@ -56,7 +56,7 @@ test('return fail if input doesn\'t meet the regex criteria', async () => {
   const checkTicketStatus = jest.fn().mockReturnValue(false)
   jira.checkTicketStatus = checkTicketStatus
 
-  const rule = { jira: { enabled: true, regex: 'test' } }
+  const rule = { jira: { regex: 'test' } }
   let input = 'feature-123123'
   let res = await jira.process(validatorContext, input, rule)
   expect(checkTicketStatus).toHaveBeenCalledTimes(0)
@@ -68,7 +68,7 @@ test('return fail if JIRA Ticket ID couldn\'t be found', async () => {
   const checkTicketStatus = jest.fn().mockReturnValue(false)
   jira.checkTicketStatus = checkTicketStatus
 
-  const rule = { jira: { enabled: true, regex: 'test' } }
+  const rule = { jira: { regex: 'test' } }
   let input = 'test-123123'
   let res = await jira.process(validatorContext, input, rule)
   expect(checkTicketStatus).toHaveBeenCalled()
@@ -80,7 +80,7 @@ test('return fail if JIRA Ticket ID couldn\'t be found', async () => {
   const checkTicketStatus = jest.fn().mockReturnValue(false)
   jira.checkTicketStatus = checkTicketStatus
 
-  const rule = { jira: { enabled: true, regex: 'test' } }
+  const rule = { jira: { regex: 'test' } }
   let input = 'test-123123'
   let res = await jira.process(validatorContext, input, rule)
   expect(checkTicketStatus).toHaveBeenCalled()

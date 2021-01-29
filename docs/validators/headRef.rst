@@ -12,6 +12,10 @@ HeadRef
          regex: 'feature-branch2'
          regex_flag: 'none' # Optional. Specify the flag for Regex. default is 'i', to disable default use 'none'
          message: 'Custom message...'
+      jira:
+        regex: '[A-Z][A-Z0-9]+-\d+'
+        regex_flag: none
+        message: 'The Jira ticket does not exist'
 
 
 Simple example:
