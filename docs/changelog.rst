@@ -1,7 +1,6 @@
 CHANGELOG
 =====================================
 
-| January 29, 2021 : feat: added options to docs
 | January 21, 2021 : fix: request_review action failing when the reviewer is PR author `#486 <https://github.com/mergeability/mergeable/issues/486>`_
 | January 20, 2021 : fix: deep validation bug that is causing HttpError `#488 <https://github.com/mergeability/mergeable/issues/488>`_
 | January 19, 2021 : feat: Async Options `#480 <https://github.com/mergeability/mergeable/issues/480>`_
