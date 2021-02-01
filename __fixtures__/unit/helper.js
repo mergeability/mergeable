@@ -16,7 +16,10 @@ module.exports = {
         sha: 'sha1',
         action: 'opened',
         repository: {
-          full_name: 'name'
+          full_name: 'name',
+          owner: {
+            login: 'owner'
+          }
         },
         check_suite: {
           pull_requests: [
@@ -35,7 +38,10 @@ module.exports = {
           milestone: (options.milestone) ? options.milestone : null,
           requested_reviewers: options.requestedReviewers ? options.requestedReviewers : [],
           base: {
-            repo: { full_name: options.baseRepo ? options.baseRepo : 'owner/test' },
+            repo: {
+              full_name: options.baseRepo ? options.baseRepo : 'owner/test',
+              private: (options.repoPrivate) ? options.repoPrivate : false
+            },
             ref: 'baseRef',
             sha: 'sha2'
           },
@@ -87,6 +93,13 @@ module.exports = {
             return new Promise(resolve => {
               resolve({ data: {
                 files: options.compareCommits
+              }})
+            })
+          },
+          getAllTopics: () => {
+            return new Promise(resolve => {
+              resolve({ data: {
+                names: (options.repoTopics) ? options.repoTopics : []
               }})
             })
           }
