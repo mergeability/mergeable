@@ -13,8 +13,8 @@ test('fail gracefully if invalid regex', async () => {
     }
   }
 
-  const validation = await repo.processFilter(mockContext(true, ['my-topic']), settings)
-  expect(validation.status).toBe('pass')
+  const filter = await repo.processFilter(mockContext(true, ['my-topic']), settings)
+  expect(filter.status).toBe('pass')
 })
 
 test('public repo with private filter', async () => {
@@ -25,8 +25,8 @@ test('public repo with private filter', async () => {
     visibility: 'private'
   }
 
-  const validation = await repo.processFilter(mockContext(false, []), settings)
-  expect(validation.status).toBe('fail')
+  const filter = await repo.processFilter(mockContext(false, []), settings)
+  expect(filter.status).toBe('fail')
 })
 
 test('public repo with public filter', async () => {
@@ -37,8 +37,8 @@ test('public repo with public filter', async () => {
     visibility: 'public'
   }
 
-  const validation = await repo.processFilter(mockContext(false, []), settings)
-  expect(validation.status).toBe('pass')
+  const filter = await repo.processFilter(mockContext(false, []), settings)
+  expect(filter.status).toBe('pass')
 })
 
 test('private repo with public filter', async () => {
@@ -49,8 +49,8 @@ test('private repo with public filter', async () => {
     visibility: 'public'
   }
 
-  const validation = await repo.processFilter(mockContext(true, []), settings)
-  expect(validation.status).toBe('fail')
+  const filter = await repo.processFilter(mockContext(true, []), settings)
+  expect(filter.status).toBe('fail')
 })
 
 test('private repo with private filter', async () => {
@@ -61,8 +61,8 @@ test('private repo with private filter', async () => {
     visibility: 'private'
   }
 
-  const validation = await repo.processFilter(mockContext(true, []), settings)
-  expect(validation.status).toBe('pass')
+  const filter = await repo.processFilter(mockContext(true, []), settings)
+  expect(filter.status).toBe('pass')
 })
 
 test('must include topic', async () => {
@@ -77,8 +77,8 @@ test('must include topic', async () => {
     }
   }
 
-  const validation = await repo.processFilter(mockContext(true, ['mytopic']), settings)
-  expect(validation.status).toBe('pass')
+  const filter = await repo.processFilter(mockContext(true, ['mytopic']), settings)
+  expect(filter.status).toBe('pass')
 })
 
 test('fail to must include topic', async () => {
@@ -93,8 +93,8 @@ test('fail to must include topic', async () => {
     }
   }
 
-  const validation = await repo.processFilter(mockContext(true, []), settings)
-  expect(validation.status).toBe('fail')
+  const filter = await repo.processFilter(mockContext(true, []), settings)
+  expect(filter.status).toBe('fail')
 })
 
 test('must exclude topic', async () => {
@@ -109,8 +109,8 @@ test('must exclude topic', async () => {
     }
   }
 
-  const validation = await repo.processFilter(mockContext(true, []), settings)
-  expect(validation.status).toBe('pass')
+  const filter = await repo.processFilter(mockContext(true, []), settings)
+  expect(filter.status).toBe('pass')
 })
 
 test('fail to must exclude topic', async () => {
@@ -125,8 +125,8 @@ test('fail to must exclude topic', async () => {
     }
   }
 
-  const validation = await repo.processFilter(mockContext(true, ['mytopic']), settings)
-  expect(validation.status).toBe('fail')
+  const filter = await repo.processFilter(mockContext(true, ['mytopic']), settings)
+  expect(filter.status).toBe('fail')
 })
 
 const mockContext = (repoPrivate, repoTopics) => {
