@@ -21,6 +21,10 @@ Milestone
       ends_with:
          match: 'A String' # array list of strings
          message: 'Come message...'
+      jira:
+        regex: '[A-Z][A-Z0-9]+-\d+'
+        regex_flag: none
+        message: 'The Jira ticket does not exist'
       # all of the message sub-option is optional
 
 ::

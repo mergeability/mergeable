@@ -23,6 +23,10 @@ Description
       ends_with:
          match: 'Any last sentence' # array of strings
          message: 'Come message...' # optional
+      jira:
+        regex: '[A-Z][A-Z0-9]+-\d+'
+        regex_flag: none
+        message: 'The Jira ticket does not exist'
 
 you can use ``and`` and ``or`` options to create more complex validations
 
