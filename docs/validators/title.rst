@@ -22,6 +22,10 @@ Title
          match: 'A String' # or array of strings
          message: 'Come message...'
          # all of the message sub-option is optional
+      jira:
+        regex: '[A-Z][A-Z0-9]+-\d+'
+        regex_flag: none
+        message: 'The Jira ticket does not exist'
 
 ::
 
