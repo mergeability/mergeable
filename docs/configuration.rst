@@ -90,6 +90,7 @@ Options List
 .. toctree::
     options/begins_with.rst
     options/ends_with.rst
+    options/jira.rst
     options/max.rst
     options/min.rst
     options/must_include.rst
