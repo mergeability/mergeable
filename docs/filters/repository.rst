@@ -39,7 +39,7 @@ you can also nest ``and`` and ``or`` options
 
 ::
 
-    - do: changeset # validate against the files in the PR
+    - do: repository
       and:
         - or:
             - must_include:
