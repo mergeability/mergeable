@@ -2,7 +2,7 @@ const yaml = require('js-yaml')
 const Helper = require('../../../__fixtures__/unit/helper')
 const Settings = require('../../../lib/settings/settings')
 
-describe('Loading bad configuration', () => {
+describe('Loading bad settings', () => {
   test('bad YML', async () => {
     const context = createMockGhSettings()
     context.octokit.repos.getContent = jest.fn().mockImplementation(() => {
@@ -37,9 +37,9 @@ describe('Loading bad configuration', () => {
       mergeable:
         use_config_from_pull_request:
     `)
-    const config = new Settings(yamlContent)
-    expect(config.errors.size).toBe(1)
-    expect(config.errors.has(Settings.ERROR_CODES.UNKOWN_VERSION)).toBe(true)
+    const settings = new Settings(yamlContent)
+    expect(settings.errors.size).toBe(1)
+    expect(settings.errors.has(Settings.ERROR_CODES.UNKOWN_VERSION)).toBe(true)
   })
 
   test('missing mergeable node', () => {
@@ -58,7 +58,7 @@ describe('Loading bad configuration', () => {
     `)
     const settings = new Settings(yamlContent)
     expect(settings.errors.size).toBe(1)
-    expect(settings.errors.has(Settings.ERROR_CODES.MISSING_RULE_SETS)).toBe(true)
+    expect(settings.errors.has(Settings.ERROR_CODES.MISSING_SETTINGS)).toBe(true)
   })
 })
 
@@ -79,7 +79,7 @@ describe('settings file fetching', () => {
     expect(settings).toEqual(parsedSettings)
   })
 
-  test('check config cache', async () => {
+  test('check settings cache', async () => {
     const settingsString = `
           mergeable:
             use_config_from_pull_request: false
@@ -150,13 +150,13 @@ describe('settings file fetching', () => {
 })
 
 // helper method to return mocked settings.
-const createMockGhSettings = (config, options) => {
+const createMockGhSettings = (settings, options) => {
   const context = Helper.mockContext(options)
 
   context.octokit.repos.getContent = jest.fn().mockImplementation(() => {
     return Promise.resolve({
       data: {
-        content: Buffer.from(config).toString('base64')
+        content: Buffer.from(settings).toString('base64')
       }
     })
   })
