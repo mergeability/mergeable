@@ -30,7 +30,7 @@ module.exports = {
         },
         pull_request: {
           user: {
-            login: 'creator'
+            login: options.author ? options.author : 'creator'
           },
           title: (options.title) ? options.title : 'title',
           body: options.body,

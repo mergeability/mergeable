@@ -71,6 +71,7 @@ Filters are checks that mergeable will process in order to determine if validato
 Filter List
 
 .. toctree::
+    filters/author.rst
     filters/repository.rst
 
 Validators
