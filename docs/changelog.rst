@@ -2,6 +2,7 @@ CHANGELOG
 =====================================
 
 | February 10, 2021 : feat: Implement and/or filters support `#496 <https://github.com/mergeability/mergeable/pull/504>`_
+| February 10, 2021 : feat: New Author filter `#496 <https://github.com/mergeability/mergeable/pull/505>`_
 | January 28, 2021 : feat: global settings feature
 | January 28, 2021 : feat: Filters validators `#496 <https://github.com/mergeability/mergeable/pull/496>`_
 | January 21, 2021 : fix: request_review action failing when the reviewer is PR author `#486 <https://github.com/mergeability/mergeable/issues/486>`_
