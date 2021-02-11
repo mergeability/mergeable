@@ -171,9 +171,9 @@ describe('config file fetching', () => {
                 days: 20
                 message: PR test
         `
-    process.env.USE_CONFIG_CACHE = true
     let parsedConfig = yaml.safeLoad(configString)
     let context = createMockGhConfig(configString)
+    context.globalSettings.use_config_cache = true
     let configCache = Configuration.getCache()
     let repo = context.repo()
     // checking that the cache is empty before the call
@@ -203,11 +203,11 @@ describe('config file fetching', () => {
                 days: 20
                 message: PR test
         `
-    process.env.USE_CONFIG_CACHE = true
     // intialize context with empty config
     let emptyConfig = '{}'
     let parsedConfig = yaml.safeLoad(configString)
     let context = createMockGhConfig(emptyConfig)
+    context.globalSettings.use_config_cache = true
     let configCache = Configuration.getCache()
     let repo = context.repo()
     configCache.set(`${repo.owner}/${repo.repo}`, parsedConfig)
@@ -229,11 +229,11 @@ describe('config file fetching', () => {
                 days: 20
                 message: PR test
         `
-    process.env.USE_CONFIG_CACHE = true
     // intialize context with empty config
     let emptyConfig = '{}'
     let parsedConfig = yaml.safeLoad(configString)
     let context = createMockGhConfig(emptyConfig)
+    context.globalSettings.use_config_cache = true
     let configCache = Configuration.getCache()
     let repo = context.repo()
     configCache.set(`${repo.owner}/${repo.repo}`, parsedConfig)
@@ -258,11 +258,11 @@ describe('config file fetching', () => {
                 days: 20
                 message: PR test
         `
-    process.env.USE_CONFIG_CACHE = true
     // intialize context with empty config
     let emptyConfig = '{}'
     let parsedConfig = yaml.safeLoad(configString)
     let context = createMockGhConfig(emptyConfig)
+    context.globalSettings.use_config_cache = true
     let configCache = Configuration.getCache()
     let repo = context.repo()
     configCache.set(`${repo.owner}/${repo.repo}`, parsedConfig)
@@ -415,12 +415,12 @@ describe('config file fetching', () => {
                 days: 20
                 message: From PR Config
         `
-    process.env.USE_CONFIG_CACHE = true
     let parsedConfig = yaml.safeLoad(prConfigString)
     let files = {files: [
       { filename: '.github/mergeable.yml', status: 'modified' }
     ]}
     let context = createMockGhConfig(configString, prConfigString, files)
+    context.globalSettings.use_config_cache = true
     context.eventName = 'pull_request'
     let config = await Configuration.fetchConfigFile(context)
     expect(config).toEqual(parsedConfig)
@@ -619,6 +619,12 @@ describe('with version 1', () => {
       }
     }
 
+    context.globalSettings = {
+      use_config_from_pull_request: true,
+      use_config_cache: false,
+      use_org_as_default_config: false
+    }
+
     let config = await Configuration.instanceWithContext(context)
     expect(config.hasErrors()).toBe(true)
     expect(config.errors.has(Configuration.ERROR_CODES.NO_YML)).toBe(true)
@@ -691,11 +697,11 @@ describe('with version 1', () => {
 
     let config = null
 
-    process.env.USE_CONFIG_FROM_PULL_REQUEST = 'false'
+    context.globalSettings.use_config_from_pull_request = false
     config = await Configuration.fetchConfigFile(context)
     expect(config).toEqual(yaml.safeLoad(configString))
 
-    process.env.USE_CONFIG_FROM_PULL_REQUEST = 'true'
+    context.globalSettings.use_config_from_pull_request = true
     config = await Configuration.fetchConfigFile(context)
     expect(config).toEqual(yaml.safeLoad(prConfigString))
   })
@@ -726,13 +732,15 @@ describe('with version 1', () => {
 
     let config = null
 
-    process.env.USE_ORG_AS_DEFAULT_CONFIG = 'true'
+    context.globalSettings.use_org_as_default_config = true
+    context.globalSettings.use_config_cache = true
     config = await Configuration.fetchConfigFile(context)
     expect(config.mergeable.length).toEqual(2)
     expect(config.mergeable[0].name).toBe('repository rules')
     expect(config.mergeable[1].name).toBe('organization rules')
 
-    process.env.USE_ORG_AS_DEFAULT_CONFIG = 'false'
+    context.globalSettings.use_org_as_default_config = false
+    context.globalSettings.use_config_cache = false
     config = await Configuration.fetchConfigFile(context)
     expect(config.mergeable.length).toEqual(1)
     expect(config.mergeable[0].name).toBe('repository rules')
@@ -755,6 +763,12 @@ const createMockGhConfig = (config, prConfig, options) => {
     }
     return yaml.safeLoad(config)
   })
+
+  context.globalSettings = {
+    use_config_from_pull_request: true,
+    use_config_cache: false,
+    use_org_as_default_config: false
+  }
   return context
 }
 
