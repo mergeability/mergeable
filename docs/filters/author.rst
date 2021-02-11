@@ -7,9 +7,6 @@ Author
         must_include:
             regex: 'user-1'
             message: 'Custom message...'
-        must_exclude:
-            regex: 'user-2'
-            message: 'Custom message...'
         # all of the message sub-option is optional
 
 you can use ``and`` and ``or`` options to create more complex filters
@@ -18,18 +15,15 @@ you can use ``and`` and ``or`` options to create more complex filters
 
     - do: author
       and:
+        - must_exclude:
+            regex: 'bot-user-1'
+            message: 'Custom message...'
+      or:
         - must_include:
             regex: 'user-1'
             message: 'Custom message...'
         - must_include:
             regex: 'user-2'
-            message: 'Custom message...'
-      or:
-        - must_include:
-            regex: 'user-3'
-            message: 'Custom message...'
-        - must_include:
-            regex: 'user-4'
             message: 'Custom message...'
 
 you can also nest ``and`` and ``or`` options
@@ -45,8 +39,8 @@ you can also nest ``and`` and ``or`` options
             - must_include:
                 regex: 'user-2'
                 message: 'Custom message...'
-        - must_include:
-            regex: 'user-3'
+        - must_exclude:
+            regex: 'bot-user-1'
             message: 'Custom message...'
 
 Supported Events:
