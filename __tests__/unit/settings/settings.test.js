@@ -16,6 +16,13 @@ describe('Loading bad settings', () => {
   })
 
   test('No YML', async () => {
+    const parsedSettings = yaml.safeLoad(`
+        config_path: ""
+        use_config_cache: false
+        use_org_as_default_config: false
+        use_config_from_pull_request: true
+    `)
+
     const context = createMockGhSettings()
     context.octokit.repos.getContent = jest.fn().mockReturnValue(
       Promise.reject(
@@ -27,15 +34,17 @@ describe('Loading bad settings', () => {
     )
 
     const settings = await Settings.instanceWithContext(context)
-
-    expect(settings.errors.has(Settings.ERROR_CODES.NO_YML)).toBe(true)
+    expect(settings).toEqual(parsedSettings)
   })
 
   test('wrong version', () => {
     const yamlContent = yaml.safeLoad(`
       version: not a number
       mergeable:
-        use_config_from_pull_request:
+        config_path: ""
+        use_config_cache: false
+        use_org_as_default_config: false
+        use_config_from_pull_request: true
     `)
     const settings = new Settings(yamlContent)
     expect(settings.errors.size).toBe(1)
@@ -70,7 +79,10 @@ describe('settings file fetching', () => {
   test('fetch the settings from first repo', async () => {
     const settingsString = `
           mergeable:
-            use_config_from_pull_request: false
+            config_path: ""
+            use_config_cache: false
+            use_org_as_default_config: false
+            use_config_from_pull_request: true
         `
 
     const parsedSettings = yaml.safeLoad(settingsString)
@@ -82,7 +94,10 @@ describe('settings file fetching', () => {
   test('check settings cache', async () => {
     const settingsString = `
           mergeable:
-            use_config_from_pull_request: false
+            config_path: ""
+            use_config_cache: false
+            use_org_as_default_config: false
+            use_config_from_pull_request: true
         `
 
     const parsedSettings = yaml.safeLoad(settingsString)
@@ -109,7 +124,10 @@ describe('settings file fetching', () => {
   test('check settings cache fetch', async () => {
     const settingsString = `
           mergeable:
-            use_config_from_pull_request: false
+            config_path: ""
+            use_config_cache: false
+            use_org_as_default_config: false
+            use_config_from_pull_request: true
         `
     // intialize context with empty config
     const parsedSettings = yaml.safeLoad(settingsString)
@@ -127,8 +145,12 @@ describe('settings file fetching', () => {
 
   test('check settings cache invalidated on push events', async () => {
     const settingsString = `
+          version: 1
           mergeable:
-            use_config_from_pull_request: false
+            config_path: ""
+            use_config_cache: false
+            use_org_as_default_config: false
+            use_config_from_pull_request: true
         `
 
     // intialize context with empty config
@@ -144,7 +166,7 @@ describe('settings file fetching', () => {
     expect(context.octokit.repos.getContent.mock.calls.length).toEqual(0)
     const settings = await Settings.fetchSettingsFile(context)
     expect(context.octokit.repos.getContent.mock.calls.length).toEqual(1)
-    expect(settings).toEqual({})
+    expect(settings).toEqual(parsedSettings)
     expect(settingsCache.keys().length).toEqual(1)
   })
 })
