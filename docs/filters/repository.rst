@@ -14,7 +14,7 @@ Repository
             message: 'Custom message...'
       # all of the message sub-option is optional
 
-you can use ``and`` and ``or`` options to create more complex validations
+you can use ``and`` and ``or`` options to create more complex filters
 
 ::
 
