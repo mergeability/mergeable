@@ -130,8 +130,8 @@ These operators can help create more complex logic of validations
 Operator List
 
 .. toctree::
-    validators/and.rst
-    validators/or.rst
+    operators/and.rst
+    operators/or.rst
 
 
 Actions
