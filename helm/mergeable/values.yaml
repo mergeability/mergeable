@@ -100,3 +100,17 @@ prometheus:
     #       summary: Mergeable error rate greater than 1% in the last 10m
     #       description: Mergeable has an HTTP error response rate of {{ $value }}% in the last 10m
 
+## Redis for cache
+redis:
+  usePassword: false
+  cluster:
+    enabled: false
+  master:
+    podLabels: {}
+    service:
+      labels: {}
+    resources: {}
+    persistence:
+      enabled: true
+      subPath: "mergeable"
+      size: 512Mi
