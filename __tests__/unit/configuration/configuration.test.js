@@ -176,15 +176,17 @@ describe('config file fetching', () => {
     context.globalSettings.use_config_cache = true
     let configCache = Configuration.getCache()
     let repo = context.repo()
+    let keys = await configCache.keys()
     // checking that the cache is empty before the call
-    expect(configCache.keys().length).toEqual(0)
+    expect(keys.length).toEqual(0)
     expect(context.probotContext.config.mock.calls.length).toEqual(0)
     const config = await Configuration.fetchConfigFile(context)
     expect(context.probotContext.config.mock.calls.length).toEqual(1)
     expect(config).toEqual(parsedConfig)
+    keys = await configCache.keys()
     // checking that the cache is warmed up
-    expect(configCache.keys().length).toEqual(1)
-    expect(configCache.get(`${repo.owner}/${repo.repo}`)).toEqual(parsedConfig)
+    expect(keys.length).toEqual(1)
+    expect(await configCache.get(`${repo.owner}/${repo.repo}`)).toEqual(parsedConfig)
     // checking that we are only fetching it once, even though we call it twice
     const cachedConfig = await Configuration.fetchConfigFile(context)
     expect(cachedConfig).toEqual(parsedConfig)
@@ -243,7 +245,8 @@ describe('config file fetching', () => {
     const config = await Configuration.fetchConfigFile(context)
     expect(context.probotContext.config.mock.calls.length).toEqual(1)
     expect(config).toEqual({})
-    expect(configCache.keys().length).toEqual(1)
+    let keys = await configCache.keys()
+    expect(keys.length).toEqual(1)
   })
 
   test('check config cache for org invalidated on push events', async () => {
@@ -268,19 +271,22 @@ describe('config file fetching', () => {
     configCache.set(`${repo.owner}/${repo.repo}`, parsedConfig)
     configCache.set(`${repo.owner}/another-repo`, parsedConfig)
     configCache.set(`${repo.owner}/yet-another-repo`, parsedConfig)
-    expect(configCache.keys().length).toEqual(3)
+    let keys = await configCache.keys()
+    expect(keys.length).toEqual(3)
     context.eventName = 'push'
     context.payload.head_commit = {added: ['.github/mergeable.yml']}
     expect(context.probotContext.config.mock.calls.length).toEqual(0)
     let config = await Configuration.fetchConfigFile(context)
     expect(context.probotContext.config.mock.calls.length).toEqual(1)
     expect(config).toEqual({})
-    expect(configCache.keys().length).toEqual(3)
+    keys = await configCache.keys()
+    expect(keys.length).toEqual(3)
     context.repo = jest.fn().mockReturnValue({owner: repo.owner, repo: '.github'})
     config = await Configuration.fetchConfigFile(context)
     expect(context.probotContext.config.mock.calls.length).toEqual(2)
     expect(config).toEqual({})
-    expect(configCache.keys().length).toEqual(1)
+    keys = await configCache.keys()
+    expect(keys.length).toEqual(1)
   })
 
   test('fetch from main branch if the event is PR relevant and file is not modified or added', async () => {
