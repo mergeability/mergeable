@@ -71,6 +71,7 @@ Filters are checks that mergeable will process in order to determine if validato
 Filter List
 
 .. toctree::
+    filters/author.rst
     filters/repository.rst
 
 Validators
@@ -129,8 +130,8 @@ These operators can help create more complex logic of validations
 Operator List
 
 .. toctree::
-    validators/and.rst
-    validators/or.rst
+    operators/and.rst
+    operators/or.rst
 
 
 Actions
