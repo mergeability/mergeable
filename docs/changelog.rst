@@ -2,6 +2,7 @@ CHANGELOG
 =====================================
 
 | February 12, 2021 : feat: Implemented redis as a dependency to the helm-chart
+| February 10, 2021 : feat: global cache manager `#502 <https://github.com/mergeability/mergeable/pull/502>`_
 | February 10, 2021 : feat: Implement and/or filters support `#496 <https://github.com/mergeability/mergeable/pull/504>`_
 | February 10, 2021 : feat: New Author filter `#496 <https://github.com/mergeability/mergeable/pull/505>`_
 | January 28, 2021 : feat: global settings feature
