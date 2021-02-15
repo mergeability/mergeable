@@ -107,14 +107,16 @@ describe('settings file fetching', () => {
     const settingsCache = Settings.getCache()
     const repo = context.repo()
     // checking that the cache is empty before the call
-    expect(settingsCache.keys().length).toEqual(0)
+    let keys = await settingsCache.keys()
+    expect(keys.length).toEqual(0)
     expect(context.octokit.repos.getContent.mock.calls.length).toEqual(0)
     const settings = await Settings.fetchSettingsFile(context)
     expect(context.octokit.repos.getContent.mock.calls.length).toEqual(1)
     expect(settings).toEqual(parsedSettings)
     // checking that the cache is warmed up
-    expect(settingsCache.keys().length).toEqual(1)
-    expect(settingsCache.get(`${repo.owner}/${repo.repo}/settings`)).toEqual(parsedSettings)
+    keys = await settingsCache.keys()
+    expect(keys.length).toEqual(1)
+    expect(await settingsCache.get(`${repo.owner}/${repo.repo}/settings`)).toEqual(parsedSettings)
     // checking that we are only fetching it once, even though we call it twice
     const cachedSettings = await Settings.fetchSettingsFile(context)
     expect(cachedSettings).toEqual(parsedSettings)
@@ -167,7 +169,8 @@ describe('settings file fetching', () => {
     const settings = await Settings.fetchSettingsFile(context)
     expect(context.octokit.repos.getContent.mock.calls.length).toEqual(1)
     expect(settings).toEqual(parsedSettings)
-    expect(settingsCache.keys().length).toEqual(1)
+    let keys = await settingsCache.keys()
+    expect(keys.length).toEqual(1)
   })
 })
 
