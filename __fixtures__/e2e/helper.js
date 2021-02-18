@@ -6,6 +6,7 @@ const checkCreateResponse = require('./check.create.response.json')
 const prListFilesResponse = require('./pr.listFile.response.json')
 const issueCommentResponse = require('./issue.listComment.response.json')
 const defaultConfig = fs.readFileSync('./__fixtures__/e2e/config.v1.default.yml', 'utf8')
+const defaultSettings = fs.readFileSync('./__fixtures__/e2e/settings.v1.default.yml', 'utf8')
 
 class MockHelper {
   constructor (settings) {
@@ -44,6 +45,14 @@ class MockHelper {
     return nock('https://api.github.com')
       .get(path)
       .reply(200, configString)
+  }
+
+  mockFetchSettingsCall (options = {}) {
+    const settingsString = options.settings ? options.settings : defaultSettings
+    const path = `/repos/${this.repo.owner.login}/.github/contents/.github%2Fmergeable.settings.yml`
+    return nock('https://api.github.com')
+      .get(path)
+      .reply(200, settingsString)
   }
 
   mockPRListFileCall (options = {}) {

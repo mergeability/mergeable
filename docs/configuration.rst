@@ -19,6 +19,8 @@ Mergeable configuration consists of an array of independent recipes where each r
 
 when:
     specify webhook event(s) in which to process the validation
+filter:
+    specify a series of optional filters to be checked and only runs validators if they are passing
 validate:
     specify a series of validator to be checked
 pass:
@@ -35,6 +37,11 @@ Here is a full example of how a recipe looks
     version: 2
     mergeable:
       - when: {{event}}, {{event}} # can be one or more
+        filter:
+          # list of filters (optional). Specify one or more.
+          - do: {{filter}}
+            {{option}}: # name of an option supported by the validator.
+              {{sub-option}}: {{value}} # an option will have one or more sub-options.
         validate:
           # list of validators. Specify one or more.
           - do: {{validator}}
@@ -49,6 +56,23 @@ Here is a full example of how a recipe looks
 
 .. note::
     There are some default actions that'll be automatically applied based on the events specified
+
+Filters
+------------
+
+Filters are checks that mergeable will process in order to determine if validator will be executed.
+
+.. note::
+    Each filter have certain events that it can support, so keep an eye out for them.
+
+.. hint::
+    Don't see an filter that should be on here? Let us know by creating an `issue <https://github.com/mergeability/mergeable/issues/new>`_ on github
+
+Filter List
+
+.. toctree::
+    filters/author.rst
+    filters/repository.rst
 
 Validators
 ------------
@@ -106,8 +130,8 @@ These operators can help create more complex logic of validations
 Operator List
 
 .. toctree::
-    validators/and.rst
-    validators/or.rst
+    operators/and.rst
+    operators/or.rst
 
 
 Actions

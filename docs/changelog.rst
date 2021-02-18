@@ -1,7 +1,12 @@
 CHANGELOG
 =====================================
 
-| February 6, 2021 : fix: Scheduler support `#499 <https://github.com/mergeability/mergeable/issues/499>`_
+| February 18, 2021 : fix: Scheduler support `#499 <https://github.com/mergeability/mergeable/issues/499>`_
+| February 12, 2021 : feat: Implemented redis as a dependency to the helm-chart
+| February 10, 2021 : feat: global cache manager `#502 <https://github.com/mergeability/mergeable/pull/502>`_
+| February 10, 2021 : feat: Implement and/or filters support `#496 <https://github.com/mergeability/mergeable/pull/504>`_
+| February 10, 2021 : feat: New Author filter `#496 <https://github.com/mergeability/mergeable/pull/505>`_
+| January 28, 2021 : feat: global settings feature
 | January 28, 2021 : feat: Filters validators `#496 <https://github.com/mergeability/mergeable/pull/496>`_
 | January 21, 2021 : fix: request_review action failing when the reviewer is PR author `#486 <https://github.com/mergeability/mergeable/issues/486>`_
 | January 20, 2021 : fix: deep validation bug that is causing HttpError `#488 <https://github.com/mergeability/mergeable/issues/488>`_

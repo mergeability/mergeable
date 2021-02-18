@@ -68,6 +68,13 @@ mergeable:
       },
       conclusion: 'failure'}
     }
+    let settings = `
+version: 1
+mergeable:
+  use_config_from_pull_request: true
+  use_config_cache: false
+  use_org_as_default_config: false
+`
     let Helper = new MockHelper({payload: prPayload})
     Helper.mockListReposAccessibleToInstallation()
     Helper.mockListInstallation()
@@ -76,6 +83,7 @@ mergeable:
     const listFilesCall = Helper.mockPRListFileCall()
     const listCommentsCall = Helper.mockIssueListCommentsCall()
     const fetchConfigCall = Helper.mockFetchConfigCall({config})
+    const fetchSettingsCall = Helper.mockFetchSettingsCall({ settings })
 
     // Receive a webhook event
     await probot.receive({ name: 'pull_request', payload: prPayload })
@@ -86,6 +94,7 @@ mergeable:
     expect(listFilesCall.isDone()).toBe(true)
     expect(listCommentsCall.isDone()).toBe(true)
     expect(fetchConfigCall.isDone()).toBe(true)
+    expect(fetchSettingsCall.isDone()).toBe(true)
 
     // check that api calls were made with expect request body
     expect(createCheckOptions.requestBody).toEqual(expect.objectContaining(createCheckOptions.expectedBody))
