@@ -1,3 +1,10 @@
+/**
+ * This code is a fork from the 'probot-scheduler' (https://github.com/probot/scheduler)
+ * Reasons for this modified code:
+ * - The above repo is no longer maintained
+ * - This code is modified to be compatible with probot@11.0.1
+ */
+
 const Bottleneck = require('bottleneck')
 
 const limiter = new Bottleneck({ maxConcurrent: 1, minTime: 0 })
