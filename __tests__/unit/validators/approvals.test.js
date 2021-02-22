@@ -748,7 +748,7 @@ describe('required.owners ', () => {
     expect(validation.validations.length).toBe(1)
     expect(validation.status).toBe('pass')
     expect(validation.validations[0].status).toBe('info')
-    expect(validation.validations[0].description).toBe('Only the following teams and users approval will counted')
+    expect(validation.validations[0].description).toBe('Only approvals from following sources are counted')
   })
 })
 
