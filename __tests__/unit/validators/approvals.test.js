@@ -637,8 +637,8 @@ test('returns proper error when team provided is not found', async () => {
   }
 
   let validation = await approval.processValidate(createMockContext(5, reviewList, null, null, false), settings, [])
-  expect(validation.validations.length).toBe(1)
-  expect(validation.validations[0].description).toBe('approval: userA required')
+  expect(validation.validations.length).toBe(2)
+  expect(validation.validations[1].description).toBe('approval: userA required')
 })
 
 describe('required.owners ', () => {
@@ -679,9 +679,9 @@ describe('required.owners ', () => {
     Teams.extractTeamMembers = jest.fn().mockReturnValue(['userB'])
 
     let validation = await approval.processValidate(createMockContext(5, reviewList, null, null, false), settings)
-    expect(validation.validations.length).toBe(1)
+    expect(validation.validations.length).toBe(2)
     expect(validation.status).toBe('fail')
-    expect(validation.validations[0].description).toBe('approval: userA required')
+    expect(validation.validations[1].description).toBe('approval: userA required')
   })
 
   test('limit.owners option works properly', async () => {
@@ -717,9 +717,38 @@ describe('required.owners ', () => {
     Owners.process = jest.fn().mockReturnValue(['userB'])
     let validation = await approval.processValidate(createMockContext(5, reviewList, null, null, false), settings)
 
-    expect(validation.validations.length).toBe(1)
+    expect(validation.validations.length).toBe(2)
     expect(validation.status).toBe('fail')
-    expect(validation.validations[0].description).toBe('approval: userA required')
+    expect(validation.validations[1].description).toBe('approval: userA required')
+  })
+
+  test('limit option will create an "info" validation', async () => {
+    const approval = new Approval()
+
+    const reviewList = [
+      {
+        user: {
+          login: 'userA'
+        },
+        state: 'APPROVED',
+        submitted_at: Date.now()
+      }
+    ]
+
+    const settings = {
+      do: 'approval',
+      limit: {
+        owners: true
+      }
+    }
+
+    Owners.process = jest.fn().mockReturnValue(['userB'])
+    let validation = await approval.processValidate(createMockContext(5, reviewList, null, null, false), settings)
+
+    expect(validation.validations.length).toBe(1)
+    expect(validation.status).toBe('pass')
+    expect(validation.validations[0].status).toBe('info')
+    expect(validation.validations[0].description).toBe('Only the following teams and users approval will counted')
   })
 })
 
