@@ -15,6 +15,9 @@ spec:
   selector:
     matchLabels:
       {{- include "mergeable.selectorLabels" . | nindent 6 }}
+      {{- with .Values.labels }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
   template:
     metadata:
     {{- with .Values.podAnnotations }}
@@ -23,6 +26,9 @@ spec:
     {{- end }}
       labels:
         {{- include "mergeable.selectorLabels" . | nindent 8 }}
+        {{- with .Values.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
