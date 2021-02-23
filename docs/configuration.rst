@@ -102,6 +102,7 @@ Validator List
     validators/project.rst
     validators/size.rst
     validators/stale.rst
+    validators/time.rst
     validators/title.rst
 
 Options
