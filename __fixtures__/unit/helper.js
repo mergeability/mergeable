@@ -202,7 +202,8 @@ module.exports = {
       },
       probotContext: {
         config: jest.fn().mockResolvedValue(options.configJson)
-      }
+      },
+      globalSettings: {}
     }
   },
 
