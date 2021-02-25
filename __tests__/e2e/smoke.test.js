@@ -76,7 +76,8 @@ mergeable:
   use_org_as_default_config: false
 `
     let Helper = new MockHelper({payload: prPayload})
-
+    Helper.mockListReposAccessibleToInstallation()
+    Helper.mockListInstallation()
     const updateCheckCall = Helper.mockCheckUpdateCall(updateCheckOptions)
     const createCheckCall = Helper.mockCheckCreateCall(createCheckOptions)
     const listFilesCall = Helper.mockPRListFileCall()
