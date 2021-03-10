@@ -5,6 +5,11 @@ Repository
 
       - do: repository
         visibility: 'public' # Can be public or private
+        name:
+          must_include:
+            regex: 'my-repo-name'
+          must_exclude:
+            regex: 'other-repo-name'
         topics:
           must_include:
             regex: 'my-topic'
