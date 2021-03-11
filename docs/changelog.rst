@@ -1,6 +1,12 @@
 CHANGELOG
 =====================================
 
+| February 25, 2021 : feat: add feature to limit approval to a list of users `#509 <https://github.com/mergeability/mergeable/issues/509>`_
+| February 25, 2021 : fix: minor bugs `#508 <https://github.com/mergeability/mergeable/pull/508>`_
+| February 25, 2021 : fix: Correct use of cache env
+| February 22, 2021 : feat: add a info panel for 'limit' option in `approval` validator `#509 <https://github.com/mergeability/mergeable/issues/509#issuecomment-783346365>`_
+| February 21, 2021 : feat: `name` sub-option for `repository` filter
+| February 18, 2021 : fix: Scheduler support `#499 <https://github.com/mergeability/mergeable/issues/499>`_
 | February 12, 2021 : feat: Implemented redis as a dependency to the helm-chart
 | February 10, 2021 : feat: global cache manager `#502 <https://github.com/mergeability/mergeable/pull/502>`_
 | February 10, 2021 : feat: Implement and/or filters support `#496 <https://github.com/mergeability/mergeable/pull/504>`_
