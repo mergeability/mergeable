@@ -153,7 +153,7 @@ Actions that mergeable is currently able to perform.
 
 .. _config-reuse-page:
 
-Reusable Config
+Reusable Configuration
 --------------------------
 
 YML has a feature called `Anchor<https://blog.daemonl.com/2016/02/yaml.html>`_ that allows you to create reusable parts in the config
