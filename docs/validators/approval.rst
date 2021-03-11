@@ -23,6 +23,9 @@ Approvals
 
 
 .. note::
+    in ``limit`` options, if more than one sub option is present, the union of the results will be used.
+
+.. note::
     If you receive an error for `Resource not accessible by integration' for Owners file, it means you haven't given mergeable read file permission
 
 .. note::
