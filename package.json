@@ -11,6 +11,7 @@
     "test": "NODE_ENV=test jest && standard",
     "test:unit": "LOG_LEVEL=warn NODE_ENV=test jest __tests__/unit/* && standard",
     "test:e2e": "LOG_LEVEL=warn NODE_ENV=test jest __tests__/e2e/* && standard",
+    "test:scheduler": "LOG_LEVEL=warn NODE_ENV=test jest scheduler/test.js && standard",
     "test-watch": "NODE_ENV=test jest --watch",
     "test-coverage": "NODE_ENV=test standard && jest --collectCoverage && codecov",
     "lint": "standard --fix"
@@ -27,8 +28,7 @@
     "moment-timezone": "^0.5.31",
     "node-fetch": "^2.6.1",
     "p-iteration": "^1.1.8",
-    "probot": "11.0.1",
-    "probot-scheduler": "^2.0.0-beta.1"
+    "probot": "11.0.1"
   },
   "devDependencies": {
     "codecov": "^3.7.2",

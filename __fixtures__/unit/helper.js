@@ -17,6 +17,7 @@ module.exports = {
         sha: 'sha1',
         action: 'opened',
         repository: {
+          name: (options.repoName) ? options.repoName : 'repoName',
           full_name: 'name',
           owner: {
             login: 'owner'
@@ -205,7 +206,8 @@ module.exports = {
       },
       probotContext: {
         config: jest.fn().mockResolvedValue(options.configJson)
-      }
+      },
+      globalSettings: {}
     }
   },
 
