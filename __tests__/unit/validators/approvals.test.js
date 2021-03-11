@@ -684,6 +684,58 @@ describe('required.owners ', () => {
     expect(validation.validations[0].description).toBe('approval: userA required')
   })
 
+  test('limit.users option works properly', async () => {
+    const approval = new Approval()
+
+    const reviewList = [
+      {
+        user: {
+          login: 'userA'
+        },
+        state: 'APPROVED',
+        submitted_at: Date.now()
+      },
+      {
+        user: {
+          login: 'userB'
+        },
+        state: 'APPROVED',
+        submitted_at: Date.now() + 1000
+      }
+    ]
+
+    let settings = {
+      do: 'approval',
+      limit: {
+        users: ['userB']
+      },
+      min: {
+        count: 2
+      }
+    }
+
+    let validation = await approval.processValidate(createMockContext(5, reviewList, null, null, false), settings)
+
+    expect(validation.validations.length).toBe(1)
+    expect(validation.status).toBe('fail')
+    expect(validation.validations[0].description).toBe('approval count is less than "2"')
+
+    settings = {
+      do: 'approval',
+      limit: {
+        users: ['userB', 'userA']
+      },
+      min: {
+        count: 2
+      }
+    }
+
+    validation = await approval.processValidate(createMockContext(5, reviewList, null, null, false), settings)
+
+    expect(validation.validations.length).toBe(1)
+    expect(validation.status).toBe('pass')
+  })
+
   test('limit.owners option works properly', async () => {
     const approval = new Approval()
 
