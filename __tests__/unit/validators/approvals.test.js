@@ -716,9 +716,9 @@ describe('required.owners ', () => {
 
     let validation = await approval.processValidate(createMockContext(5, reviewList, null, null, false), settings)
 
-    expect(validation.validations.length).toBe(1)
+    expect(validation.validations.length).toBe(2)
     expect(validation.status).toBe('fail')
-    expect(validation.validations[0].description).toBe('approval count is less than "2"')
+    expect(validation.validations[1].description).toBe('approval count is less than "2"')
 
     settings = {
       do: 'approval',
@@ -732,7 +732,7 @@ describe('required.owners ', () => {
 
     validation = await approval.processValidate(createMockContext(5, reviewList, null, null, false), settings)
 
-    expect(validation.validations.length).toBe(1)
+    expect(validation.validations.length).toBe(2)
     expect(validation.status).toBe('pass')
   })
 
