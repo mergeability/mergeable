@@ -129,7 +129,71 @@ test('fail to must exclude topic', async () => {
   expect(filter.status).toBe('fail')
 })
 
-const mockContext = (repoPrivate, repoTopics) => {
-  const context = Helper.mockContext({ repoPrivate: repoPrivate, repoTopics: repoTopics })
+test('fail to must include name', async () => {
+  const repo = new Repository()
+
+  const settings = {
+    do: 'repository',
+    name: {
+      must_include: {
+        regex: 'test-repo-2'
+      }
+    }
+  }
+
+  const filter = await repo.processFilter(mockContext(true, ['mytopic'], 'test-repo'), settings)
+  expect(filter.status).toBe('fail')
+})
+
+test('must_include name passes', async () => {
+  const repo = new Repository()
+
+  const settings = {
+    do: 'repository',
+    name: {
+      must_include: {
+        regex: 'test-repo-2'
+      }
+    }
+  }
+
+  const filter = await repo.processFilter(mockContext(true, ['mytopic'], 'test-repo-2'), settings)
+  expect(filter.status).toBe('pass')
+})
+
+test('fail to must exclude name', async () => {
+  const repo = new Repository()
+
+  const settings = {
+    do: 'repository',
+    name: {
+      must_exclude: {
+        regex: 'test-repo'
+      }
+    }
+  }
+
+  const filter = await repo.processFilter(mockContext(true, ['mytopic'], 'test-repo'), settings)
+  expect(filter.status).toBe('fail')
+})
+
+test('must_exclude name passes', async () => {
+  const repo = new Repository()
+
+  const settings = {
+    do: 'repository',
+    name: {
+      must_exclude: {
+        regex: 'test-repo'
+      }
+    }
+  }
+
+  const filter = await repo.processFilter(mockContext(true, ['mytopic'], 'not-desired-repo-2'), settings)
+  expect(filter.status).toBe('pass')
+})
+
+const mockContext = (repoPrivate, repoTopics, repoName) => {
+  const context = Helper.mockContext({ repoPrivate: repoPrivate, repoTopics: repoTopics, repoName: repoName })
   return context
 }

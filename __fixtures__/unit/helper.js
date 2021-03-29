@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const yaml = require('js-yaml')
+const moment = require('moment-timezone')
 
 const throwNotFound = () => {
   let error = new Error('404 error')
@@ -16,6 +17,7 @@ module.exports = {
         sha: 'sha1',
         action: 'opened',
         repository: {
+          name: (options.repoName) ? options.repoName : 'repoName',
           full_name: 'name',
           owner: {
             login: 'owner'
@@ -35,6 +37,8 @@ module.exports = {
           title: (options.title) ? options.title : 'title',
           body: options.body,
           number: (options.number) ? options.number : 1,
+          created_at: options.createdAt ? moment(options.createdAt) : moment(),
+          updated_at: options.updatedAt ? moment(options.updatedAt) : moment(),
           milestone: (options.milestone) ? options.milestone : null,
           requested_reviewers: options.requestedReviewers ? options.requestedReviewers : [],
           base: {
@@ -202,7 +206,8 @@ module.exports = {
       },
       probotContext: {
         config: jest.fn().mockResolvedValue(options.configJson)
-      }
+      },
+      globalSettings: {}
     }
   },
 
