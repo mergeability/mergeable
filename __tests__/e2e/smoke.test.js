@@ -2,6 +2,7 @@ const nock = require('nock')
 // Requiring our app implementation
 const mergeable = require('../..')
 const { Probot, ProbotOctokit } = require('probot')
+const express = require('express')
 
 const MockHelper = require('../../__fixtures__/e2e/helper')
 
@@ -21,7 +22,7 @@ describe('smoke tests', () => {
         throttle: { enabled: false }
       })
     })
-    mergeable(probot)
+    mergeable(probot, { getRouter: () => { return express() } })
   })
 
   test('that mergeable run properly for an PR', async () => {
