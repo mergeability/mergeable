@@ -166,12 +166,25 @@ test('teams owners are processed correctly', async () => {
   let codeowner = `*.js @bob/test-team`
   let commitDiffs = createCommitDiffs(['/docs/test.js'])
 
-  teams.extractTeamMemberships = jest.fn().mockReturnValue(['teamMember1', 'member2'])
+  const approvedReviewers = ['teamMember1', 'member2']
+  teams.extractTeamMemberships = jest.fn().mockReturnValue(approvedReviewers)
 
-  let res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs))
+  let res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs), approvedReviewers)
   expect(res.length).toBe(2)
   expect(res[0]).toBe('teamMember1')
   expect(res[1]).toBe('member2')
+})
+
+test('non-team member cannot approve the PR', async () => {
+  let codeowner = `*.js @bob/test-team`
+  let commitDiffs = createCommitDiffs(['/docs/test.js'])
+
+  const reviewer = ['member3']
+  const approvedReviewers = ['teamMember1', 'member2']
+  teams.extractTeamMemberships = jest.fn().mockReturnValue(approvedReviewers)
+
+  let res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs), approvedReviewers)
+  expect(reviewer).not.toEqual(expect.arrayContaining(res))
 })
 
 test('teams owners and individuals are processed correctly', async () => {
