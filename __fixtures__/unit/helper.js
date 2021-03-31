@@ -217,6 +217,9 @@ module.exports = {
           get: () => {
             return { data: (options.deepValidation) ? options.deepValidation : {} }
           }
+        },
+        search: {
+          issuesAndPullRequests: jest.fn().mockReturnValue({data: { items: options.issuesAndPullRequests || [] }})
         }
       },
       probotContext: {
