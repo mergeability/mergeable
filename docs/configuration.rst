@@ -88,6 +88,7 @@ Validators are checks that mergeable will process in order to determine whether 
 Validator List
 
 .. toctree::
+    validators/age.rst
     validators/approval.rst
     validators/assignee.rst
     validators/baseRef.rst
@@ -150,6 +151,39 @@ Actions that mergeable is currently able to perform.
     actions/merge.rst
     actions/labels.rst
     actions/request_review.rst
+
+.. _config-reuse-page:
+
+Reusable Configuration
+--------------------------
+
+YML has a feature called `Anchor<https://blog.daemonl.com/2016/02/yaml.html>`_ that allows you to create reusable parts in the config
+
+.. code-block:: yml
+    on_fail_comment: &default_fail_comment
+      - do: comment
+        payload:
+          body: >
+            This issue fails to meet the guidelines, please check the contribution guideline and make sure all the necessary items are in place.
+
+    version: 2
+    mergeable:
+      - when: pull_request.*
+        validate:
+          - do: approvals
+            min:
+              count: 1
+          - do: labels
+        fail:
+          - <<: *default_fail_comment
+          - do: assign
+            assignees: ['@author']
+      - when: issues.*
+        validate:
+          - do: description
+            no_empty:
+              enabled: true
+        fail: *default_fail_comment
 
 .. _organisation-wide-defaults:
 
