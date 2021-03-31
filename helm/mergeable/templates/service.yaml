@@ -4,6 +4,7 @@ metadata:
   name: {{ include "mergeable.fullname" . }}
   labels:
     {{- include "mergeable.labels" . | nindent 4 }}
+    app: {{ include "mergeable.fullname" . }}
 spec:
   type: {{ .Values.service.type }}
   ports:

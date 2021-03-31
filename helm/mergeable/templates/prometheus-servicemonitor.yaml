@@ -1,0 +1,23 @@
+{{- if and .Values.prometheus.enabled }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    {{- include "mergeable.labels" $ | nindent 4 }}
+    prometheus: kube-prometheus
+  name: {{ include "mergeable.fullname" . }}
+spec:
+  endpoints:
+  - interval: {{ .Values.prometheus.service.metricInterval | default "30s" }}
+    path: {{ .Values.prometheus.service.metricPath | default "/metrics" }}
+    port: {{ .Values.prometheus.service.metricPortName | default "http" }}
+  jobLabel: {{ include "mergeable.fullname" . }}
+  namespaceSelector:
+    matchNames:
+    - "{{ $.Release.Namespace }}"
+  selector:
+    matchLabels:
+      app: {{ include "mergeable.fullname" . }}
+  sampleLimit: {{ .Values.prometheus.service.sampleLimit | default 5000}}
+{{- end }}
