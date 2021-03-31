@@ -385,3 +385,78 @@ describe('getMembershipForUserInOrg', () => {
     }
   })
 })
+
+describe('projectListColumns', () => {
+  test('return correct data if no error', async () => {
+    let projectColumns = [
+      {id: '1'},
+      {id: '2'}
+    ]
+
+    let res = await GithubAPI.projectListColumns(Helper.mockContext({ projectColumns }))
+    expect(res).toEqual(['1', '2'])
+  })
+
+  test('that error are re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.projects.listColumns = jest.fn().mockRejectedValue({status: 402})
+
+    try {
+      await GithubAPI.projectListColumns(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})
+
+describe('projectListForRepo', () => {
+  test('return correct data if no error', async () => {
+    const repoProjects = [
+      {name: 'Project One', id: 1},
+      {name: 'Project Two', id: 2}
+    ]
+
+    let res = await GithubAPI.projectListForRepo(Helper.mockContext({ repoProjects }))
+    expect(res).toEqual(repoProjects)
+  })
+
+  test('that error are re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.projects.listForRepo = jest.fn().mockRejectedValue({status: 402})
+
+    try {
+      await GithubAPI.projectListForRepo(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})
+
+describe('projectListCards', () => {
+  test('return correct data if no error', async () => {
+    const projectCards = [
+      {content_url: 'testRepo/issues/1'},
+      {content_url: 'testRepo/issues/2'}
+    ]
+
+    let res = await GithubAPI.projectListCards(Helper.mockContext({ projectCards }))
+    expect(res).toEqual({data: projectCards})
+  })
+
+  test('that error are re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.projects.listCards = jest.fn().mockRejectedValue({status: 402})
+
+    try {
+      await GithubAPI.projectListCards(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})
