@@ -285,3 +285,55 @@ describe('deleteComment', () => {
     }
   })
 })
+
+describe('updateIssues', () => {
+  test('return correct data if no error', async () => {
+    let res = await GithubAPI.updateIssues(Helper.mockContext())
+    expect(res).toEqual('update Issues call success')
+  })
+
+  test('that error are re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.issues.update = jest.fn().mockRejectedValue({status: 402})
+
+    try {
+      await GithubAPI.updateIssues(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})
+
+describe('getIssues', () => {
+  test('return correct data if no error', async () => {
+    let res = await GithubAPI.getIssues(Helper.mockContext({deepValidation: 'get Issue success'}))
+    expect(res.data).toEqual('get Issue success')
+  })
+
+  test('that 404 are simply returned null', async () => {
+    const context = Helper.mockContext()
+    context.octokit.issues.getIssue = jest.fn().mockRejectedValue({status: 404})
+
+    try {
+      await GithubAPI.getIssues(context)
+    } catch (e) {
+      // Fail test if it throws error
+      expect(true).toBe(false)
+    }
+  })
+
+  test('that error are re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.issues.get = jest.fn().mockRejectedValue({status: 402})
+
+    try {
+      await GithubAPI.getIssues(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})

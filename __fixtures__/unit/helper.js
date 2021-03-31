@@ -88,42 +88,32 @@ module.exports = {
               }
 
               if (path === '.github/CODEOWNERS') {
-                return options.codeowners
-                  ? resolve({
-                      data: {
-                        content: options.codeowners
-                      }
-                    })
-                  : throwNotFound()
+                return options.codeowners ? resolve({ data: {
+                  content: options.codeowners
+                }}) : throwNotFound()
               }
             })
           },
           compareCommits: () => {
             return new Promise(resolve => {
-              resolve({
-                data: {
-                  files: options.compareCommits
-                }
-              })
+              resolve({ data: {
+                files: options.compareCommits
+              }})
             })
           },
           getAllTopics: () => {
             return new Promise(resolve => {
-              resolve({
-                data: {
-                  names: (options.repoTopics) ? options.repoTopics : []
-                }
-              })
+              resolve({ data: {
+                names: (options.repoTopics) ? options.repoTopics : []
+              }})
             })
           }
         },
         checks: {
           create: () => {
-            return {
-              data: {
-                id: 1
-              }
-            }
+            return { data: {
+              id: 1
+            }}
           },
           update: () => {
             return {}
@@ -214,7 +204,7 @@ module.exports = {
           addLabels: jest.fn().mockReturnValue(options.addLabels || 'addLabels call success'),
           update: jest.fn().mockReturnValue(options.updateIssues || 'update Issues call success'),
           get: () => {
-            return { data: (options.deepValidation) ? options.deepValidation : {} }
+            return {data: (options.deepValidation) ? options.deepValidation : {}}
           }
         }
       },
@@ -240,8 +230,8 @@ module.exports = {
 
   mockConfigWithContext: (context, configString, options) => {
     context.octokit.repos.getContent = () => {
-      return Promise.resolve({
-        data: { content: Buffer.from(configString).toString('base64') }
+      return Promise.resolve({ data: {
+        content: Buffer.from(configString).toString('base64') }
       })
     }
     context.probotContext.config = () => {
