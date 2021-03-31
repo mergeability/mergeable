@@ -1,6 +1,7 @@
 CHANGELOG
 =====================================
 
+| March 31, 2021 : feat: add chart support to prometheus servicemonitor `#535 <https://github.com/mergeability/mergeable/pull/535>`_
 | March 30, 2021 : fix: codeowners team
 | March 25, 2021 : feat: Add rate limit related metrics/endpoint `#526 <https://github.com/mergeability/mergeable/pull/526>`_
 | February 25, 2021 : feat: add feature to limit approval to a list of users `#509 <https://github.com/mergeability/mergeable/issues/509>`_
