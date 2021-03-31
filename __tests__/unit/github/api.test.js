@@ -22,3 +22,44 @@ describe('listFiles', () => {
     }
   })
 })
+
+describe('createChecks', () => {
+  test('return correct data if no error', async () => {
+    const res = await GithubAPI.createChecks(Helper.mockContext())
+
+    expect(res.data.id).toEqual(1)
+  })
+
+  test('that error are re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.checks.create = jest.fn().mockRejectedValue({status: 402})
+
+    try {
+      await GithubAPI.createChecks(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})
+
+describe('updateChecks', () => {
+  test('return correct data if no error', async () => {
+    const res = await GithubAPI.updateChecks(Helper.mockContext())
+    expect(res).toEqual({})
+  })
+
+  test('that error are re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.checks.update = jest.fn().mockRejectedValue({status: 402})
+
+    try {
+      await GithubAPI.updateChecks(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})
