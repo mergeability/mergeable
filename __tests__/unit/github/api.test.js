@@ -211,3 +211,77 @@ describe('checkUserCanBeAssigned', () => {
     }
   })
 })
+
+describe('createComment', () => {
+  test('return correct data if no error', async () => {
+    let res = await GithubAPI.createComment(Helper.mockContext())
+    expect(res).toEqual('createComment call success')
+  })
+
+  test('that error are re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.issues.createComment = jest.fn().mockRejectedValue({status: 402})
+
+    try {
+      await GithubAPI.createComment(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})
+
+describe('listComments', () => {
+  test('return correct data if no error', async () => {
+    let res = await GithubAPI.listComments(Helper.mockContext({listComments: [{user: {login: 'mergeable[bot]'}}, {user: {login: 'userA'}}]}))
+    expect(res.data.length).toEqual(2)
+    expect(res.data[0].user.login).toEqual('mergeable[bot]')
+  })
+
+  test('that error are re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.issues.listComments = jest.fn().mockRejectedValue({status: 402})
+
+    try {
+      await GithubAPI.listComments(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})
+
+describe('deleteComment', () => {
+  test('return correct data if no error', async () => {
+    let res = await GithubAPI.deleteComment(Helper.mockContext())
+    expect(res).toEqual('deleteComment call success')
+  })
+
+  test('that error are NOT thrown for 404', async () => {
+    const context = Helper.mockContext()
+    context.octokit.issues.deleteComment = jest.fn().mockRejectedValue({status: 404})
+
+    try {
+      await GithubAPI.deleteComment(context)
+    } catch (e) {
+      console.log(e)
+      // Fail test if error was thrown
+      expect(true).toBe(false)
+    }
+  })
+
+  test('that error are re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.issues.deleteComment = jest.fn().mockRejectedValue({status: 402})
+
+    try {
+      await GithubAPI.deleteComment(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})
