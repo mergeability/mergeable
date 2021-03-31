@@ -21,6 +21,45 @@ describe('listFiles', () => {
       expect(e.status).toBe(402)
     }
   })
+
+  describe('getContent', () => {
+    test('return correct data if no error', async () => {
+      const content = 'This is the content'
+      const context = Helper.mockContext()
+      context.octokit.repos.getContent = jest.fn().mockReturnValue({
+        data: {
+          content: Buffer.from(content).toString('base64')
+        }})
+
+      let res = await GithubAPI.getContent(context)
+      expect(res).toEqual(content)
+    })
+
+    test('that 404 are simply returned null', async () => {
+      const context = Helper.mockContext()
+      context.octokit.repos.getContent = jest.fn().mockRejectedValue({status: 404})
+
+      try {
+        await GithubAPI.getContent(context)
+      } catch (e) {
+        // Fail test if it throws error
+        expect(true).toBe(false)
+      }
+    })
+
+    test('that error are re-thrown', async () => {
+      const context = Helper.mockContext()
+      context.octokit.repos.getContent = jest.fn().mockRejectedValue({status: 402})
+
+      try {
+        await GithubAPI.getContent(context)
+        // Fail test if above expression doesn't throw anything.
+        expect(true).toBe(false)
+      } catch (e) {
+        expect(e.status).toBe(402)
+      }
+    })
+  })
 })
 
 describe('createChecks', () => {
