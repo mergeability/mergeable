@@ -130,7 +130,8 @@ module.exports = {
           }
         },
         teams: {
-          listMembersInOrg: options.listMembers ? () => ({ data: options.listMembers }) : () => ({ data: [] })
+          listMembersInOrg: options.listMembers ? () => ({ data: options.listMembers }) : () => ({ data: [] }),
+          getMembershipForUserInOrg: options.membership ? () => ({ data: { state: options.membership } }) : () => ({ data: { state: false } })
         },
         pulls: {
           listFiles: {

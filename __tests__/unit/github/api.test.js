@@ -337,3 +337,51 @@ describe('getIssues', () => {
     }
   })
 })
+
+describe('listMembersInOrg', () => {
+  test('return correct data if no error', async () => {
+    let members = [
+      {login: 'member1'},
+      {login: 'member2'}
+    ]
+
+    let res = await GithubAPI.listMembersInOrg(Helper.mockContext({listMembers: members}))
+    expect(res).toEqual(['member1', 'member2'])
+  })
+
+  test('that error are re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.teams.listMembersInOrg = jest.fn().mockRejectedValue({status: 402})
+
+    try {
+      await GithubAPI.listMembersInOrg(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})
+
+describe('getMembershipForUserInOrg', () => {
+  test('return correct data if no error', async () => {
+    let res = await GithubAPI.getMembershipForUserInOrg(Helper.mockContext())
+    expect(res).toEqual(false)
+
+    res = await GithubAPI.getMembershipForUserInOrg(Helper.mockContext({ membership: 'active' }))
+    expect(res).toEqual(true)
+  })
+
+  test('that error are re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.teams.getMembershipForUserInOrg = jest.fn().mockRejectedValue({status: 402})
+
+    try {
+      await GithubAPI.getMembershipForUserInOrg(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})
