@@ -87,6 +87,11 @@ affinity: {}
 
 prometheus:
   enabled: false
+  service: {}
+    # metricInterval: 30s
+    # metricPath: /metrics
+    # metricPortName: http
+    # sampleLimit: 5000
   rules: {}
     # - name: mergeable
     #   rules:
