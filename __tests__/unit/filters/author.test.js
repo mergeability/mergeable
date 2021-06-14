@@ -9,7 +9,7 @@ test('should fail with unexpected author', async () => {
       regex: 'someone-else'
     }
   }
-  let filter = await author.processFilter(createMockContext('mergeable'), settings)
+  const filter = await author.processFilter(createMockContext('mergeable'), settings)
   expect(filter.status).toBe('fail')
 })
 
@@ -21,7 +21,7 @@ test('should pass with expected author', async () => {
       regex: 'mergeable'
     }
   }
-  let filter = await author.processFilter(createMockContext('mergeable'), settings)
+  const filter = await author.processFilter(createMockContext('mergeable'), settings)
   expect(filter.status).toBe('pass')
 })
 
@@ -33,7 +33,7 @@ test('should fail with excluded author', async () => {
       regex: 'mergeable'
     }
   }
-  let filter = await author.processFilter(createMockContext('mergeable'), settings)
+  const filter = await author.processFilter(createMockContext('mergeable'), settings)
   expect(filter.status).toBe('fail')
 })
 
@@ -45,10 +45,10 @@ test('should pass with excluded author', async () => {
       regex: 'someone-else'
     }
   }
-  let filter = await author.processFilter(createMockContext('mergeable'), settings)
+  const filter = await author.processFilter(createMockContext('mergeable'), settings)
   expect(filter.status).toBe('pass')
 })
 
 const createMockContext = (author) => {
-  return Helper.mockContext({author})
+  return Helper.mockContext({ author })
 }

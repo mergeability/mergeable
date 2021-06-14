@@ -11,7 +11,7 @@ test('that mergeable is false when less than minimum', async () => {
     }
   }
 
-  let validation = await assignee.processValidate(createMockPR(1), settings)
+  const validation = await assignee.processValidate(createMockPR(1), settings)
   expect(validation.status).toBe('fail')
 })
 
@@ -24,7 +24,7 @@ test('that mergeable is true when the same as minimum', async () => {
       count: 2
     }
   }
-  let validation = await assignee.processValidate(createMockPR(2), settings)
+  const validation = await assignee.processValidate(createMockPR(2), settings)
   expect(validation.status).toBe('pass')
 })
 
@@ -37,7 +37,7 @@ test('that mergeable is true when greater than minimum', async () => {
       count: 2
     }
   }
-  let validation = await assignee.processValidate(createMockPR(3), settings)
+  const validation = await assignee.processValidate(createMockPR(3), settings)
   expect(validation.status).toBe('pass')
 })
 
@@ -50,7 +50,7 @@ test('that description is dynamic based on minimum', async () => {
       count: 5
     }
   }
-  let validation = await assignee.processValidate(createMockPR(1), settings)
+  const validation = await assignee.processValidate(createMockPR(1), settings)
   expect(validation.validations[0].description).toBe('assignee count is less than "5"')
 })
 
@@ -63,7 +63,7 @@ test('that description is correct when mergeable', async () => {
       count: 5
     }
   }
-  let validation = await assignee.processValidate(createMockPR(5), settings)
+  const validation = await assignee.processValidate(createMockPR(5), settings)
   expect(validation.validations[0].description).toBe("assignee does have a minimum of '5'")
 })
 
@@ -114,5 +114,5 @@ const createMockPR = (minimum, data) => {
     }
   }
 
-  return Helper.mockContext({assignees: data})
+  return Helper.mockContext({ assignees: data })
 }

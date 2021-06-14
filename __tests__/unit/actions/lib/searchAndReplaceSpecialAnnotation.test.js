@@ -2,7 +2,7 @@ const searchAndReplaceSpecialAnnotations = require('../../../../lib/actions/lib/
 
 describe('searchAndReplaceSpecialAnnotations', () => {
   test('does not affect input if no special annotations are found', () => {
-    let payload = {
+    const payload = {
       user: {
         login: 'creator'
       }
@@ -11,7 +11,7 @@ describe('searchAndReplaceSpecialAnnotations', () => {
   })
 
   test('special annotation at the beginning of string works properly', () => {
-    let payload = {
+    const payload = {
       user: {
         login: 'creator'
       }
@@ -20,7 +20,7 @@ describe('searchAndReplaceSpecialAnnotations', () => {
   })
 
   test('escape character works properly', () => {
-    let payload = {
+    const payload = {
       user: {
         login: 'creator'
       }
@@ -29,7 +29,7 @@ describe('searchAndReplaceSpecialAnnotations', () => {
   })
 
   test('@author is replaced by payload.user.login', () => {
-    let payload = {
+    const payload = {
       user: {
         login: 'creator'
       }

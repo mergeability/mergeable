@@ -3,7 +3,7 @@ const yaml = require('js-yaml')
 const moment = require('moment-timezone')
 
 const throwNotFound = () => {
-  let error = new Error('404 error')
+  const error = new Error('404 error')
   error.status = 404
   throw error
 }
@@ -55,7 +55,8 @@ module.exports = {
             repo: {
               full_name: options.headRepo ? options.headRepo : 'owner/test',
               issues_url: 'testRepo/issues{/number}'
-            }},
+            }
+          },
           assignees: (options.assignees) ? options.assignees : []
         },
         issue: {
@@ -87,32 +88,40 @@ module.exports = {
               }
 
               if (path === '.github/CODEOWNERS') {
-                return options.codeowners ? resolve({ data: {
-                  content: options.codeowners
-                }}) : throwNotFound()
+                return options.codeowners ? resolve({
+                  data: {
+                    content: options.codeowners
+                  }
+                }) : throwNotFound()
               }
             })
           },
           compareCommits: () => {
             return new Promise(resolve => {
-              resolve({ data: {
-                files: options.compareCommits
-              }})
+              resolve({
+                data: {
+                  files: options.compareCommits
+                }
+              })
             })
           },
           getAllTopics: () => {
             return new Promise(resolve => {
-              resolve({ data: {
-                names: (options.repoTopics) ? options.repoTopics : []
-              }})
+              resolve({
+                data: {
+                  names: (options.repoTopics) ? options.repoTopics : []
+                }
+              })
             })
           }
         },
         checks: {
           create: () => {
-            return { data: {
-              id: 1
-            }}
+            return {
+              data: {
+                id: 1
+              }
+            }
           },
           update: () => {
             return {}
@@ -200,7 +209,7 @@ module.exports = {
           addLabels: jest.fn(),
           update: jest.fn(),
           get: () => {
-            return {data: (options.deepValidation) ? options.deepValidation : {}}
+            return { data: (options.deepValidation) ? options.deepValidation : {} }
           }
         }
       },
@@ -226,8 +235,8 @@ module.exports = {
 
   mockConfigWithContext: (context, configString, options) => {
     context.octokit.repos.getContent = () => {
-      return Promise.resolve({ data: {
-        content: Buffer.from(configString).toString('base64') }
+      return Promise.resolve({
+        data: { content: Buffer.from(configString).toString('base64') }
       })
     }
     context.probotContext.config = () => {

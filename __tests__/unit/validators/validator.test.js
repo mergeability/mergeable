@@ -1,7 +1,7 @@
 const { Validator } = require('../../../lib/validators/validator')
 
 describe('Validator#isEventSupported', () => {
-  let validator = new Validator()
+  const validator = new Validator()
 
   test('Returns correctly with one supported event', () => {
     validator.supportedEvents = ['issues.opened']
@@ -24,7 +24,7 @@ describe('Validator#isEventSupported', () => {
 })
 
 describe('Validator#validateSetting', () => {
-  let validator = new Validator('test')
+  const validator = new Validator('test')
 
   test('throw error if the type mismatch', () => {
     const supportedSettings = {
@@ -55,7 +55,7 @@ describe('Validator#validateSetting', () => {
     let supportedSettings = {
       first: 'string'
     }
-    let settingToValidate = {
+    const settingToValidate = {
       first: 'Test',
       second: 32
     }
@@ -74,7 +74,7 @@ describe('Validator#validateSetting', () => {
   })
 
   test('nested settings work', () => {
-    let supportedSettings = {
+    const supportedSettings = {
       first: 'string',
       second: {
         third: 'number'
@@ -103,7 +103,7 @@ describe('Validator#validateSetting', () => {
   })
 
   test('multiple settings type work', () => {
-    let supportedSettings = {
+    const supportedSettings = {
       first: ['string', 'array']
     }
     let settingToValidate = {

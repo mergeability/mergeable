@@ -53,7 +53,7 @@ test('files ignore option works correctly', async () => {
 })
 
 test('fail gracefully if content is not found', async () => {
-  const context = Helper.mockContext({files: ['package.json']})
+  const context = Helper.mockContext({ files: ['package.json'] })
 
   context.octokit.repos.getContent = jest.fn().mockReturnValue(
     Promise.reject(
@@ -65,7 +65,7 @@ test('fail gracefully if content is not found', async () => {
   )
 
   const contents = new Contents()
-  let settings = {
+  const settings = {
     do: 'contents',
     files: {
       pr_diff: true
@@ -75,17 +75,17 @@ test('fail gracefully if content is not found', async () => {
     }
   }
 
-  let validation = await contents.processValidate(context, settings)
+  const validation = await contents.processValidate(context, settings)
   expect(validation.status).toBe('fail')
   expect(validation.validations[0].description).toBe("Failed files : 'package.json (Not Found)'")
 })
 
 const createMockContext = (files, fileContent) => {
-  const context = Helper.mockContext({files: files})
+  const context = Helper.mockContext({ files: files })
 
   context.octokit.repos.getContent = () => {
-    return Promise.resolve({ data: {
-      content: Buffer.from(fileContent).toString('base64') }
+    return Promise.resolve({
+      data: { content: Buffer.from(fileContent).toString('base64') }
     })
   }
 

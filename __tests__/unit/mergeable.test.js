@@ -1,14 +1,14 @@
-const {Mergeable} = require('../../lib/mergeable')
+const { Mergeable } = require('../../lib/mergeable')
 
 describe('Mergeable', () => {
   test('starting in dev mode and flexed correctly', async () => {
-    let mergeable = startMergeable('development')
+    const mergeable = startMergeable('development')
     expect(mergeable.schedule).toBeCalledWith(mockRobot, { interval: 2000 })
     expect(mergeable.flex).toHaveBeenCalledTimes(1)
   })
 
   test('starting in production mode and flexed correctly', async () => {
-    let mergeable = startMergeable('production')
+    const mergeable = startMergeable('production')
     expect(mergeable.schedule).toBeCalledWith(mockRobot, { interval: 60 * 60 * 1000 })
     expect(mergeable.flex).toBeCalledWith(mockRobot)
   })
@@ -16,7 +16,7 @@ describe('Mergeable', () => {
 
 const startMergeable = (mode, version) => {
   process.env.MERGEABLE_SCHEDULER = true
-  let mergeable = new Mergeable(mode, version)
+  const mergeable = new Mergeable(mode, version)
   mergeable.schedule = jest.fn()
   mergeable.flex = jest.fn()
   mergeable.start(mockRobot)
