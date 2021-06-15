@@ -88,11 +88,13 @@ module.exports = {
               }
 
               if (path === '.github/CODEOWNERS') {
-                return options.codeowners ? resolve({
-                  data: {
-                    content: options.codeowners
-                  }
-                }) : throwNotFound()
+                return options.codeowners
+                  ? resolve({
+                      data: {
+                        content: options.codeowners
+                      }
+                    })
+                  : throwNotFound()
               }
             })
           },
