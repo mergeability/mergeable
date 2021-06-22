@@ -19,6 +19,8 @@ Mergeable configuration consists of an array of independent recipes where each r
 
 when:
     specify webhook event(s) in which to process the validation
+name:
+    a friendly name which appears on the PR for the associated check
 filter:
     specify a series of optional filters to be checked and only runs validators if they are passing
 validate:
@@ -30,13 +32,35 @@ fail:
 error:
     specify a series of action to execute if the validation suite returned a `error`
 
-Here is a full example of how a recipe looks
+Each recipe appears as a separate check in the pull request.
+
+Here is a full example of how a recipe looks -
 
 .. code-block:: yml
 
     version: 2
     mergeable:
       - when: {{event}}, {{event}} # can be one or more
+        name: check name A
+        filter:
+          # list of filters (optional). Specify one or more.
+          - do: {{filter}}
+            {{option}}: # name of an option supported by the validator.
+              {{sub-option}}: {{value}} # an option will have one or more sub-options.
+        validate:
+          # list of validators. Specify one or more.
+          - do: {{validator}}
+            {{option}}: # name of an option supported by the validator.
+              {{sub-option}}: {{value}} # an option will have one or more sub-options.
+        pass: # list of actions to be executed if all validation passes. Specify one or more. Omit this tag if no actions are needed.
+          - do: {{action}}
+        fail: # list of actions to be executed when at least one validation fails. Specify one or more. Omit this tag if no actions are needed.
+          - do: {{action}}
+        error: # list of actions to be executed when at least one validator throws an error. Specify one or more. Omit this tag if no actions are needed.
+          - do: {{action}}
+
+      - when: {{event}}, {{event}} # example for second recipe
+        name: check name B
         filter:
           # list of filters (optional). Specify one or more.
           - do: {{filter}}
