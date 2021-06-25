@@ -164,3 +164,39 @@ Notice the blank validator which ensures that the merge event happens as soon as
         pass:
           - do: merge
             merge_method: "squash"
+
+Approval check + title check if certain files are changed
+"""""""""""""""""""""""
+Add 2 checks to the PR
+1. Approval check - Checks whether the PR has been approved by certain people
+2. Title should match a regex if certain files are changed. If no changes are made in those files, check should pass
+
+::
+
+    version: 2
+    mergeable:
+      - when: pull_request.*, pull_request_review.*
+        name: 'Approval check'
+        validate:
+          - do: approvals
+            min:
+              count: 1
+            limit:
+              users: [ 'approverA', 'approverB' ]
+
+      - when: pull_request.*, pull_request_review.*
+        name: 'PR title check'
+        validate:
+          - do: or
+            validate:
+              - do: changeset
+                must_exclude:
+                  regex: 'some/regex/for/those/certain/files/*'
+              - do: and
+                validate:
+                  - do: changeset
+                    must_include:
+                      regex: 'some/regex/for/those/certain/files/*'
+                  - do: title
+                    begins_with:
+                      match: [ 'some prefix' ]
