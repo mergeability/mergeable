@@ -566,13 +566,13 @@ describe('checkIfMerged', () => {
     let res = await GithubAPI.checkIfMerged(Helper.mockContext())
     expect(res).toEqual(true)
 
-    res = await GithubAPI.checkIfMerged(Helper.mockContext({checkIfMerged: false}))
+    res = await GithubAPI.checkIfMerged(Helper.mockContext({ checkIfMerged: false }))
     expect(res).toEqual(false)
   })
 
   test('that error are re-thrown', async () => {
     const context = Helper.mockContext()
-    context.octokit.pulls.checkIfMerged = jest.fn().mockRejectedValue({status: 402})
+    context.octokit.pulls.checkIfMerged = jest.fn().mockRejectedValue({ status: 402 })
 
     try {
       await GithubAPI.checkIfMerged(context)
@@ -593,7 +593,7 @@ describe('mergePR', () => {
 
   test('that error are re-thrown', async () => {
     const context = Helper.mockContext()
-    context.octokit.pulls.merge = jest.fn().mockRejectedValue({status: 402})
+    context.octokit.pulls.merge = jest.fn().mockRejectedValue({ status: 402 })
 
     try {
       await GithubAPI.mergePR(context)
