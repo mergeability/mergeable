@@ -97,6 +97,7 @@ Filter List
 .. toctree::
     filters/author.rst
     filters/repository.rst
+    filters/payload.rst
 
 Validators
 ------------
