@@ -607,13 +607,13 @@ describe('mergePR', () => {
 
 describe('requestReviewers', () => {
   test('return correct data if no error', async () => {
-    let res = await GithubAPI.requestReviewers(Helper.mockContext())
+    const res = await GithubAPI.requestReviewers(Helper.mockContext())
     expect(res).toEqual('request review success')
   })
 
   test('that error are NOT re-thrown', async () => {
     const context = Helper.mockContext()
-    context.octokit.pulls.requestReviewers = jest.fn().mockRejectedValue({status: 402})
+    context.octokit.pulls.requestReviewers = jest.fn().mockRejectedValue({ status: 402 })
 
     try {
       await GithubAPI.requestReviewers(context)
@@ -636,7 +636,7 @@ describe('getPR', () => {
 
   test('that error are re-thrown', async () => {
     const context = Helper.mockContext()
-    context.octokit.pulls.get = jest.fn().mockRejectedValue({status: 402})
+    context.octokit.pulls.get = jest.fn().mockRejectedValue({ status: 402 })
 
     try {
       await GithubAPI.getPR(context)
