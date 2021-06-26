@@ -560,3 +560,47 @@ describe('compareCommits', () => {
     }
   })
 })
+
+describe('checkIfMerged', () => {
+  test('return correct data if no error', async () => {
+    let res = await GithubAPI.checkIfMerged(Helper.mockContext())
+    expect(res).toEqual(true)
+
+    res = await GithubAPI.checkIfMerged(Helper.mockContext({ checkIfMerged: false }))
+    expect(res).toEqual(false)
+  })
+
+  test('that error are re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.pulls.checkIfMerged = jest.fn().mockRejectedValue({ status: 402 })
+
+    try {
+      await GithubAPI.checkIfMerged(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})
+
+describe('mergePR', () => {
+  test('return correct data if no error', async () => {
+    const res = await GithubAPI.mergePR(Helper.mockContext())
+
+    expect(res).toEqual('merged')
+  })
+
+  test('that error are re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.pulls.merge = jest.fn().mockRejectedValue({ status: 402 })
+
+    try {
+      await GithubAPI.mergePR(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})

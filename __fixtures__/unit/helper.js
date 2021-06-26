@@ -179,7 +179,7 @@ module.exports = {
               return { status: 204 }
             }
           },
-          merge: jest.fn(),
+          merge: jest.fn().mockReturnValue(options.merge || 'merged'),
           get: jest.fn()
         },
         paginate: jest.fn(async (fn, cb) => {
