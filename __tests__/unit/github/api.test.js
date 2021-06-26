@@ -166,13 +166,13 @@ describe('setLabels', () => {
 
 describe('addAssignees', () => {
   test('return correct data if no error', async () => {
-    let res = await GithubAPI.addAssignees(Helper.mockContext({labels: [{name: 'one'}, {name: 'two'}]}))
+    const res = await GithubAPI.addAssignees(Helper.mockContext({ labels: [{ name: 'one' }, { name: 'two' }] }))
     expect(res).toEqual('addAssignees call success')
   })
 
   test('that error are re-thrown', async () => {
     const context = Helper.mockContext()
-    context.octokit.issues.addAssignees = jest.fn().mockRejectedValue({status: 402})
+    context.octokit.issues.addAssignees = jest.fn().mockRejectedValue({ status: 402 })
 
     try {
       await GithubAPI.addAssignees(context)
@@ -186,21 +186,21 @@ describe('addAssignees', () => {
 
 describe('checkUserCanBeAssigned', () => {
   test('return correct data if no error', async () => {
-    let res = await GithubAPI.checkUserCanBeAssigned(Helper.mockContext(), '1', 'testAssignee')
+    const res = await GithubAPI.checkUserCanBeAssigned(Helper.mockContext(), '1', 'testAssignee')
     expect(res).toEqual('testAssignee')
   })
 
   test('that 404 are simply returned null', async () => {
     const context = Helper.mockContext()
-    context.octokit.issues.checkUserCanBeAssigned = jest.fn().mockRejectedValue({status: 404})
+    context.octokit.issues.checkUserCanBeAssigned = jest.fn().mockRejectedValue({ status: 404 })
 
-    let res = await GithubAPI.checkUserCanBeAssigned(context, '1', 'testAssignee')
+    const res = await GithubAPI.checkUserCanBeAssigned(context, '1', 'testAssignee')
     expect(res).toEqual(null)
   })
 
   test('that error are re-thrown', async () => {
     const context = Helper.mockContext()
-    context.octokit.issues.checkUserCanBeAssigned = jest.fn().mockRejectedValue({status: 402})
+    context.octokit.issues.checkUserCanBeAssigned = jest.fn().mockRejectedValue({ status: 402 })
 
     try {
       await GithubAPI.checkUserCanBeAssigned(context)
