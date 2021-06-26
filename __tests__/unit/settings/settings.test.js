@@ -28,7 +28,6 @@ describe('Loading bad settings', () => {
       Promise.reject(
         new HttpError(
           '{"message":"Not Found","documentation_url":"https://developer.github.com/v3/repos/contents/#get-contents"}',
-          404,
           404)
       )
     )
@@ -188,12 +187,10 @@ const createMockGhSettings = (settings, options) => {
   return context
 }
 
-// to mimic HttpError (https://github.com/octokit/rest.js/blob/fc8960ccf3415b5d77e50372d3bb873cfec80c55/lib/request/http-error.js)
 class HttpError extends Error {
-  constructor (message, code, status) {
+  constructor (message, status) {
     super(message)
     this.message = message
-    this.code = code
     this.status = status
   }
 }

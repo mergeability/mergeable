@@ -59,8 +59,7 @@ test('fail gracefully if content is not found', async () => {
     Promise.reject(
       new HttpError(
         '{"message":"Not Found","documentation_url":"https://developer.github.com/v3/repos/contents/#get-contents"}',
-        404,
-        'Not Found')
+        404)
     )
   )
 
@@ -94,10 +93,9 @@ const createMockContext = (files, fileContent) => {
 
 // to mimic HttpError (https://github.com/octokit/rest.js/blob/fc8960ccf3415b5d77e50372d3bb873cfec80c55/lib/request/http-error.js)
 class HttpError extends Error {
-  constructor (message, code, status) {
+  constructor (message, status) {
     super(message)
     this.message = message
-    this.code = code
     this.status = status
   }
 }
