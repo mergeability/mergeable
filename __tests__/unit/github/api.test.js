@@ -32,7 +32,7 @@ describe('createChecks', () => {
 
   test('that error are re-thrown', async () => {
     const context = Helper.mockContext()
-    context.octokit.checks.create = jest.fn().mockRejectedValue({status: 402})
+    context.octokit.checks.create = jest.fn().mockRejectedValue({ status: 402 })
 
     try {
       await GithubAPI.createChecks(context)
@@ -52,7 +52,7 @@ describe('updateChecks', () => {
 
   test('that error are re-thrown', async () => {
     const context = Helper.mockContext()
-    context.octokit.checks.update = jest.fn().mockRejectedValue({status: 402})
+    context.octokit.checks.update = jest.fn().mockRejectedValue({ status: 402 })
 
     try {
       await GithubAPI.updateChecks(context)
