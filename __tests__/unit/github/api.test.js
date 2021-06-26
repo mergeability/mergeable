@@ -214,13 +214,13 @@ describe('checkUserCanBeAssigned', () => {
 
 describe('createComment', () => {
   test('return correct data if no error', async () => {
-    let res = await GithubAPI.createComment(Helper.mockContext())
+    const res = await GithubAPI.createComment(Helper.mockContext())
     expect(res).toEqual('createComment call success')
   })
 
   test('that error are re-thrown', async () => {
     const context = Helper.mockContext()
-    context.octokit.issues.createComment = jest.fn().mockRejectedValue({status: 402})
+    context.octokit.issues.createComment = jest.fn().mockRejectedValue({ status: 402 })
 
     try {
       await GithubAPI.createComment(context)
@@ -234,14 +234,14 @@ describe('createComment', () => {
 
 describe('listComments', () => {
   test('return correct data if no error', async () => {
-    let res = await GithubAPI.listComments(Helper.mockContext({listComments: [{user: {login: 'mergeable[bot]'}}, {user: {login: 'userA'}}]}))
+    const res = await GithubAPI.listComments(Helper.mockContext({ listComments: [{ user: { login: 'mergeable[bot]' } }, { user: { login: 'userA' } }] }))
     expect(res.data.length).toEqual(2)
     expect(res.data[0].user.login).toEqual('mergeable[bot]')
   })
 
   test('that error are re-thrown', async () => {
     const context = Helper.mockContext()
-    context.octokit.issues.listComments = jest.fn().mockRejectedValue({status: 402})
+    context.octokit.issues.listComments = jest.fn().mockRejectedValue({ status: 402 })
 
     try {
       await GithubAPI.listComments(context)
@@ -255,13 +255,13 @@ describe('listComments', () => {
 
 describe('deleteComment', () => {
   test('return correct data if no error', async () => {
-    let res = await GithubAPI.deleteComment(Helper.mockContext())
+    const res = await GithubAPI.deleteComment(Helper.mockContext())
     expect(res).toEqual('deleteComment call success')
   })
 
   test('that error are NOT thrown for 404', async () => {
     const context = Helper.mockContext()
-    context.octokit.issues.deleteComment = jest.fn().mockRejectedValue({status: 404})
+    context.octokit.issues.deleteComment = jest.fn().mockRejectedValue({ status: 404 })
 
     try {
       await GithubAPI.deleteComment(context)
@@ -274,7 +274,7 @@ describe('deleteComment', () => {
 
   test('that error are re-thrown', async () => {
     const context = Helper.mockContext()
-    context.octokit.issues.deleteComment = jest.fn().mockRejectedValue({status: 402})
+    context.octokit.issues.deleteComment = jest.fn().mockRejectedValue({ status: 402 })
 
     try {
       await GithubAPI.deleteComment(context)
