@@ -156,12 +156,12 @@ describe('settings file fetching', () => {
         `
 
     // intialize context with empty config
-    let emptyConfig = '{}'
+    const emptyConfig = '{}'
     const parsedSettings = yaml.safeLoad(settingsString)
-    let context = createMockGhSettings(emptyConfig)
+    const context = createMockGhSettings(emptyConfig)
     process.env.USE_SETTINGS_CACHE = true
-    let settingsCache = Settings.getCache()
-    let repo = context.repo()
+    const settingsCache = Settings.getCache()
+    const repo = context.repo()
     settingsCache.set(`${repo.owner}/${repo.repo}/settings`, parsedSettings)
     context.event = 'push'
     context.payload.head_commit = { added: ['.github/mergeable.settings.yml'] }
@@ -169,7 +169,7 @@ describe('settings file fetching', () => {
     const settings = await Settings.fetchSettingsFile(context)
     expect(context.octokit.repos.getContent.mock.calls.length).toEqual(1)
     expect(settings).toEqual(parsedSettings)
-    let keys = await settingsCache.keys()
+    const keys = await settingsCache.keys()
     expect(keys.length).toEqual(1)
   })
 })

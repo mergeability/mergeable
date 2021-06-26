@@ -7,7 +7,7 @@ jest.mock('../../../../lib/validators/options_processor/teams', () => ({
 }))
 
 test('that * works', async () => {
-  const codeowner = `* @bob`
+  const codeowner = '* @bob'
   let commitDiffs = createCommitDiffs(['first/second/third/dir/test.js'])
 
   let res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs))
@@ -23,20 +23,20 @@ test('that * works', async () => {
 })
 
 test('that *.js (fileType) works', async () => {
-  let codeowner = `*.js @bob`
+  let codeowner = '*.js @bob'
   let commitDiffs = createCommitDiffs(['first/second/third/dir/test.js'])
 
   let res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs))
   expect(res.length).toBe(1)
   expect(res[0]).toBe('bob')
 
-  codeowner = `*.go @bob`
+  codeowner = '*.go @bob'
   commitDiffs = createCommitDiffs(['another/file/path/test.js'])
 
   res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs))
   expect(res.length).toBe(0)
 
-  codeowner = `*.go @bob`
+  codeowner = '*.go @bob'
   commitDiffs = createCommitDiffs(['another/file/path/test.go'])
 
   res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs))
@@ -45,7 +45,7 @@ test('that *.js (fileType) works', async () => {
 })
 
 test('that /docs/ only matches docs directory in root', async () => {
-  let codeowner = ` /docs/ @bob`
+  const codeowner = ' /docs/ @bob'
   let commitDiffs = createCommitDiffs(['/docs/test.js'])
 
   let res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs))
@@ -59,7 +59,7 @@ test('that /docs/ only matches docs directory in root', async () => {
 })
 
 test('that /docs/ only matches all files in all subdirectory', async () => {
-  let codeowner = `/docs/ @bob`
+  const codeowner = '/docs/ @bob'
   let commitDiffs = createCommitDiffs(['/docs/long/path/to/test.js'])
 
   let res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs))
@@ -74,7 +74,7 @@ test('that /docs/ only matches all files in all subdirectory', async () => {
 })
 
 test('that /docs/* only matches all files in that directory', async () => {
-  let codeowner = `/docs/* @bob`
+  const codeowner = '/docs/* @bob'
   let commitDiffs = createCommitDiffs(['/docs/test.js'])
 
   let res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs))
@@ -88,7 +88,7 @@ test('that /docs/* only matches all files in that directory', async () => {
 })
 
 test('that **/docs matches all files and directories in docs/', async () => {
-  let codeowner = `**/docs @bob`
+  const codeowner = '**/docs @bob'
   let commitDiffs = createCommitDiffs(['first/second/docs/test.js'])
 
   let res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs))
@@ -103,7 +103,7 @@ test('that **/docs matches all files and directories in docs/', async () => {
 })
 
 test('that /docs/**/apps/ matches the sub directories properly', async () => {
-  let codeowner = `/docs/**/apps/ @bob`
+  const codeowner = '/docs/**/apps/ @bob'
   let commitDiffs = createCommitDiffs(['/docs/second/third/apps/test.js'])
 
   let res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs))
@@ -118,7 +118,7 @@ test('that /docs/**/apps/ matches the sub directories properly', async () => {
 })
 
 test('that /apps/** matches all the sub directories of app', async () => {
-  let codeowner = `/apps/** @bob`
+  const codeowner = '/apps/** @bob'
   let commitDiffs = createCommitDiffs(['/apps/second/third/dir/test.js'])
 
   let res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs))
@@ -133,7 +133,7 @@ test('that /apps/** matches all the sub directories of app', async () => {
 })
 
 test('that apps/ matches all instances of app/', async () => {
-  let codeowner = `apps/ @bob`
+  const codeowner = 'apps/ @bob'
   let commitDiffs = createCommitDiffs(['first/second/third/apps/test.js'])
 
   let res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs))
@@ -148,7 +148,7 @@ test('that apps/ matches all instances of app/', async () => {
 })
 
 test('that rules that comes later takes higher priority', async () => {
-  let codeowner = `*.js @bob \n/docs/ @hope`
+  const codeowner = '*.js @bob \n/docs/ @hope'
   let commitDiffs = createCommitDiffs(['/docs/test.js'])
 
   let res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs))
@@ -163,37 +163,37 @@ test('that rules that comes later takes higher priority', async () => {
 })
 
 test('teams owners are processed correctly', async () => {
-  let codeowner = `*.js @bob/test-team`
-  let commitDiffs = createCommitDiffs(['/docs/test.js'])
+  const codeowner = '*.js @bob/test-team'
+  const commitDiffs = createCommitDiffs(['/docs/test.js'])
 
   const approvedReviewers = ['teamMember1', 'member2']
   teams.extractTeamMemberships = jest.fn().mockReturnValue(approvedReviewers)
 
-  let res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs), approvedReviewers)
+  const res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs), approvedReviewers)
   expect(res.length).toBe(2)
   expect(res[0]).toBe('teamMember1')
   expect(res[1]).toBe('member2')
 })
 
 test('non-team member cannot approve the PR', async () => {
-  let codeowner = `*.js @bob/test-team`
-  let commitDiffs = createCommitDiffs(['/docs/test.js'])
+  const codeowner = '*.js @bob/test-team'
+  const commitDiffs = createCommitDiffs(['/docs/test.js'])
 
   const reviewer = ['member3']
   const approvedReviewers = ['teamMember1', 'member2']
   teams.extractTeamMemberships = jest.fn().mockReturnValue(approvedReviewers)
 
-  let res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs), approvedReviewers)
+  const res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs), approvedReviewers)
   expect(reviewer).not.toEqual(expect.arrayContaining(res))
 })
 
 test('teams owners and individuals are processed correctly', async () => {
-  let codeowner = `*.js @bob/test-team @hope`
-  let commitDiffs = createCommitDiffs(['/docs/test.js'])
+  const codeowner = '*.js @bob/test-team @hope'
+  const commitDiffs = createCommitDiffs(['/docs/test.js'])
 
   teams.extractTeamMemberships = jest.fn().mockReturnValue(['teamMember1', 'member2'])
 
-  let res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs))
+  const res = await owners.process(createMockPR(), createMockContext(codeowner, commitDiffs))
   expect(res.length).toBe(3)
   expect(res[0]).toBe('teamMember1')
   expect(res[1]).toBe('member2')

@@ -2,9 +2,9 @@ const Title = require('../../../lib/validators/title')
 const Helper = require('../../../__fixtures__/unit/helper')
 
 test('validate returns false', async () => {
-  let title = new Title()
+  const title = new Title()
 
-  let settings = {
+  const settings = {
     do: 'title',
     must_include: {
       regex: '^\\(feat\\)|^\\(doc\\)|^\\(fix\\)'
@@ -21,23 +21,23 @@ test('validate returns false', async () => {
 })
 
 test('fail gracefully if invalid regex', async () => {
-  let title = new Title()
+  const title = new Title()
 
-  let settings = {
+  const settings = {
     do: 'title',
     must_exclude: {
       regex: '@#$@#$@#$'
     }
   }
 
-  let titleValidation = await title.processValidate(mockContext('WIP Title'), settings)
+  const titleValidation = await title.processValidate(mockContext('WIP Title'), settings)
   expect(titleValidation.status).toBe('pass')
 })
 
 test('checks that it fail when exclude regex is in title', async () => {
-  let title = new Title()
+  const title = new Title()
 
-  let settings = {
+  const settings = {
     do: 'title',
     must_include: {
       regex: '^\\(feat\\)|^\\(doc\\)|^\\(fix\\)'
@@ -55,12 +55,12 @@ test('checks that it fail when exclude regex is in title', async () => {
 })
 
 test('checks that advance setting of must_include works', async () => {
-  let title = new Title()
+  const title = new Title()
 
-  let includeList = `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
-  let testMessage = 'this is a test message'
+  const includeList = '^\\(feat\\)|^\\(doc\\)|^\\(fix\\)'
+  const testMessage = 'this is a test message'
 
-  let settings = {
+  const settings = {
     do: 'title',
     must_include: {
       regex: includeList,
@@ -91,8 +91,8 @@ describe('begins_with', () => {
   }
 
   test('checks that it fail when begins_with is not in title', async () => {
-    let title = new Title()
-    let match = '(test)'
+    const title = new Title()
+    const match = '(test)'
 
     let titleValidation = await title.processValidate(mockContext('include Title'), mockMatch(match))
     expect(titleValidation.status).toBe('fail')
@@ -103,8 +103,8 @@ describe('begins_with', () => {
   })
 
   test('with match as arrays', async () => {
-    let title = new Title()
-    let match = ['test1', 'test2']
+    const title = new Title()
+    const match = ['test1', 'test2']
 
     let titleValidation = await title.processValidate(mockContext('include Title'), mockMatch(match))
     expect(titleValidation.status).toBe('fail')
@@ -128,8 +128,8 @@ describe('ends_with', () => {
   }
 
   test('checks that it fail when ends_with is not in title', async () => {
-    let title = new Title()
-    let match = '(test)'
+    const title = new Title()
+    const match = '(test)'
 
     let titleValidation = await title.processValidate(mockContext('include Title'), mockMatch(match))
     expect(titleValidation.status).toBe('fail')
@@ -140,8 +140,8 @@ describe('ends_with', () => {
   })
 
   test('with array', async () => {
-    let title = new Title()
-    let match = ['test', 'test2']
+    const title = new Title()
+    const match = ['test', 'test2']
 
     let titleValidation = await title.processValidate(mockContext('include Title'), mockMatch(match))
     expect(titleValidation.status).toBe('fail')
@@ -155,10 +155,10 @@ describe('ends_with', () => {
 })
 
 test('checks that it fail when include regex is in title', async () => {
-  let title = new Title()
-  let includeList = `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
+  const title = new Title()
+  const includeList = '^\\(feat\\)|^\\(doc\\)|^\\(fix\\)'
 
-  let settings = {
+  const settings = {
     do: 'title',
     must_include: {
       regex: includeList
@@ -178,6 +178,6 @@ test('checks that it fail when include regex is in title', async () => {
 })
 
 const mockContext = title => {
-  let context = Helper.mockContext({ title: title })
+  const context = Helper.mockContext({ title: title })
   return context
 }

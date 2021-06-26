@@ -12,11 +12,11 @@ test('check that issue is closed', async () => {
 
 test('check that issues from scheduler are closed', async () => {
   const close = new Close()
-  const context = Helper.mockContext({eventName: 'schedule'})
-  let schedulerResult = {}
+  const context = Helper.mockContext({ eventName: 'schedule' })
+  const schedulerResult = {}
   schedulerResult.validationSuites = [{
     schedule: {
-      issues: [{number: 1, user: {login: 'scheduler'}}, {number: 2, user: {login: 'scheduler'}}, {number: 3, user: {login: 'scheduler'}}],
+      issues: [{ number: 1, user: { login: 'scheduler' } }, { number: 2, user: { login: 'scheduler' } }, { number: 3, user: { login: 'scheduler' } }],
       pulls: []
     }
   }]

@@ -15,19 +15,19 @@ jest.mock('moment-timezone', () => jest.fn().mockReturnValue((({
 // https://help.github.com/articles/searching-issues-and-pull-requests/#search-only-issues-or-pull-requests
 // Tests should ensure that the parameters passed into the API is accurate
 test('will set the issues and pulls appropriately when both types are specified', async () => {
-  let settings = {
+  const settings = {
     do: 'stale',
     days: 10,
     type: ['issues', 'pull_request'] // this is valid when using the new config.
   }
 
-  let stale = new Stale()
-  let context = createMockContext([
+  const stale = new Stale()
+  const context = createMockContext([
     { number: 1 },
     { number: 2, pull_request: {} }
   ])
 
-  let results = await stale.processValidate(context, settings)
+  const results = await stale.processValidate(context, settings)
   expect(isParamsNoType(context)).toBe(true) // it includes both types.
   expect(results.schedule.issues.length).toBe(1)
   expect(results.schedule.pulls.length).toBe(1)
@@ -35,15 +35,15 @@ test('will set the issues and pulls appropriately when both types are specified'
 })
 
 test('will set the issues and pulls appropriately when no type is set', async () => {
-  let settings = { do: 'stale', days: 10 }
+  const settings = { do: 'stale', days: 10 }
 
-  let stale = new Stale()
-  let context = createMockContext([
+  const stale = new Stale()
+  const context = createMockContext([
     { number: 1 },
     { number: 2, pull_request: {} }
   ])
 
-  let results = await stale.processValidate(context, settings)
+  const results = await stale.processValidate(context, settings)
   // no types specified so we assume both types. Hence none passed to search API.
   expect(isParamsNoType(context)).toBe(true)
   expect(results.schedule.issues.length).toBe(1)
@@ -56,15 +56,15 @@ describe('metadata queries', () => {
   })
 
   test('will set milestones correctly', async () => {
-    let settings = { do: 'stale', days: 10, ignore_milestones: true }
+    const settings = { do: 'stale', days: 10, ignore_milestones: true }
 
-    let stale = new Stale()
-    let context = createMockContext([
+    const stale = new Stale()
+    const context = createMockContext([
       { number: 1 },
       { number: 2, pull_request: {} }
     ])
 
-    let results = await stale.processValidate(context, settings)
+    const results = await stale.processValidate(context, settings)
     // no types specified so we assume both types. Hence none passed to search API.
     expect(isParamsNoType(context)).toBe(true)
     expect(isParamsNoLabel(context)).toBe(true)
@@ -75,15 +75,15 @@ describe('metadata queries', () => {
   })
 
   test('will set projects correctly', async () => {
-    let settings = { do: 'stale', days: 10, ignore_projects: true }
+    const settings = { do: 'stale', days: 10, ignore_projects: true }
 
-    let stale = new Stale()
-    let context = createMockContext([
+    const stale = new Stale()
+    const context = createMockContext([
       { number: 1 },
       { number: 2, pull_request: {} }
     ])
 
-    let results = await stale.processValidate(context, settings)
+    const results = await stale.processValidate(context, settings)
     // no types specified so we assume both types. Hence none passed to search API.
     expect(isParamsNoType(context)).toBe(true)
     expect(isParamsNoLabel(context)).toBe(true)
@@ -94,15 +94,15 @@ describe('metadata queries', () => {
   })
 
   test('will not set milestones and projects if not specified', async () => {
-    let settings = { do: 'stale', days: 10 }
+    const settings = { do: 'stale', days: 10 }
 
-    let stale = new Stale()
-    let context = createMockContext([
+    const stale = new Stale()
+    const context = createMockContext([
       { number: 1 },
       { number: 2, pull_request: {} }
     ])
 
-    let results = await stale.processValidate(context, settings)
+    const results = await stale.processValidate(context, settings)
     // no types specified so we assume both types. Hence none passed to search API.
     expect(isParamsNoType(context)).toBe(true)
     expect(isParamsNoLabel(context)).toBe(true)
@@ -113,15 +113,15 @@ describe('metadata queries', () => {
   })
 
   test('will set projects and milestones correctly', async () => {
-    let settings = { do: 'stale', days: 10, ignore_projects: true, ignore_milestones: true }
+    const settings = { do: 'stale', days: 10, ignore_projects: true, ignore_milestones: true }
 
-    let stale = new Stale()
-    let context = createMockContext([
+    const stale = new Stale()
+    const context = createMockContext([
       { number: 1 },
       { number: 2, pull_request: {} }
     ])
 
-    let results = await stale.processValidate(context, settings)
+    const results = await stale.processValidate(context, settings)
     // no types specified so we assume both types. Hence none passed to search API.
     expect(isParamsNoType(context)).toBe(true)
     expect(isParamsNoLabel(context)).toBe(true)
@@ -137,15 +137,15 @@ describe('label queries', () => {
   })
 
   test('will set label matches and ignores correctly', async () => {
-    let settings = { do: 'stale', days: 10, label: { match: ['test_match1', 'test_match2'], ignore: ['test_ignore'] } }
+    const settings = { do: 'stale', days: 10, label: { match: ['test_match1', 'test_match2'], ignore: ['test_ignore'] } }
 
-    let stale = new Stale()
-    let context = createMockContext([
+    const stale = new Stale()
+    const context = createMockContext([
       { number: 1 },
       { number: 2, pull_request: {} }
     ])
 
-    let results = await stale.processValidate(context, settings)
+    const results = await stale.processValidate(context, settings)
     // no types specified so we assume both types. Hence none passed to search API.
     expect(isParamsNoType(context)).toBe(true)
     expect(isParamsNoLabel(context)).toBe(false)
@@ -156,15 +156,15 @@ describe('label queries', () => {
   })
 
   test('will set label matches correctly', async () => {
-    let settings = { do: 'stale', days: 10, label: { match: ['test_match1', 'test_match2'] } }
+    const settings = { do: 'stale', days: 10, label: { match: ['test_match1', 'test_match2'] } }
 
-    let stale = new Stale()
-    let context = createMockContext([
+    const stale = new Stale()
+    const context = createMockContext([
       { number: 1 },
       { number: 2, pull_request: {} }
     ])
 
-    let results = await stale.processValidate(context, settings)
+    const results = await stale.processValidate(context, settings)
     // no types specified so we assume both types. Hence none passed to search API.
     expect(isParamsNoType(context)).toBe(true)
     expect(isParamsNoLabel(context)).toBe(false)
@@ -175,15 +175,15 @@ describe('label queries', () => {
   })
 
   test('will set label ignores correctly', async () => {
-    let settings = { do: 'stale', days: 10, label: { ignore: ['test_ignore', 'test_ignore2'] } }
+    const settings = { do: 'stale', days: 10, label: { ignore: ['test_ignore', 'test_ignore2'] } }
 
-    let stale = new Stale()
-    let context = createMockContext([
+    const stale = new Stale()
+    const context = createMockContext([
       { number: 1 },
       { number: 2, pull_request: {} }
     ])
 
-    let results = await stale.processValidate(context, settings)
+    const results = await stale.processValidate(context, settings)
     // no types specified so we assume both types. Hence none passed to search API.
     expect(isParamsNoType(context)).toBe(true)
     expect(isParamsNoLabel(context)).toBe(false)
@@ -194,15 +194,15 @@ describe('label queries', () => {
   })
 
   test('will not add any label queries when no label is specified in match settings', async () => {
-    let settings = { do: 'stale', days: 10 }
+    const settings = { do: 'stale', days: 10 }
 
-    let stale = new Stale()
-    let context = createMockContext([
+    const stale = new Stale()
+    const context = createMockContext([
       { number: 1 },
       { number: 2, pull_request: {} }
     ])
 
-    let results = await stale.processValidate(context, settings)
+    const results = await stale.processValidate(context, settings)
     // no types specified so we assume both types. Hence none passed to search API.
     expect(isParamsNoLabel(context)).toBe(true)
     expect(results.schedule.issues.length).toBe(1)
@@ -212,10 +212,10 @@ describe('label queries', () => {
 })
 
 test('will set the issues and pulls even when unsupported type is set', async () => {
-  let settings = { do: 'stale', days: 10, type: ['junk1', 'junk2'] }
+  const settings = { do: 'stale', days: 10, type: ['junk1', 'junk2'] }
 
-  let stale = new Stale()
-  let context = createMockContext([
+  const stale = new Stale()
+  const context = createMockContext([
     { number: 1 },
     { number: 2, pull_request: {} }
   ])
@@ -233,13 +233,13 @@ test('will set the issues and pulls even when unsupported type is set', async ()
 })
 
 test('will set the issues and pulls correctly when type is issue only', async () => {
-  let settings = {
+  const settings = {
     do: 'stale',
     days: 10,
     type: ['issues']
   }
 
-  let stale = new Stale()
+  const stale = new Stale()
   let context = createMockContext([{ number: 1 }])
 
   let res = await stale.validate(context, settings)
@@ -256,13 +256,13 @@ test('will set the issues and pulls correctly when type is issue only', async ()
 })
 
 test('will set the issues and pulls correctly when type is pull_request only', async () => {
-  let settings = {
+  const settings = {
     do: 'stale',
     days: 10,
     type: ['pull_request']
   }
 
-  let stale = new Stale()
+  const stale = new Stale()
   let context = createMockContext([{ number: 1, pull_request: {} }])
 
   let res = await stale.processValidate(context, settings)
@@ -290,8 +290,8 @@ describe('limit option', () => {
       days: 10
     }
 
-    let stale = new Stale()
-    let context = createMockContext([])
+    const stale = new Stale()
+    const context = createMockContext([])
 
     await stale.processValidate(context, settings)
     expect(moment().utc().tz.mock.calls.length).toBe(0)
@@ -318,8 +318,8 @@ describe('limit option', () => {
       }
     }
 
-    let stale = new Stale()
-    let context = createMockContext([{ number: 1, pull_request: {} }])
+    const stale = new Stale()
+    const context = createMockContext([{ number: 1, pull_request: {} }])
 
     let res = await stale.processValidate(context, settings)
     expect(res.status).toBe('fail')
@@ -345,8 +345,8 @@ describe('limit option', () => {
       }
     }
 
-    let stale = new Stale()
-    let context = createMockContext([{ number: 1, pull_request: {} }])
+    const stale = new Stale()
+    const context = createMockContext([{ number: 1, pull_request: {} }])
 
     let res = await stale.processValidate(context, settings)
     expect(res.status).toBe('pass')
@@ -376,9 +376,9 @@ describe('limit option', () => {
 })
 
 const getFilteredParams = (context, filter = '', days = 10) => {
-  let callParams = context.octokit.search.issuesAndPullRequests.mock.calls
-  let timestamp = (new Date(new Date() - days * 24 * 60 * 60 * 1000)).toISOString().replace(/\.\d{3}\w$/, '')
-  let q = `repo:owner/repo is:open updated:<${timestamp} ${filter}`.trim()
+  const callParams = context.octokit.search.issuesAndPullRequests.mock.calls
+  const timestamp = (new Date(new Date() - days * 24 * 60 * 60 * 1000)).toISOString().replace(/\.\d{3}\w$/, '')
+  const q = `repo:owner/repo is:open updated:<${timestamp} ${filter}`.trim()
   return callParams.filter(param => param[0].q === q)
 }
 
@@ -404,7 +404,7 @@ const isMetadataIncluded = (context, project, milestone) => {
 }
 
 const createMockContext = (results) => {
-  let context = Helper.mockContext()
+  const context = Helper.mockContext()
 
   context.octokit.search = {
     issuesAndPullRequests: jest.fn().mockReturnValue({
