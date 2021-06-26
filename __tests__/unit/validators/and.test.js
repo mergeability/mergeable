@@ -21,7 +21,7 @@ describe('And Validator Unit Test', () => {
         }
       ]
     }
-    let validation = await and.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
+    const validation = await and.processValidate(createMockContext({ title: 'Version 1' }), settings, registry)
     expect(validation.status).toBe('fail')
   })
 
@@ -44,7 +44,7 @@ describe('And Validator Unit Test', () => {
         }
       ]
     }
-    let validation = await and.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
+    const validation = await and.processValidate(createMockContext({ title: 'Version 1' }), settings, registry)
     expect(validation.status).toBe('fail')
   })
 
@@ -67,7 +67,7 @@ describe('And Validator Unit Test', () => {
         }
       ]
     }
-    let validation = await and.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
+    const validation = await and.processValidate(createMockContext({ title: 'Version 1' }), settings, registry)
     expect(validation.status).toBe('pass')
   })
 
@@ -76,7 +76,7 @@ describe('And Validator Unit Test', () => {
     const settings = {
       do: 'and'
     }
-    let validation = await and.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
+    const validation = await and.processValidate(createMockContext({ title: 'Version 1' }), settings, registry)
     expect(validation.status).toBe('error')
   })
 
@@ -86,7 +86,7 @@ describe('And Validator Unit Test', () => {
       do: 'and',
       validate: ''
     }
-    let validation = await and.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
+    const validation = await and.processValidate(createMockContext({ title: 'Version 1' }), settings, registry)
     expect(validation.status).toBe('error')
   })
 
@@ -96,7 +96,7 @@ describe('And Validator Unit Test', () => {
       do: 'and',
       validate: []
     }
-    let validation = await and.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
+    const validation = await and.processValidate(createMockContext({ title: 'Version 1' }), settings, registry)
     expect(validation.status).toBe('error')
   })
 
@@ -108,7 +108,7 @@ describe('And Validator Unit Test', () => {
         { do: 'missing' }
       ]
     }
-    let validation = await and.processValidate(createMockContext({title: 'Version 1'}), settings, registry)
+    const validation = await and.processValidate(createMockContext({ title: 'Version 1' }), settings, registry)
     expect(validation.status).toBe('error')
   })
 
@@ -143,7 +143,7 @@ describe('And Validator Unit Test', () => {
       ]
     }
 
-    let validation = await and.processValidate(createMockContext({title: 'Version 2'}), settings, registry)
+    const validation = await and.processValidate(createMockContext({ title: 'Version 2' }), settings, registry)
     expect(validation.status).toBe('fail')
   })
 
@@ -178,11 +178,11 @@ describe('And Validator Unit Test', () => {
       ]
     }
 
-    let validation = await and.processValidate(createMockContext({title: 'Version 2'}), settings, registry)
+    const validation = await and.processValidate(createMockContext({ title: 'Version 2' }), settings, registry)
     expect(validation.status).toBe('error')
   })
 })
 
 const createMockContext = (milestone, body, deepValidation) => {
-  return Helper.mockContext({milestone, body, deepValidation})
+  return Helper.mockContext({ milestone, body, deepValidation })
 }

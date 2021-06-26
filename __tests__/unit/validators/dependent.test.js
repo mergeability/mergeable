@@ -32,7 +32,7 @@ describe('dependent files with modified', () => {
       }
     }
 
-    let validation = await dependent.processValidate(createMockContext(['package.json', 'a.js', 'b.js']), settings)
+    const validation = await dependent.processValidate(createMockContext(['package.json', 'a.js', 'b.js']), settings)
     expect(validation.status).toBe('fail')
   })
 
@@ -46,7 +46,7 @@ describe('dependent files with modified', () => {
       }
     }
 
-    let validation = await dependent.processValidate(createMockContext(['package.json', 'a.js', 'b.js']), settings)
+    const validation = await dependent.processValidate(createMockContext(['package.json', 'a.js', 'b.js']), settings)
     expect(validation.status).toBe('fail')
   })
 
@@ -60,7 +60,7 @@ describe('dependent files with modified', () => {
       }
     }
 
-    let validation = await dependent.processValidate(createMockContext([]), settings)
+    const validation = await dependent.processValidate(createMockContext([]), settings)
     expect(validation.status).toBe('pass')
   })
 
@@ -73,7 +73,7 @@ describe('dependent files with modified', () => {
       }
     }
 
-    let validation = await dependent.processValidate(createMockContext([]), settings)
+    const validation = await dependent.processValidate(createMockContext([]), settings)
     expect(validation.status).toBe('error')
     expect(validation.validations[0].description).toBe('Failed to validate because the \'file\' sub option for \'changed\' option is missing. Please check the documentation')
   })
@@ -106,7 +106,7 @@ test('that mergeable is true if none of the dependent file is modified', async (
     files: ['a.js', 'b.go']
   }
 
-  let validation = await dependent.processValidate(createMockContext([]), settings)
+  const validation = await dependent.processValidate(createMockContext([]), settings)
   expect(validation.status).toBe('pass')
 })
 
@@ -117,7 +117,7 @@ test('that mergeable is true if all of the dependent file is modified', async ()
     files: ['package.json', 'yarn.lock']
   }
 
-  let validation = await dependent.processValidate(createMockContext(['package.json', 'yarn.lock', 'a.js']), settings)
+  const validation = await dependent.processValidate(createMockContext(['package.json', 'yarn.lock', 'a.js']), settings)
   expect(validation.status).toBe('pass')
 })
 
@@ -128,7 +128,7 @@ test('that mergeable is true if one of the dependent file is added', async () =>
     files: ['package.json', 'yarn.lock']
   }
 
-  let validation = await dependent.processValidate(
+  const validation = await dependent.processValidate(
     createMockContext([
       { filename: 'package.json', status: 'added' },
       { filename: 'yarn.lock', status: 'modified' }
@@ -145,7 +145,7 @@ test('that mergeable is false when only one of the dependent file is added', asy
     files: ['package.json', 'yarn.lock']
   }
 
-  let validation = await dependent.processValidate(
+  const validation = await dependent.processValidate(
     createMockContext([{ filename: 'package.json', status: 'added' }]),
     settings
   )
@@ -159,7 +159,7 @@ test('that mergeable is false when only some of the dependent files are modified
     files: ['package.json', 'yarn.lock']
   }
 
-  let validation = await dependent.processValidate(createMockContext(['package.json', 'a.js', 'b.js']), settings)
+  const validation = await dependent.processValidate(createMockContext(['package.json', 'a.js', 'b.js']), settings)
   expect(validation.status).toBe('fail')
 })
 
@@ -170,16 +170,16 @@ test('test description is correct', async () => {
     files: ['package.json', 'yarn.lock']
   }
 
-  let defaultMessage = 'One or more files (yarn.lock) are missing from your pull request because they are dependent on the following: package.json'
+  const defaultMessage = 'One or more files (yarn.lock) are missing from your pull request because they are dependent on the following: package.json'
 
-  let validation = await dependent.processValidate(createMockContext(['package.json']), settings)
+  const validation = await dependent.processValidate(createMockContext(['package.json']), settings)
   expect(validation.status).toBe('fail')
   expect(validation.validations[0].description).toBe(defaultMessage)
 })
 
 test('test that custom message is correct', async () => {
   const dependent = new Dependent()
-  let customMessage = 'Test Message'
+  const customMessage = 'Test Message'
 
   const settings = {
     do: 'dependent',
@@ -187,11 +187,11 @@ test('test that custom message is correct', async () => {
     message: customMessage
   }
 
-  let validation = await dependent.processValidate(createMockContext(['package.json']), settings)
+  const validation = await dependent.processValidate(createMockContext(['package.json']), settings)
   expect(validation.status).toBe('fail')
   expect(validation.validations[0].description).toBe(customMessage)
 })
 
 const createMockContext = (files) => {
-  return Helper.mockContext({files: files})
+  return Helper.mockContext({ files: files })
 }

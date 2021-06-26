@@ -28,7 +28,7 @@ test('fail gracefully if invalid regex', async () => {
 
   }
 
-  let validation = await changeset.processValidate(createMockContext(['package-lock.json', 'yarn.lock', 'package.json', 'a.js']), settings)
+  const validation = await changeset.processValidate(createMockContext(['package-lock.json', 'yarn.lock', 'package.json', 'a.js']), settings)
   expect(validation.status).toBe('fail')
 })
 
@@ -41,7 +41,7 @@ test('mergeable is true if must_include is one of the label', async () => {
     }
   }
 
-  let validation = await changeset.processValidate(createMockContext(['package-lock.json', 'yarn.lock', 'package.json', 'a.js', 'a.jsx']), settings)
+  const validation = await changeset.processValidate(createMockContext(['package-lock.json', 'yarn.lock', 'package.json', 'a.js', 'a.jsx']), settings)
   expect(validation.status).toBe('pass')
 })
 
@@ -54,7 +54,7 @@ test('mergeable is false if must_exclude is one of the label', async () => {
     }
   }
 
-  let validation = await changeset.processValidate(createMockContext(['package-lock.json', 'yarn.lock', 'package.json', 'a.js']), settings)
+  const validation = await changeset.processValidate(createMockContext(['package-lock.json', 'yarn.lock', 'package.json', 'a.js']), settings)
   expect(validation.status).toBe('fail')
 })
 
@@ -67,10 +67,10 @@ test('that it validates ends_with correctly', async () => {
     }
   }
 
-  let validation = await changeset.processValidate(createMockContext(['package-lock.json', 'yarn.lock', 'package.json', 'a.js']), settings)
+  const validation = await changeset.processValidate(createMockContext(['package-lock.json', 'yarn.lock', 'package.json', 'a.js']), settings)
   expect(validation.status).toBe('pass')
 })
 
 const createMockContext = (files) => {
-  return Helper.mockContext({files: files})
+  return Helper.mockContext({ files: files })
 }

@@ -2,9 +2,9 @@ const Milestoned = require('../../../lib/interceptors/milestoned')
 const Helper = require('../../../__fixtures__/unit/helper')
 require('object-dot').extend()
 
-let milestoned = new Milestoned()
+const milestoned = new Milestoned()
 test('#valid', () => {
-  let context = Helper.mockContext()
+  const context = Helper.mockContext()
   expect(milestoned.valid(context)).toBe(false)
 
   context.eventName = 'issues'

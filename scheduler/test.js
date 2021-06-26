@@ -28,7 +28,7 @@ describe('Schedules intervals for a repository', () => {
       .get('/app/installations')
       .query({ per_page: 1 })
       .reply(200, [{ id: 1 }], {
-        'Link': '<https://api.github.com.com/app/installations?page=2&per_page=1>; rel="next"',
+        Link: '<https://api.github.com.com/app/installations?page=2&per_page=1>; rel="next"',
         'X-GitHub-Media-Type': 'github.v3; format=json'
       })
       .get('/installation/repositories')
