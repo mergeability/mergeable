@@ -647,3 +647,83 @@ describe('getPR', () => {
     }
   })
 })
+
+describe('listPR', () => {
+  test('return correct data if no error', async () => {
+    const res = await GithubAPI.listPR(Helper.mockContext())
+
+    expect(res.data).toEqual([])
+  })
+
+  test('that error are re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.pulls.list = jest.fn().mockRejectedValue({ status: 402 })
+
+    try {
+      await GithubAPI.listPR(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})
+
+describe('listReviews', () => {
+  test('return correct data if no error', async () => {
+    const reviews = [
+      'review 1',
+      'review 2'
+    ]
+
+    const res = await GithubAPI.listReviews(Helper.mockContext({ reviews }))
+    expect(res).toEqual(reviews)
+  })
+
+  test('that error are re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.pulls.listReviews.endpoint.merge = jest.fn().mockRejectedValue({ status: 402 })
+
+    try {
+      await GithubAPI.listReviews(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})
+
+describe('listCommits', () => {
+  test('return correct data if no error', async () => {
+    const date = Date.now()
+    const commits = [
+      {
+        commit: {
+          author: {
+            date
+          },
+          message: 'fix: this'
+        }
+      }
+    ]
+
+    const res = await GithubAPI.listCommits(Helper.mockContext({ commits }))
+    expect(res.length).toEqual(1)
+    expect(res[0].date).toEqual(date)
+    expect(res[0].message).toEqual('fix: this')
+  })
+
+  test('that error are NOT re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.pulls.listCommits.endpoint.merge = jest.fn().mockRejectedValue({ status: 402 })
+
+    try {
+      await GithubAPI.listCommits(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})
