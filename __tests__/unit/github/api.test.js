@@ -22,6 +22,31 @@ describe('listFiles', () => {
     }
   })
 
+  describe('searchIssuesAndPR', () => {
+    test('return correct data if no error', async () => {
+      const issuesAndPR = [
+        'issues 1',
+        'PR 2'
+      ]
+
+      const res = await GithubAPI.searchIssuesAndPR(Helper.mockContext({ issuesAndPullRequests: issuesAndPR }))
+      expect(res).toEqual(issuesAndPR)
+    })
+
+    test('that error are re-thrown', async () => {
+      const context = Helper.mockContext()
+      context.octokit.search.issuesAndPullRequests = jest.fn().mockRejectedValue({ status: 402 })
+
+      try {
+        await GithubAPI.searchIssuesAndPR(context)
+        // Fail test if above expression doesn't throw anything.
+        expect(true).toBe(false)
+      } catch (e) {
+        expect(e.status).toBe(402)
+      }
+    })
+  })
+
   describe('getContent', () => {
     test('return correct data if no error', async () => {
       const content = 'This is the content'
