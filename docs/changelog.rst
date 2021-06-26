@@ -1,6 +1,7 @@
 CHANGELOG
 =====================================
 
+| June 26, 2021 : feat: Add `payload` filter `#398 <https://github.com/mergeability/mergeable/issues/398>`_
 | March 31, 2021 : feat: add chart support to prometheus servicemonitor `#535 <https://github.com/mergeability/mergeable/pull/535>`_
 | March 30, 2021 : fix: codeowners team
 | March 25, 2021 : feat: Add rate limit related metrics/endpoint `#526 <https://github.com/mergeability/mergeable/pull/526>`_
