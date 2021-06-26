@@ -488,18 +488,18 @@ describe('projectListCards', () => {
 
 describe('listCollaborators', () => {
   test('return correct data if no error', async () => {
-    let collaborators = [
-      {login: 'member1'},
-      {login: 'member2'}
+    const collaborators = [
+      { login: 'member1' },
+      { login: 'member2' }
     ]
 
-    let res = await GithubAPI.listCollaborators(Helper.mockContext({collaborators}))
+    const res = await GithubAPI.listCollaborators(Helper.mockContext({ collaborators }))
     expect(res).toEqual(['member1', 'member2'])
   })
 
   test('that error are re-thrown', async () => {
     const context = Helper.mockContext()
-    context.octokit.repos.listCollaborators = jest.fn().mockRejectedValue({status: 402})
+    context.octokit.repos.listCollaborators = jest.fn().mockRejectedValue({ status: 402 })
 
     try {
       await GithubAPI.listCollaborators(context)
@@ -513,18 +513,18 @@ describe('listCollaborators', () => {
 
 describe('getAllTopics', () => {
   test('return correct data if no error', async () => {
-    let topics = [
+    const topics = [
       'topic 1',
       'topic 2'
     ]
 
-    let res = await GithubAPI.getAllTopics(Helper.mockContext({ repoTopics: topics }))
+    const res = await GithubAPI.getAllTopics(Helper.mockContext({ repoTopics: topics }))
     expect(res).toEqual(topics)
   })
 
   test('that error are re-thrown', async () => {
     const context = Helper.mockContext()
-    context.octokit.repos.getAllTopics = jest.fn().mockRejectedValue({status: 402})
+    context.octokit.repos.getAllTopics = jest.fn().mockRejectedValue({ status: 402 })
 
     try {
       await GithubAPI.getAllTopics(context)
@@ -538,18 +538,18 @@ describe('getAllTopics', () => {
 
 describe('compareCommits', () => {
   test('return correct data if no error', async () => {
-    let diff = [
+    const diff = [
       'file 1',
       'file 2'
     ]
 
-    let res = await GithubAPI.compareCommits(Helper.mockContext({ compareCommits: diff }))
+    const res = await GithubAPI.compareCommits(Helper.mockContext({ compareCommits: diff }))
     expect(res.files).toEqual(diff)
   })
 
   test('that error are re-thrown', async () => {
     const context = Helper.mockContext()
-    context.octokit.repos.compareCommits = jest.fn().mockRejectedValue({status: 402})
+    context.octokit.repos.compareCommits = jest.fn().mockRejectedValue({ status: 402 })
 
     try {
       await GithubAPI.compareCommits(context)
