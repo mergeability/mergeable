@@ -207,9 +207,9 @@ module.exports = {
           listComments: () => {
             return { data: (options.listComments) ? options.listComments : [] }
           },
-          setLabels: jest.fn(),
-          addLabels: jest.fn(),
-          update: jest.fn(),
+          setLabels: jest.fn().mockReturnValue(options.setLabels || 'setLabels call success'),
+          addLabels: jest.fn().mockReturnValue(options.addLabels || 'addLabels call success'),
+          update: jest.fn().mockReturnValue(options.updateIssues || 'update Issues call success'),
           get: () => {
             return { data: (options.deepValidation) ? options.deepValidation : {} }
           }

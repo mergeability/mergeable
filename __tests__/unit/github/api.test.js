@@ -103,3 +103,63 @@ describe('updateChecks', () => {
     }
   })
 })
+
+describe('listLabelsOnIssue', () => {
+  test('return correct data if no error', async () => {
+    const res = await GithubAPI.listLabelsOnIssue(Helper.mockContext({ labels: [{ name: 'one' }, { name: 'two' }] }))
+    expect(res).toEqual(['one', 'two'])
+  })
+
+  test('that error are re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.issues.listLabelsOnIssue = jest.fn().mockRejectedValue({ status: 402 })
+
+    try {
+      await GithubAPI.listLabelsOnIssue(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})
+
+describe('addLabels', () => {
+  test('return correct data if no error', async () => {
+    const res = await GithubAPI.addLabels(Helper.mockContext())
+    expect(res).toEqual('addLabels call success')
+  })
+
+  test('that error are re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.issues.addLabels = jest.fn().mockRejectedValue({ status: 402 })
+
+    try {
+      await GithubAPI.addLabels(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})
+
+describe('setLabels', () => {
+  test('return correct data if no error', async () => {
+    const res = await GithubAPI.setLabels(Helper.mockContext())
+    expect(res).toEqual('setLabels call success')
+  })
+
+  test('that error are re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.issues.setLabels = jest.fn().mockRejectedValue({ status: 402 })
+
+    try {
+      await GithubAPI.setLabels(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})
