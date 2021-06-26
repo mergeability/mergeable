@@ -34,18 +34,18 @@ test('return fail if input does not begins with the rule', async () => {
 })
 
 test('return error if inputs are not in expected format', async () => {
-  const rule = {begins_with: {regex: 'the'}}
+  const rule = { begins_with: { regex: 'the' } }
   const input = 'the test'
   try {
-    let config = beginsWith.process(validatorContext, input, rule)
+    const config = beginsWith.process(validatorContext, input, rule)
     expect(config).toBeUndefined()
   } catch (e) {
-    expect(e.message).toBe(`Failed to run the test because 'match' is not provided for 'begins_with' option. Please check README for more information about configuration`)
+    expect(e.message).toBe('Failed to run the test because \'match\' is not provided for \'begins_with\' option. Please check README for more information about configuration')
   }
 })
 
 const expectMatchToBe = (match, input, result) => {
-  let rule = {begins_with: { match: match }}
+  const rule = { begins_with: { match: match } }
   const res = beginsWith.process(validatorContext, input, rule)
   expect(res.status).toBe(result)
 }

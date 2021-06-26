@@ -70,11 +70,13 @@ class MockHelper {
       .get(path)
       .reply(200, response)
   }
+
   mockListInstallation (options = {}) {
     nock('https://api.github.com')
       .get('/app/installations?per_page=100')
       .reply(200, [{ account: { login: 'testUser' } }])
   }
+
   mockListReposAccessibleToInstallation (options = {}) {
     nock('https://api.github.com')
       .get('/installation/repositories?per_page=100')

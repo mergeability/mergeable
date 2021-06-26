@@ -1,7 +1,7 @@
 const { Filter } = require('../../../lib/filters/filter')
 
 describe('Filter#isEventSupported', () => {
-  let filter = new Filter()
+  const filter = new Filter()
 
   test('Returns correctly with one supported event', () => {
     filter.supportedEvents = ['issues.opened']
@@ -24,7 +24,7 @@ describe('Filter#isEventSupported', () => {
 })
 
 describe('Filter#validateSetting', () => {
-  let filter = new Filter('test')
+  const filter = new Filter('test')
 
   test('throw error if the type mismatch', () => {
     const supportedSettings = {
@@ -55,7 +55,7 @@ describe('Filter#validateSetting', () => {
     let supportedSettings = {
       first: 'string'
     }
-    let settingToValidate = {
+    const settingToValidate = {
       first: 'Test',
       second: 32
     }
@@ -74,7 +74,7 @@ describe('Filter#validateSetting', () => {
   })
 
   test('nested settings work', () => {
-    let supportedSettings = {
+    const supportedSettings = {
       first: 'string',
       second: {
         third: 'number'
@@ -103,7 +103,7 @@ describe('Filter#validateSetting', () => {
   })
 
   test('multiple settings type work', () => {
-    let supportedSettings = {
+    const supportedSettings = {
       first: ['string', 'array']
     }
     let settingToValidate = {

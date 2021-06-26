@@ -15,14 +15,14 @@ const validatorContext = {
     'required']
 }
 test('return pass if input meets the criteria', async () => {
-  const rule = {must_include: {regex: 'test'}}
-  let input = ['A', 'B', 'the test']
-  let res = mustInclude.process(validatorContext, input, rule)
+  const rule = { must_include: { regex: 'test' } }
+  const input = ['A', 'B', 'the test']
+  const res = mustInclude.process(validatorContext, input, rule)
   expect(res.status).toBe('pass')
 })
 
 test('return fail if input does not meet the criteria', async () => {
-  const rule = {must_include: {regex: 'test', message: 'failed Test'}}
+  const rule = { must_include: { regex: 'test', message: 'failed Test' } }
   const input = ['A', 'B']
   const res = mustInclude.process(validatorContext, input, rule)
   expect(res.status).toBe('fail')
@@ -30,18 +30,18 @@ test('return fail if input does not meet the criteria', async () => {
 })
 
 test('return error if inputs are not in expected format', async () => {
-  const rule = {must_include: {count: 'test'}}
+  const rule = { must_include: { count: 'test' } }
   const input = ['the test']
   try {
-    let config = mustInclude.process(validatorContext, input, rule)
+    const config = mustInclude.process(validatorContext, input, rule)
     expect(config).toBeUndefined()
   } catch (e) {
-    expect(e.message).toBe(`Failed to run the test because 'regex' is not provided for 'must_include' option. Please check README for more information about configuration`)
+    expect(e.message).toBe('Failed to run the test because \'regex\' is not provided for \'must_include\' option. Please check README for more information about configuration')
   }
 })
 
 test('check "all" sub option works', async () => {
-  const rule = {must_include: {regex: 'test', all: true}}
+  const rule = { must_include: { regex: 'test', all: true } }
   let input = ['A test', 'B', 'the test']
   let res = mustInclude.process(validatorContext, input, rule)
   expect(res.status).toBe('fail')
@@ -52,7 +52,7 @@ test('check "all" sub option works', async () => {
 })
 
 test('that regex_flag works as expected', async () => {
-  const rule = {must_include: {regex: 'test', regex_flag: 'none'}}
+  const rule = { must_include: { regex: 'test', regex_flag: 'none' } }
   const input = ['A', 'B', 'Test']
   const res = mustInclude.process(validatorContext, input, rule)
   expect(res.status).toBe('fail')

@@ -2,7 +2,7 @@ const { Action } = require('../../../lib/actions/action')
 const Helper = require('../../../__fixtures__/unit/helper')
 
 describe('Action#isEventSupported', () => {
-  let action = new Action()
+  const action = new Action()
 
   test('Returns correctly with one supported event', () => {
     action.supportedEvents = ['issues.opened']
@@ -25,10 +25,10 @@ describe('Action#isEventSupported', () => {
 })
 
 describe('Action#getActionables', () => {
-  let action = new Action()
+  const action = new Action()
 
   test('Returns an item when there is no validation defined', () => {
-    let schedulerResult = {
+    const schedulerResult = {
       validationSuites: []
     }
 
@@ -51,20 +51,20 @@ describe('Action#getActionables', () => {
     schedulerResult = {
       validationSuites: [{
         schedule: {
-          issues: [{number: 1, user: {login: 'scheduler'}}, {number: 2, user: {login: 'scheduler'}}, {number: 3, user: {login: 'scheduler'}}],
+          issues: [{ number: 1, user: { login: 'scheduler' } }, { number: 2, user: { login: 'scheduler' } }, { number: 3, user: { login: 'scheduler' } }],
           pulls: []
         }
       }]
     }
     expect(action.getActionables(
-      Helper.mockContext({eventName: 'schedule'}),
+      Helper.mockContext({ eventName: 'schedule' }),
       schedulerResult).length
     ).toBe(3)
   })
 
   test('when event is not schedule', () => {
-    let schedulerResult = {
-      validationSuites: [{status: {}}]
+    const schedulerResult = {
+      validationSuites: [{ status: {} }]
     }
 
     expect(action.getActionables(

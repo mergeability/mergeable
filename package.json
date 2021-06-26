@@ -39,7 +39,7 @@
     "nodemon": "^2.0.3",
     "object-dot": "^1.7.0",
     "smee-client": "^1.0.1",
-    "standard": "^11.0.0"
+    "standard": "^16.0.3"
   },
   "engines": {
     "node": "14.15.4"

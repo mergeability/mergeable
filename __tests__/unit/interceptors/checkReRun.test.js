@@ -4,8 +4,8 @@ const Helper = require('../../../__fixtures__/unit/helper')
 require('object-dot').extend()
 
 test('context is not modified if pre conditions are not met', async () => {
-  let checkReRun = new CheckReRun()
-  let context = Helper.mockContext()
+  const checkReRun = new CheckReRun()
+  const context = Helper.mockContext()
 
   context.eventName = 'check_run'
   context.payload.action = 'created'
@@ -20,7 +20,7 @@ test('context is not modified if pre conditions are not met', async () => {
   newContext = await checkReRun.process(context)
   expect(newContext.eventName).toBe('check_run')
 
-  context.payload.check_run.pull_requests = [{number: 1}]
+  context.payload.check_run.pull_requests = [{ number: 1 }]
   context.payload.check_run.id = 123
 
   newContext = await checkReRun.process(context)
@@ -28,27 +28,27 @@ test('context is not modified if pre conditions are not met', async () => {
 })
 
 test('#possibleInjection', () => {
-  let checkReRun = new CheckReRun()
+  const checkReRun = new CheckReRun()
 
   expect(
-    checkReRun.possibleInjection(Helper.mockContext(), {id: 1}, {id: 1})
+    checkReRun.possibleInjection(Helper.mockContext(), { id: 1 }, { id: 1 })
   ).toBe(false)
   expect(
-    checkReRun.possibleInjection(Helper.mockContext(), {id: 1}, {id: 2})
+    checkReRun.possibleInjection(Helper.mockContext(), { id: 1 }, { id: 2 })
   ).toBe(true)
 })
 
 test('#process', async () => {
-  let checkReRun = new CheckReRun()
-  let context = Helper.mockContext()
+  const checkReRun = new CheckReRun()
+  const context = Helper.mockContext()
 
   context.eventName = 'check_run'
   context.payload.action = 'rerequested'
   Object.set(context, 'payload.check_run.output.text', mockOutput())
-  context.payload.check_run.pull_requests = [{number: 1}]
+  context.payload.check_run.pull_requests = [{ number: 1 }]
   context.payload.check_run.id = 123
   context.octokit.pulls.get.mockReturnValue({ data: { number: 456 } })
-  let newContext = await checkReRun.process(context)
+  const newContext = await checkReRun.process(context)
 
   expect(newContext.payload.pull_request.number).toBe(456)
   expect(newContext.eventName).toBe('pull_request')
