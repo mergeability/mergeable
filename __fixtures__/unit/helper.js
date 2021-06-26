@@ -219,7 +219,7 @@ module.exports = {
           }
         },
         search: {
-          issuesAndPullRequests: jest.fn().mockReturnValue({data: { items: options.issuesAndPullRequests || [] }})
+          issuesAndPullRequests: jest.fn().mockReturnValue({ data: { items: options.issuesAndPullRequests || [] } })
         }
       },
       probotContext: {
