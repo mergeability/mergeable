@@ -207,6 +207,8 @@ module.exports = {
           listComments: () => {
             return { data: (options.listComments) ? options.listComments : [] }
           },
+          createComment: jest.fn().mockReturnValue(options.createComment || 'createComment call success'),
+          deleteComment: jest.fn().mockReturnValue(options.deleteComment || 'deleteComment call success'),
           addAssignees: jest.fn().mockReturnValue(options.addAssignees || 'addAssignees call success'),
           setLabels: jest.fn().mockReturnValue(options.setLabels || 'setLabels call success'),
           addLabels: jest.fn().mockReturnValue(options.addLabels || 'addLabels call success'),

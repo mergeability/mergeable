@@ -166,7 +166,7 @@ test('remove error comments only remove comments that includes "error" ', async 
   }]
   const context = createMockContext(listComments)
 
-  await comment.removeErrorComments(context)
+  await comment.removeErrorComments(context, comment)
   expect(context.octokit.issues.deleteComment.mock.calls.length).toBe(1)
   expect(context.octokit.issues.deleteComment.mock.calls[0][0].comment_id).toBe('3')
 })
