@@ -657,7 +657,7 @@ describe('listPR', () => {
 
   test('that error are re-thrown', async () => {
     const context = Helper.mockContext()
-    context.octokit.pulls.list = jest.fn().mockRejectedValue({status: 402})
+    context.octokit.pulls.list = jest.fn().mockRejectedValue({ status: 402 })
 
     try {
       await GithubAPI.listPR(context)
@@ -676,13 +676,13 @@ describe('listReviews', () => {
       'review 2'
     ]
 
-    let res = await GithubAPI.listReviews(Helper.mockContext({ reviews }))
+    const res = await GithubAPI.listReviews(Helper.mockContext({ reviews }))
     expect(res).toEqual(reviews)
   })
 
   test('that error are re-thrown', async () => {
     const context = Helper.mockContext()
-    context.octokit.pulls.listReviews.endpoint.merge = jest.fn().mockRejectedValue({status: 402})
+    context.octokit.pulls.listReviews.endpoint.merge = jest.fn().mockRejectedValue({ status: 402 })
 
     try {
       await GithubAPI.listReviews(context)
@@ -708,7 +708,7 @@ describe('listCommits', () => {
       }
     ]
 
-    let res = await GithubAPI.listCommits(Helper.mockContext({ commits }))
+    const res = await GithubAPI.listCommits(Helper.mockContext({ commits }))
     expect(res.length).toEqual(1)
     expect(res[0].date).toEqual(date)
     expect(res[0].message).toEqual('fix: this')
@@ -716,7 +716,7 @@ describe('listCommits', () => {
 
   test('that error are NOT re-thrown', async () => {
     const context = Helper.mockContext()
-    context.octokit.pulls.listCommits.endpoint.merge = jest.fn().mockRejectedValue({status: 402})
+    context.octokit.pulls.listCommits.endpoint.merge = jest.fn().mockRejectedValue({ status: 402 })
 
     try {
       await GithubAPI.listCommits(context)
