@@ -288,13 +288,13 @@ describe('deleteComment', () => {
 
 describe('updateIssues', () => {
   test('return correct data if no error', async () => {
-    let res = await GithubAPI.updateIssues(Helper.mockContext())
+    const res = await GithubAPI.updateIssues(Helper.mockContext())
     expect(res).toEqual('update Issues call success')
   })
 
   test('that error are re-thrown', async () => {
     const context = Helper.mockContext()
-    context.octokit.issues.update = jest.fn().mockRejectedValue({status: 402})
+    context.octokit.issues.update = jest.fn().mockRejectedValue({ status: 402 })
 
     try {
       await GithubAPI.updateIssues(context)
@@ -308,13 +308,13 @@ describe('updateIssues', () => {
 
 describe('getIssues', () => {
   test('return correct data if no error', async () => {
-    let res = await GithubAPI.getIssues(Helper.mockContext({deepValidation: 'get Issue success'}))
+    const res = await GithubAPI.getIssues(Helper.mockContext({ deepValidation: 'get Issue success' }))
     expect(res.data).toEqual('get Issue success')
   })
 
   test('that 404 are simply returned null', async () => {
     const context = Helper.mockContext()
-    context.octokit.issues.getIssue = jest.fn().mockRejectedValue({status: 404})
+    context.octokit.issues.getIssue = jest.fn().mockRejectedValue({ status: 404 })
 
     try {
       await GithubAPI.getIssues(context)
@@ -326,7 +326,7 @@ describe('getIssues', () => {
 
   test('that error are re-thrown', async () => {
     const context = Helper.mockContext()
-    context.octokit.issues.get = jest.fn().mockRejectedValue({status: 402})
+    context.octokit.issues.get = jest.fn().mockRejectedValue({ status: 402 })
 
     try {
       await GithubAPI.getIssues(context)
