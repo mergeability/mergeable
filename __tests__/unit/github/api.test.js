@@ -29,15 +29,16 @@ describe('listFiles', () => {
       context.octokit.repos.getContent = jest.fn().mockReturnValue({
         data: {
           content: Buffer.from(content).toString('base64')
-        }})
+        }
+      })
 
-      let res = await GithubAPI.getContent(context)
+      const res = await GithubAPI.getContent(context)
       expect(res).toEqual(content)
     })
 
     test('that 404 are simply returned null', async () => {
       const context = Helper.mockContext()
-      context.octokit.repos.getContent = jest.fn().mockRejectedValue({status: 404})
+      context.octokit.repos.getContent = jest.fn().mockRejectedValue({ status: 404 })
 
       try {
         await GithubAPI.getContent(context)
@@ -49,7 +50,7 @@ describe('listFiles', () => {
 
     test('that error are re-thrown', async () => {
       const context = Helper.mockContext()
-      context.octokit.repos.getContent = jest.fn().mockRejectedValue({status: 402})
+      context.octokit.repos.getContent = jest.fn().mockRejectedValue({ status: 402 })
 
       try {
         await GithubAPI.getContent(context)
