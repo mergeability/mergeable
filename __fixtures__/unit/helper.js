@@ -179,6 +179,7 @@ module.exports = {
               return { status: 204 }
             }
           },
+          requestReviewers: jest.fn().mockReturnValue(options.requestReviewers || 'request review success'),
           merge: jest.fn().mockReturnValue(options.merge || 'merged'),
           get: jest.fn()
         },
