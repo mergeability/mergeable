@@ -163,3 +163,51 @@ describe('setLabels', () => {
     }
   })
 })
+
+describe('addAssignees', () => {
+  test('return correct data if no error', async () => {
+    const res = await GithubAPI.addAssignees(Helper.mockContext({ labels: [{ name: 'one' }, { name: 'two' }] }))
+    expect(res).toEqual('addAssignees call success')
+  })
+
+  test('that error are re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.issues.addAssignees = jest.fn().mockRejectedValue({ status: 402 })
+
+    try {
+      await GithubAPI.addAssignees(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})
+
+describe('checkUserCanBeAssigned', () => {
+  test('return correct data if no error', async () => {
+    const res = await GithubAPI.checkUserCanBeAssigned(Helper.mockContext(), '1', 'testAssignee')
+    expect(res).toEqual('testAssignee')
+  })
+
+  test('that 404 are simply returned null', async () => {
+    const context = Helper.mockContext()
+    context.octokit.issues.checkUserCanBeAssigned = jest.fn().mockRejectedValue({ status: 404 })
+
+    const res = await GithubAPI.checkUserCanBeAssigned(context, '1', 'testAssignee')
+    expect(res).toEqual(null)
+  })
+
+  test('that error are re-thrown', async () => {
+    const context = Helper.mockContext()
+    context.octokit.issues.checkUserCanBeAssigned = jest.fn().mockRejectedValue({ status: 402 })
+
+    try {
+      await GithubAPI.checkUserCanBeAssigned(context)
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false)
+    } catch (e) {
+      expect(e.status).toBe(402)
+    }
+  })
+})
