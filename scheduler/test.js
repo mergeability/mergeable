@@ -6,6 +6,8 @@ const { Probot, ProbotOctokit } = require('probot')
 
 const payload = require('./fixtures/installation-created.json')
 
+nock.disableNetConnect()
+
 describe('Schedules intervals for a repository', () => {
   let probot
 
@@ -21,7 +23,7 @@ describe('Schedules intervals for a repository', () => {
     createScheduler(probot)
   })
 
-  it('gets a page of repositories', async () => {
+  it('gets a page of repositories', async (done) => {
     nock('https://api.github.com')
       .get('/app/installations')
       .query({ per_page: 1 })
@@ -42,6 +44,7 @@ describe('Schedules intervals for a repository', () => {
       .get('/installation/repositories?per_page=100')
       .reply(200, [{ id: 2 }])
 
-    await Promise.all([probot.receive({ name: 'installation', payload })])
+    await probot.receive({ name: 'installation', payload })
+    await done()
   })
 })
