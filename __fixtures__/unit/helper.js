@@ -130,7 +130,8 @@ module.exports = {
           }
         },
         teams: {
-          listMembersInOrg: options.listMembers ? () => ({ data: options.listMembers }) : () => ({ data: [] })
+          listMembersInOrg: options.listMembers ? () => ({ data: options.listMembers }) : () => ({ data: [] }),
+          getMembershipForUserInOrg: options.membership ? () => ({ data: { state: options.membership } }) : () => ({ data: { state: false } })
         },
         pulls: {
           listFiles: {
@@ -178,7 +179,8 @@ module.exports = {
               return { status: 204 }
             }
           },
-          merge: jest.fn(),
+          requestReviewers: jest.fn().mockReturnValue(options.requestReviewers || 'request review success'),
+          merge: jest.fn().mockReturnValue(options.merge || 'merged'),
           get: jest.fn()
         },
         paginate: jest.fn(async (fn, cb) => {
@@ -207,12 +209,18 @@ module.exports = {
           listComments: () => {
             return { data: (options.listComments) ? options.listComments : [] }
           },
-          setLabels: jest.fn(),
-          addLabels: jest.fn(),
-          update: jest.fn(),
+          createComment: jest.fn().mockReturnValue(options.createComment || 'createComment call success'),
+          deleteComment: jest.fn().mockReturnValue(options.deleteComment || 'deleteComment call success'),
+          addAssignees: jest.fn().mockReturnValue(options.addAssignees || 'addAssignees call success'),
+          setLabels: jest.fn().mockReturnValue(options.setLabels || 'setLabels call success'),
+          addLabels: jest.fn().mockReturnValue(options.addLabels || 'addLabels call success'),
+          update: jest.fn().mockReturnValue(options.updateIssues || 'update Issues call success'),
           get: () => {
             return { data: (options.deepValidation) ? options.deepValidation : {} }
           }
+        },
+        search: {
+          issuesAndPullRequests: jest.fn().mockReturnValue({ data: { items: options.issuesAndPullRequests || [] } })
         }
       },
       probotContext: {
