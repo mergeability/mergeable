@@ -1,5 +1,76 @@
+### Eclipse ###
+.classpath
+.metadata
+.project
+.settings/
+.apt_generated
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+.loadpath
+.recommenders
+
+### Intellij ###
+.idea/
+*.iml
+
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.factorypath
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+
+*.log
+
+### Visual Code
+.vscode/
+.factorypath
+
+### Misc ###
+.DS_Store
+cloud-config
+.version
+tmp/
+null
+**/tests-results
+**/golden-data/
+!/geneva-server/src/**/target
+.scannerwork/
 node_modules
 npm-debug.log
 *.pem
 .env
 coverage
+/node_modules
+/dist
+/tmp
+.env
+/coverage
+/coverage_*
+/artifacts
+.DS_Store
+jsconfig.json
+/test-reports
+/cypress/videos
+/cypress/screenshots
+.classpath
+.project
+.settings/
+.vscode/
+ssl/
+dive.log
+test-dist/
+test-results.xml
+.version
+mochawesome-report/
+mochawesome.json
+mochawesome.html
