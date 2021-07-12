@@ -25,6 +25,10 @@ Change set
       max:
          count: 2 # max number of files in a PR
          message: 'Custom message...'
+      files:
+         added: true
+         modified: false # setting to false is optional
+         deleted: true
       # all of the message sub-option is optional
 
 you can use ``and`` and ``or`` options to create more complex validations
