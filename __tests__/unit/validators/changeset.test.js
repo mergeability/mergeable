@@ -80,13 +80,10 @@ test('correct files are considered based on file status setting', async () => {
       modified: false
     },
     must_include: {
-      regex: 'added_file.js'
+      regex: 'added-file.js'
     },
     must_exclude: {
-      regex: 'modified-file.py'
-    },
-    must_exclude: {
-      regex: 'deleted-file.ts'
+      regex: '(modified-file.py)|(deleted-file.ts)'
     }
   }
 
