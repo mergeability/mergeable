@@ -71,6 +71,45 @@ test('that it validates ends_with correctly', async () => {
   expect(validation.status).toBe('pass')
 })
 
+test('correct files are considered based on file status setting', async () => {
+  const changeset = new Changeset()
+  const settings = {
+    do: 'changeset',
+    files: {
+      added: true,
+      modified: false
+    },
+    must_include: {
+      regex: 'added-file.js'
+    },
+    must_exclude: {
+      regex: '(modified-file.py)|(deleted-file.ts)'
+    }
+  }
+
+  const validation = await changeset.processValidate(createMockContext([{
+    filename: 'added-file.js',
+    status: 'added',
+    additions: 1,
+    changes: 0,
+    deletions: 0
+  }, {
+    filename: 'modified-file.py',
+    status: 'modified',
+    additions: 0,
+    changes: 1,
+    deletions: 0
+  }, {
+    filename: 'deleted-file.ts',
+    status: 'deleted',
+    additions: 0,
+    changes: 0,
+    deletions: 1
+  }]), settings)
+
+  expect(validation.status).toBe('pass')
+})
+
 const createMockContext = (files) => {
   return Helper.mockContext({ files: files })
 }
