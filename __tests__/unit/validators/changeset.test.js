@@ -76,7 +76,7 @@ test('correct files are considered based on file status setting', async () => {
   const settings = {
     do: 'changeset',
     files: {
-      added: true, 
+      added: true,
       modified: false
     },
     must_include: {
