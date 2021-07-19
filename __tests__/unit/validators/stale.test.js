@@ -55,8 +55,17 @@ describe('metadata queries', () => {
 
   })
 
-  test('will set milestones correctly', async () => {
-    const settings = { do: 'stale', days: 10, ignore_milestones: true }
+  test.each([
+    { draft: true, milestones: true, projects: true },
+    { draft: false, milestones: true, projects: true },
+    { draft: true, milestones: false, projects: true },
+    { draft: true, milestones: true, projects: false },
+    { draft: false, milestones: false, projects: true },
+    { draft: true, milestones: false, projects: false },
+    { draft: false, milestones: true, projects: false },
+    { draft: false, milestones: false, projects: false }
+  ])('will set %s correctly', async ({ draft, milestones, projects }) => {
+    const settings = { do: 'stale', days: 10, ignore_drafts: draft, ignore_milestones: milestones, ignore_projects: projects }
 
     const stale = new Stale()
     const context = createMockContext([
@@ -68,64 +77,7 @@ describe('metadata queries', () => {
     // no types specified so we assume both types. Hence none passed to search API.
     expect(isParamsNoType(context)).toBe(true)
     expect(isParamsNoLabel(context)).toBe(true)
-    expect(isMetadataIncluded(context, false, true)).toBe(true)
-    expect(results.schedule.issues.length).toBe(1)
-    expect(results.schedule.pulls.length).toBe(1)
-    expect(results.status).toBe('pass')
-  })
-
-  test('will set projects correctly', async () => {
-    const settings = { do: 'stale', days: 10, ignore_projects: true }
-
-    const stale = new Stale()
-    const context = createMockContext([
-      { number: 1 },
-      { number: 2, pull_request: {} }
-    ])
-
-    const results = await stale.processValidate(context, settings)
-    // no types specified so we assume both types. Hence none passed to search API.
-    expect(isParamsNoType(context)).toBe(true)
-    expect(isParamsNoLabel(context)).toBe(true)
-    expect(isMetadataIncluded(context, true, false)).toBe(true)
-    expect(results.schedule.issues.length).toBe(1)
-    expect(results.schedule.pulls.length).toBe(1)
-    expect(results.status).toBe('pass')
-  })
-
-  test('will not set milestones and projects if not specified', async () => {
-    const settings = { do: 'stale', days: 10 }
-
-    const stale = new Stale()
-    const context = createMockContext([
-      { number: 1 },
-      { number: 2, pull_request: {} }
-    ])
-
-    const results = await stale.processValidate(context, settings)
-    // no types specified so we assume both types. Hence none passed to search API.
-    expect(isParamsNoType(context)).toBe(true)
-    expect(isParamsNoLabel(context)).toBe(true)
-    expect(isMetadataIncluded(context, false, false)).toBe(true)
-    expect(results.schedule.issues.length).toBe(1)
-    expect(results.schedule.pulls.length).toBe(1)
-    expect(results.status).toBe('pass')
-  })
-
-  test('will set projects and milestones correctly', async () => {
-    const settings = { do: 'stale', days: 10, ignore_projects: true, ignore_milestones: true }
-
-    const stale = new Stale()
-    const context = createMockContext([
-      { number: 1 },
-      { number: 2, pull_request: {} }
-    ])
-
-    const results = await stale.processValidate(context, settings)
-    // no types specified so we assume both types. Hence none passed to search API.
-    expect(isParamsNoType(context)).toBe(true)
-    expect(isParamsNoLabel(context)).toBe(true)
-    expect(isMetadataIncluded(context, true, true)).toBe(true)
+    expect(isMetadataIncluded(context, draft, milestones, projects)).toBe(true)
     expect(results.schedule.issues.length).toBe(1)
     expect(results.schedule.pulls.length).toBe(1)
     expect(results.status).toBe('pass')
@@ -396,10 +348,14 @@ const isParamsNoLabel = (context) => {
     ).length === 0
 }
 
-const isMetadataIncluded = (context, project, milestone) => {
+const isMetadataIncluded = (context, draft, milestone, project) => {
   return context.octokit.search.issuesAndPullRequests.mock.calls
     .filter(
-      param => (milestone === param[0].q.includes('no:milestone')) && (project === param[0].q.includes('no:project'))
+      param =>
+        (draft === param[0].q.includes('-is:draft')) &&
+        (project === param[0].q.includes('no:project')) &&
+        (milestone === param[0].q.includes('no:milestone')) &&
+        true
     ).length !== 0
 }
 
