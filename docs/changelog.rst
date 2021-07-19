@@ -1,6 +1,7 @@
 CHANGELOG
 =====================================
-| July 12, 2921 : feat: Filter specific status of files in changeset `#550 <https://github.com/mergeability/mergeable/issues/550>`_
+| July 19, 2021 : feat: Add ignore_drafts option to ignore drafts in stale validator `#565 <https://github.com/mergeability/mergeable/issues/565>`_
+| July 12, 2021 : feat: Filter specific status of files in changeset `#550 <https://github.com/mergeability/mergeable/issues/550>`_
 | June 26, 2021 : feat: Add `payload` filter `#398 <https://github.com/mergeability/mergeable/issues/398>`_
 | March 31, 2021 : feat: add chart support to prometheus servicemonitor `#535 <https://github.com/mergeability/mergeable/pull/535>`_
 | March 30, 2021 : fix: codeowners team
