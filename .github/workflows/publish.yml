@@ -1,0 +1,25 @@
+name: Publish NPM package
+
+on:
+  push:
+    branches: ['master']
+
+jobs:
+  build:
+    name: publish the package to NPM
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.15.4]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm install
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
