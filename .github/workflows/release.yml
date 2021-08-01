@@ -1,12 +1,13 @@
-name: Publish NPM package
+name: Release
 
 on:
   push:
-    branches: ['master']
+    branches:
+      - master
 
 jobs:
   build:
-    name: publish the package to NPM
+    name: Release
     runs-on: ubuntu-latest
 
     strategy:
@@ -15,12 +16,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install
-      - uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          access: 'public'
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
