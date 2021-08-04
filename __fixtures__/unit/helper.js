@@ -41,6 +41,7 @@ module.exports = {
           updated_at: options.updatedAt ? moment(options.updatedAt) : moment(),
           milestone: (options.milestone) ? options.milestone : null,
           requested_reviewers: options.requestedReviewers ? options.requestedReviewers : [],
+          requested_teams: options.requestedTeams ? options.requestedTeams : [],
           base: {
             repo: {
               full_name: options.baseRepo ? options.baseRepo : 'owner/test',
