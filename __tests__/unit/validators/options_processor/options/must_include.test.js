@@ -57,3 +57,18 @@ test('that regex_flag works as expected', async () => {
   const res = mustInclude.process(validatorContext, input, rule)
   expect(res.status).toBe('fail')
 })
+
+test('return pass if input array meets the criteria', async () => {
+  const rule = { must_include: { regex: ['^the\\stest$', 'nothing'] } }
+  const input = ['A', 'B', 'the test']
+  const res = mustInclude.process(validatorContext, input, rule)
+  expect(res.status).toBe('pass')
+})
+
+test('return fail if input array does not meet the criteria', async () => {
+  const rule = { must_include: { regex: ['test', 'another'], message: 'failed array Test' } }
+  const input = ['E', 'F']
+  const res = mustInclude.process(validatorContext, input, rule)
+  expect(res.status).toBe('fail')
+  expect(res.description).toBe('failed array Test')
+})
