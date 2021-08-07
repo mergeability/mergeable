@@ -11,6 +11,19 @@ MustInclude
         message: |
             Your pull request doesn't adhere to the branch naming convention described <a href="some link">there</a>!k
 
+You can also use an array of regex matchers. If any of them match, the validation will pass.
+
+::
+
+    - do: headRef
+      must_include:
+        regex:
+          - "^feature"
+          - "^hotfix"
+          - "^fix"
+        message: |
+            Your pull request doesn't adhere to the branch naming convention described <a href="some link">there</a>!k
+
 .. list-table:: Supported Params
    :widths: 25 50 25 25
    :header-rows: 1
@@ -20,9 +33,9 @@ MustInclude
      - Required
      - Default Message
    * - regex
-     - Regex enabled message to validate input with
+     - Regex or array enabled message to validate input with
      - Yes
-     - 
+     -
    * - message
      - Message to show if the validation fails
      - No

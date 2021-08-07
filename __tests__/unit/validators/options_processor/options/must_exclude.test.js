@@ -56,3 +56,17 @@ test('that regex_flag works as expected', async () => {
   const res = mustExclude.process(validatorContext, input, rule)
   expect(res.status).toBe('pass')
 })
+
+test('return pass if input array meets the criteria', async () => {
+  const rule = { must_exclude: { regex: ['test', 'D'] } }
+  const input = ['A', 'B', 'C']
+  const res = mustExclude.process(validatorContext, input, rule)
+  expect(res.status).toBe('pass')
+})
+
+test('return fail if input array does not meet the criteria', async () => {
+  const rule = { must_exclude: { regex: ['^the', 'F', 'G'] } }
+  const input = ['A', 'B', 'the test']
+  const res = mustExclude.process(validatorContext, input, rule)
+  expect(res.status).toBe('fail')
+})
