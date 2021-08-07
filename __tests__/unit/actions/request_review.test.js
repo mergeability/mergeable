@@ -67,6 +67,40 @@ test('that non collaborator is not requested reviews', async () => {
   expect(context.octokit.pulls.requestReviewers.mock.calls.length).toBe(0)
 })
 
+test('that requested teams are not requested again', async () => {
+  const requester = new RequestReview()
+  const options = {
+    requestedTeams: [{ slug: 'developers' }]
+  }
+
+  const teamSettings = {
+    teams: ['developers']
+  }
+
+  const context = createMockContext(options)
+
+  await requester.afterValidate(context, teamSettings, result)
+  expect(context.octokit.pulls.requestReviewers.mock.calls.length).toBe(0)
+})
+
+test('that requested team reviewers are added', async () => {
+  const requester = new RequestReview()
+  const options = {
+    requestedTeams: [{ slug: 'justice-league' }]
+  }
+
+  const teamSettings = {
+    reviewers: ['shine2lay'],
+    teams: ['developers']
+  }
+
+  const context = createMockContext(options)
+
+  await requester.afterValidate(context, teamSettings, result)
+  expect(context.octokit.pulls.requestReviewers.mock.calls.length).toBe(1)
+  expect(context.octokit.pulls.requestReviewers.mock.calls[0][0].team_reviewers[0]).toBe('developers')
+})
+
 const createMockContext = (options) => {
   const context = Helper.mockContext(options)
 
