@@ -1,5 +1,6 @@
 CHANGELOG
 =====================================
+| August 6, 2021 : feat: Support must_include and must_exclude regex as an array `#575 <https://github.com/mergeability/mergeable/pull/575>`_
 | July 19, 2021 : feat: Add ignore_drafts option to ignore drafts in stale validator `#565 <https://github.com/mergeability/mergeable/issues/565>`_
 | July 12, 2021 : feat: Filter specific status of files in changeset `#550 <https://github.com/mergeability/mergeable/issues/550>`_
 | June 26, 2021 : feat: Add `payload` filter `#398 <https://github.com/mergeability/mergeable/issues/398>`_

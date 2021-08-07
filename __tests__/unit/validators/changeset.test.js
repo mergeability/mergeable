@@ -18,6 +18,29 @@ test('validate returns correctly', async () => {
   expect(validation.status).toBe('fail')
 })
 
+test('supports arrays', async () => {
+  const changeset = new Changeset()
+  const settings = {
+    do: 'changeset',
+    must_include: {
+      regex: [
+        'a.js',
+        'b.js',
+        'c.md'
+      ]
+    }
+  }
+
+  let validation = await changeset.processValidate(createMockContext(['package-lock.json', 'yarn.lock', 'package.json', 'a.js']), settings)
+  expect(validation.status).toBe('pass')
+
+  validation = await changeset.processValidate(createMockContext(['package-lock.json', 'yarn.lock', 'package.json', 'b.js']), settings)
+  expect(validation.status).toBe('pass')
+
+  validation = await changeset.processValidate(createMockContext(['package-lock.json', 'yarn.lock', 'package.json']), settings)
+  expect(validation.status).toBe('fail')
+})
+
 test('fail gracefully if invalid regex', async () => {
   const changeset = new Changeset()
   const settings = {
