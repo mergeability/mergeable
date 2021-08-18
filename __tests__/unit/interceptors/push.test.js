@@ -5,7 +5,7 @@ const processWorkflow = require('../../../lib/flex/lib/processWorkflow')
 require('object-dot').extend()
 
 jest.mock('../../../lib/configuration/configuration', () => ({
-  instanceWithContext: jest.fn().mockReturnValue({hasErrors: jest.fn()})
+  instanceWithContext: jest.fn().mockReturnValue({ hasErrors: jest.fn() })
 }))
 
 jest.mock('../../../lib/flex/lib/processWorkflow')
@@ -26,8 +26,8 @@ describe('push interceptor test', () => {
   })
 
   test('context is not modified if pre conditions are not met', async () => {
-    let push = new Push()
-    let context = mockContextWithConfig(CONFIG_STRING, ['PR1'])
+    const push = new Push()
+    const context = mockContextWithConfig(CONFIG_STRING, ['PR1'])
 
     context.eventName = 'issues'
     context.octokit.pulls.get.mockReturnValue({ data: { number: 456 } })
@@ -43,14 +43,14 @@ describe('push interceptor test', () => {
   })
 
   test('call processWorkflow with modified context', async () => {
-    let push = new Push()
-    let context = mockContextWithConfig(CONFIG_STRING, ['PR1'])
+    const push = new Push()
+    const context = mockContextWithConfig(CONFIG_STRING, ['PR1'])
 
     context.octokit.pulls.get.mockReturnValue({ data: { number: 456 } })
     context.eventName = 'push'
 
     Object.set(context, 'payload.head_commit', mockOutput([], ['.github/mergeable.yml']))
-    let newContext = await push.process(context)
+    const newContext = await push.process(context)
     expect(newContext.eventName).toBe('push')
     expect(processWorkflow.mock.calls.length).toBe(1)
     expect(processWorkflow.mock.calls[0][0].eventName).toBe('pull_request')
@@ -59,21 +59,21 @@ describe('push interceptor test', () => {
   })
 
   test('do nothing if `head_commit` property is null', async () => {
-    let push = new Push()
-    let context = mockContextWithConfig(CONFIG_STRING, ['PR1'])
+    const push = new Push()
+    const context = mockContextWithConfig(CONFIG_STRING, ['PR1'])
 
     context.octokit.pulls.get.mockReturnValue({ data: { number: 456 } })
     context.eventName = 'push'
     context.payload.head_commit = null
 
-    let newContext = await push.process(context)
+    const newContext = await push.process(context)
     expect(newContext.eventName).toBe('push')
     expect(processWorkflow.mock.calls.length).toBe(0)
   })
 })
 
 const mockContextWithConfig = (config, list) => {
-  const context = Helper.mockContext({prList: list})
+  const context = Helper.mockContext({ prList: list })
   context.probotContext = {
     config: jest.fn().mockResolvedValue(yaml.safeLoad(config))
   }

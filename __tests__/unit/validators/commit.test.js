@@ -153,5 +153,5 @@ test('single_commit_only sub option', async () => {
 })
 
 const createMockContext = (commits) => {
-  return Helper.mockContext({commits})
+  return Helper.mockContext({ commits })
 }

@@ -2,9 +2,9 @@ const Label = require('../../../lib/validators/label')
 const Helper = require('../../../__fixtures__/unit/helper')
 
 test('validate returns correctly', async () => {
-  let label = new Label()
+  const label = new Label()
 
-  let settings = {
+  const settings = {
     do: 'label',
     must_exclude: {
       regex: 'wip'
@@ -19,23 +19,23 @@ test('validate returns correctly', async () => {
 })
 
 test('fail gracefully if invalid regex', async () => {
-  let label = new Label()
+  const label = new Label()
 
-  let settings = {
+  const settings = {
     do: 'label',
     must_exclude: {
       regex: '@#$@#$@#$'
     }
   }
 
-  let validation = await label.processValidate(createMockContext('WIP'), settings)
+  const validation = await label.processValidate(createMockContext('WIP'), settings)
   expect(validation.status).toBe('pass')
 })
 
 test('mergeable is false if regex found or true if not when there is only one label', async () => {
-  let label = new Label()
+  const label = new Label()
 
-  let settings = {
+  const settings = {
     do: 'label',
     must_include: {
       regex: 'Some Label'
@@ -50,9 +50,9 @@ test('mergeable is false if regex found or true if not when there is only one la
 })
 
 test('mergeable is false if regex found or true if not when there are multiple labels', async () => {
-  let label = new Label()
+  const label = new Label()
 
-  let settings = {
+  const settings = {
     do: 'label',
     must_include: {
       regex: '456'
@@ -67,9 +67,9 @@ test('mergeable is false if regex found or true if not when there are multiple l
 })
 
 test('description is correct', async () => {
-  let label = new Label()
+  const label = new Label()
 
-  let settings = {
+  const settings = {
     do: 'label',
     must_exclude: {
       regex: 'Work in Progress'
@@ -86,9 +86,9 @@ test('description is correct', async () => {
 })
 
 test('mergeable is true if must_include is one of the label', async () => {
-  let label = new Label()
+  const label = new Label()
 
-  let settings = {
+  const settings = {
     do: 'label',
     must_include: {
       regex: 'abc'
@@ -103,9 +103,9 @@ test('mergeable is true if must_include is one of the label', async () => {
 })
 
 test('mergeable is false if must_exclude is one of the label', async () => {
-  let label = new Label()
+  const label = new Label()
 
-  let settings = {
+  const settings = {
     do: 'label',
     must_exclude: {
       regex: 'xyz'
@@ -120,10 +120,10 @@ test('mergeable is false if must_exclude is one of the label', async () => {
 })
 
 test('that it validates ends_with correctly', async () => {
-  let label = new Label()
-  let match = 'test'
+  const label = new Label()
+  const match = 'test'
 
-  let settings = {
+  const settings = {
     do: 'label',
     ends_with: {
       match: match
@@ -139,9 +139,9 @@ test('that it validates ends_with correctly', async () => {
 })
 
 test('complex Logic test', async () => {
-  let label = new Label()
+  const label = new Label()
 
-  let settings = {
+  const settings = {
     do: 'label',
     or: [{
       and: [{

@@ -4,7 +4,7 @@ const moment = require('moment-timezone')
 
 describe('age validator', () => {
   test('checks that days is validated properly', async () => {
-    let age = new Age()
+    const age = new Age()
     const settings = {
       do: 'age',
       created_at: {
@@ -13,20 +13,20 @@ describe('age validator', () => {
     }
 
     let createdAt = moment().subtract(1, 'hours')
-    let context = mockContext({createdAt: createdAt.toISOString()})
+    let context = mockContext({ createdAt: createdAt.toISOString() })
 
     let timeValidation = await age.processValidate(context, settings)
     expect(timeValidation.status).toBe('fail')
 
     createdAt = moment().subtract(2, 'days')
-    context = mockContext({createdAt: createdAt.toISOString()})
+    context = mockContext({ createdAt: createdAt.toISOString() })
 
     timeValidation = await age.processValidate(context, settings)
     expect(timeValidation.status).toBe('pass')
   })
 
   test('that updated_at option is working', async () => {
-    let age = new Age()
+    const age = new Age()
     const settings = {
       do: 'age',
       updated_at: {
@@ -34,23 +34,23 @@ describe('age validator', () => {
       }
     }
 
-    let createdAt = moment().subtract(3, 'days')
+    const createdAt = moment().subtract(3, 'days')
     let updatedAt = moment().subtract(1, 'hours')
-    let context = mockContext({createdAt: createdAt.toISOString(), updatedAt: updatedAt.toISOString()})
+    let context = mockContext({ createdAt: createdAt.toISOString(), updatedAt: updatedAt.toISOString() })
 
     let timeValidation = await age.processValidate(context, settings)
 
     expect(timeValidation.status).toBe('fail')
 
     updatedAt = moment().subtract(2, 'days')
-    context = mockContext({createdAt: createdAt.toISOString(), updatedAt: updatedAt.toISOString()})
+    context = mockContext({ createdAt: createdAt.toISOString(), updatedAt: updatedAt.toISOString() })
 
     timeValidation = await age.processValidate(context, settings)
     expect(timeValidation.status).toBe('pass')
   })
 
   test('that message option works properly', async () => {
-    let age = new Age()
+    const age = new Age()
     const settings = {
       do: 'age',
       created_at: {
@@ -59,10 +59,10 @@ describe('age validator', () => {
       }
     }
 
-    let createdAt = moment().subtract(1, 'hours')
-    let context = mockContext({createdAt: createdAt.toISOString()})
+    const createdAt = moment().subtract(1, 'hours')
+    const context = mockContext({ createdAt: createdAt.toISOString() })
 
-    let timeValidation = await age.processValidate(context, settings)
+    const timeValidation = await age.processValidate(context, settings)
     expect(timeValidation.status).toBe('fail')
     expect(timeValidation.validations[0].description).toBe('You need to wait at least one day before you can merge the PR')
   })

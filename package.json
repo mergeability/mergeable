@@ -1,5 +1,5 @@
 {
-  "name": "mergeable",
+  "name": "@mergeability/mergeable",
   "version": "2.0.0",
   "description": "",
   "author": "Justin Law <hello@justinlaw.org> (https://github.io/mergeability/mergeable), Shine Lee <aungshine@gmail.com>",
@@ -34,12 +34,12 @@
   },
   "devDependencies": {
     "codecov": "^3.7.2",
-    "jest": "^24.0.0",
-    "nock": "13.0.5",
+    "jest": "^26.6.3",
+    "nock": "13.1.0",
     "nodemon": "^2.0.3",
     "object-dot": "^1.7.0",
     "smee-client": "^1.0.1",
-    "standard": "^11.0.0"
+    "standard": "^16.0.3"
   },
   "engines": {
     "node": "14.15.4"

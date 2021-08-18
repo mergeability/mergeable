@@ -2,7 +2,7 @@ jest.mock('node-fetch')
 
 const Helper = require('../../../__fixtures__/unit/helper')
 const Size = require('../../../lib/validators/size')
-let mockedFetch = require('node-fetch')
+const mockedFetch = require('node-fetch')
 
 describe('PR size validator', () => {
   const FILES = [
@@ -45,7 +45,7 @@ describe('PR size validator', () => {
       }
     }
 
-    let validation = await size.processValidate(createMockContext(FILES), settings)
+    const validation = await size.processValidate(createMockContext(FILES), settings)
     expect(validation.status).toBe('error')
     expect(validation.validations[0].description).toBe('Options max and total cannot be used together. Please choose one')
     expect(validation.validations[0].status).toBe('error')
@@ -63,7 +63,7 @@ describe('PR size validator', () => {
       }
     }
 
-    let validation = await size.processValidate(createMockContext(FILES), settings)
+    const validation = await size.processValidate(createMockContext(FILES), settings)
     expect(validation.status).toBe('fail')
     expect(validation.validations[0].description).toBe('Too big!')
     expect(validation.validations[0].status).toBe('fail')
@@ -75,8 +75,8 @@ describe('PR size validator', () => {
       do: 'size'
     }
 
-    let validation = await size.processValidate(createMockContext(FILES), settings)
-    const ERROR_MESSAGE = `Failed to validate because the 'lines' or 'max / total', 'additions' or 'deletions' option is missing. Please check the documentation.`
+    const validation = await size.processValidate(createMockContext(FILES), settings)
+    const ERROR_MESSAGE = 'Failed to validate because the \'lines\' or \'max / total\', \'additions\' or \'deletions\' option is missing. Please check the documentation.'
     expect(validation.status).toBe('error')
     expect(validation.validations[0].description).toBe(ERROR_MESSAGE)
     expect(validation.validations[0].status).toBe('error')
@@ -102,7 +102,7 @@ describe('PR size validator', () => {
       }
     }
 
-    let validation = await size.processValidate(createMockContext(FILES), settings)
+    const validation = await size.processValidate(createMockContext(FILES), settings)
     expect(validation.status).toBe('fail')
     expect(validation.validations[0].description).toBe('Too big!')
     expect(validation.validations[0].status).toBe('fail')
@@ -132,7 +132,7 @@ describe('PR size validator', () => {
       }
     }
 
-    let validation = await size.processValidate(createMockContext(FILES), settings)
+    const validation = await size.processValidate(createMockContext(FILES), settings)
     expect(validation.status).toBe('pass')
     expect(validation.validations[0].description).toBe('PR size for additions is OK!')
     expect(validation.validations[0].status).toBe('pass')
@@ -162,7 +162,7 @@ describe('PR size validator', () => {
       }
     }
 
-    let validation = await size.processValidate(createMockContext(FILES), settings)
+    const validation = await size.processValidate(createMockContext(FILES), settings)
     expect(validation.status).toBe('fail')
     expect(validation.validations[0].description).toBe('PR size for additions is OK!')
     expect(validation.validations[0].status).toBe('pass')
@@ -193,7 +193,7 @@ describe('PR size validator', () => {
       ignore: ['another.js']
     }
 
-    let validation = await size.processValidate(createMockContext(FILES), settings)
+    const validation = await size.processValidate(createMockContext(FILES), settings)
     expect(validation.status).toBe('pass')
     expect(validation.validations[0].description).toBe('PR size for additions is OK!')
     expect(validation.validations[0].status).toBe('pass')
@@ -223,7 +223,7 @@ describe('PR size validator', () => {
         changes: 15
       }
     ]
-    let validation = await size.processValidate(createMockContext(files), settings)
+    const validation = await size.processValidate(createMockContext(files), settings)
     expect(validation.status).toBe('fail')
     expect(validation.validations[0].description).toBe('Too big!')
     expect(validation.validations[0].status).toBe('fail')
@@ -250,7 +250,7 @@ describe('PR size validator', () => {
       ignore: ['nested/one/*', 'nested/two/**']
     }
 
-    let files = [
+    const files = [
       {
         filename: 'not_too_big.js',
         status: 'modified',
@@ -483,7 +483,7 @@ describe('Size Ignore comment functionality', () => {
       }
     })
 
-    let validation = await size.processValidate(createMockContext(FILES), settings)
+    const validation = await size.processValidate(createMockContext(FILES), settings)
     expect(validation.status).toBe('fail')
   })
 

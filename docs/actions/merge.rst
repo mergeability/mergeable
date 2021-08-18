@@ -9,4 +9,4 @@ Merge
 Supported Events:
 ::
 
-    'pull_request.*'
+    'pull_request.*', 'pull_request_review.*', 'status.*', 'check_suite.*'
