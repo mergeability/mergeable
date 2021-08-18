@@ -3,8 +3,8 @@ const yaml = require('js-yaml')
 
 describe('Description no empty scenarios transformations', () => {
   const verify = (config) => {
-    let res = v1Config.transform(yaml.safeLoad(config))
-    let dv = res.mergeable[0].validate[0]
+    const res = v1Config.transform(yaml.safeLoad(config))
+    const dv = res.mergeable[0].validate[0]
 
     expect(res.mergeable[0].when).toBeDefined()
     expect(dv.do).toBe('description')
@@ -13,7 +13,7 @@ describe('Description no empty scenarios transformations', () => {
   }
 
   test('no_empty using simple config ', () => {
-    let config = `
+    const config = `
     mergeable:
       pull_requests:
         description:
@@ -24,7 +24,7 @@ describe('Description no empty scenarios transformations', () => {
   })
 
   test('no_empty using advanced config ', () => {
-    let config = `
+    const config = `
     mergeable:
       pull_requests:
         description:
@@ -35,7 +35,7 @@ describe('Description no empty scenarios transformations', () => {
   })
 
   test('no-empty using simple config ', () => {
-    let config = `
+    const config = `
     mergeable:
       pull_requests:
         description:
@@ -46,7 +46,7 @@ describe('Description no empty scenarios transformations', () => {
   })
 
   test('no-empty using advanced config ', () => {
-    let config = `
+    const config = `
     mergeable:
       pull_requests:
         description:
@@ -59,15 +59,15 @@ describe('Description no empty scenarios transformations', () => {
 
 describe('Stale scenarios', () => {
   const loadWith = (moreConfig = '', expectedLength = 0) => {
-    let config = `
+    const config = `
     mergeable:
       pull_requests:
         title: 'wip'
     ${moreConfig}
     `
 
-    let res = v1Config.transform(yaml.safeLoad(config))
-    let whenSchedule = res.mergeable.filter(recipe => recipe.when === 'schedule.repository')
+    const res = v1Config.transform(yaml.safeLoad(config))
+    const whenSchedule = res.mergeable.filter(recipe => recipe.when === 'schedule.repository')
     expect(whenSchedule.length).toBe(expectedLength)
     return whenSchedule
   }
@@ -77,7 +77,7 @@ describe('Stale scenarios', () => {
   })
 
   test('Configuration in pulls only.', () => {
-    let whenSchedule = loadWith(`
+    const whenSchedule = loadWith(`
         stale:
           days: 20
           message: 'This is issue is stale. Please follow up!'
@@ -87,7 +87,7 @@ describe('Stale scenarios', () => {
   })
 
   test('Configuration in issues only', () => {
-    let whenSchedule = loadWith(`
+    const whenSchedule = loadWith(`
       issues:
         stale:
           days: 20
@@ -99,7 +99,7 @@ describe('Stale scenarios', () => {
   })
 
   test('Configuration in both pull and issues', () => {
-    let whenSchedule = loadWith(`
+    const whenSchedule = loadWith(`
         stale:
           days: 20
       issues:
@@ -114,12 +114,12 @@ describe('Stale scenarios', () => {
 })
 
 test('check that proper format is returned, including default pass, fail and error', async () => {
-  let config = `
+  const config = `
   mergeable:
     pull_requests:
       title: 'wip'
   `
-  let res = v1Config.transform(yaml.safeLoad(config))
+  const res = v1Config.transform(yaml.safeLoad(config))
   expect(res.mergeable[0].when).toBeDefined()
   expect(res.mergeable[0].pass).toBeDefined()
   expect(res.mergeable[0].fail).toBeDefined()
@@ -127,12 +127,12 @@ test('check that proper format is returned, including default pass, fail and err
 })
 
 test('checks that the content is tranformed correctly', async () => {
-  let config = `
+  const config = `
   mergeable:
     pull_requests:
       title: 'wip'
   `
-  let res = v1Config.transform(yaml.safeLoad(config))
+  const res = v1Config.transform(yaml.safeLoad(config))
   const validate = res.mergeable[0].validate
 
   expect(validate[0].do).toBe('title')
@@ -142,7 +142,7 @@ test('checks that the content is tranformed correctly', async () => {
 })
 
 test('check all the simple config is transformed accurately', async () => {
-  let config = `
+  const config = `
   mergeable:
     pull_requests:
       # Minimum of 5 approvals is needed.
@@ -167,7 +167,7 @@ test('check all the simple config is transformed accurately', async () => {
         # Regular expression to be tested on the title. Not mergeable when true.
         title: 'wip'
   `
-  let res = v1Config.transform(yaml.safeLoad(config))
+  const res = v1Config.transform(yaml.safeLoad(config))
   const validate = res.mergeable
   expect(validate.length).toBe(3)
   const issues = (validate.filter(item => item.when.includes('issues')))[0].validate
@@ -248,7 +248,7 @@ test('checks all advanced config is transformed accurately', async () => {
           regex: 'jibberish'
           message: 'Custom message...'
    `
-  let res = v1Config.transform(yaml.safeLoad(config))
+  const res = v1Config.transform(yaml.safeLoad(config))
   const events = res.mergeable
 
   expect(events.length).toBe(5)
@@ -296,7 +296,7 @@ test('checks all advanced config is transformed accurately', async () => {
 })
 
 test('check that and/or logic is transformed correctly', async () => {
-  let config = `
+  const config = `
   mergeable:
     label:
       or:
@@ -311,7 +311,7 @@ test('check that and/or logic is transformed correctly', async () => {
             regex: 'release note: no'
             message: 'Please include release note: no'
   `
-  let res = v1Config.transform(yaml.safeLoad(config))
+  const res = v1Config.transform(yaml.safeLoad(config))
   const validate = res.mergeable
   expect(validate.length).toBe(2)
   const pr = (validate.filter(item => item.when.includes('pull_request')))[0].validate

@@ -1,6 +1,11 @@
 CHANGELOG
 =====================================
-
+| August 6, 2021 : feat: Add team assignment to request_review action `#574 <https://github.com/mergeability/mergeable/pull/574>`_
+| August 6, 2021 : feat: Support must_include and must_exclude regex as an array `#575 <https://github.com/mergeability/mergeable/pull/575>`_
+| July 19, 2021 : feat: Add ignore_drafts option to ignore drafts in stale validator `#565 <https://github.com/mergeability/mergeable/issues/565>`_
+| July 12, 2021 : feat: Filter specific status of files in changeset `#550 <https://github.com/mergeability/mergeable/issues/550>`_
+| June 26, 2021 : feat: Add `payload` filter `#398 <https://github.com/mergeability/mergeable/issues/398>`_
+| March 31, 2021 : feat: add chart support to prometheus servicemonitor `#535 <https://github.com/mergeability/mergeable/pull/535>`_
 | March 30, 2021 : fix: codeowners team
 | March 25, 2021 : feat: Add rate limit related metrics/endpoint `#526 <https://github.com/mergeability/mergeable/pull/526>`_
 | February 25, 2021 : feat: add feature to limit approval to a list of users `#509 <https://github.com/mergeability/mergeable/issues/509>`_

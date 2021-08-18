@@ -23,7 +23,7 @@ test('check that labels setting accepts an array', async () => {
 
   await labels.afterValidate(context, settings)
   expect(context.octokit.issues.addLabels.mock.calls.length).toBe(1)
-  expect(context.octokit.issues.addLabels.mock.calls[0][0].labels).toStrictEqual({'labels': ['testLabel', '2ndTestLabel']})
+  expect(context.octokit.issues.addLabels.mock.calls[0][0].labels).toStrictEqual({ labels: ['testLabel', '2ndTestLabel'] })
 })
 
 test('check that labels setting defaults to add mode', async () => {
@@ -36,7 +36,7 @@ test('check that labels setting defaults to add mode', async () => {
 
   await labels.afterValidate(context, settings)
   expect(context.octokit.issues.addLabels.mock.calls.length).toBe(1)
-  expect(context.octokit.issues.addLabels.mock.calls[0][0].labels).toStrictEqual({'labels': ['testLabel', '2ndTestLabel']})
+  expect(context.octokit.issues.addLabels.mock.calls[0][0].labels).toStrictEqual({ labels: ['testLabel', '2ndTestLabel'] })
 })
 
 test('check that set mode works', async () => {
@@ -50,7 +50,7 @@ test('check that set mode works', async () => {
 
   await labels.afterValidate(context, settings)
   expect(context.octokit.issues.setLabels.mock.calls.length).toBe(1)
-  expect(context.octokit.issues.setLabels.mock.calls[0][0].labels).toStrictEqual({'labels': ['testLabel', '2ndTestLabel']})
+  expect(context.octokit.issues.setLabels.mock.calls[0][0].labels).toStrictEqual({ labels: ['testLabel', '2ndTestLabel'] })
 })
 
 test('check that delete mode works', async () => {
@@ -64,7 +64,7 @@ test('check that delete mode works', async () => {
 
   await labels.afterValidate(context, settings)
   expect(context.octokit.issues.setLabels.mock.calls.length).toBe(1)
-  expect(context.octokit.issues.setLabels.mock.calls[0][0].labels).toStrictEqual({'labels': ['test2', 'label1']})
+  expect(context.octokit.issues.setLabels.mock.calls[0][0].labels).toStrictEqual({ labels: ['test2', 'label1'] })
 })
 
 test('check that issues from scheduler are labelled', async () => {
@@ -73,18 +73,18 @@ test('check that issues from scheduler are labelled', async () => {
   const settings = {
     labels: ['testLabel', '2ndTestLabel']
   }
-  let schedulerResult = {}
+  const schedulerResult = {}
   schedulerResult.validationSuites = [{
     schedule: {
-      issues: [{number: 1, user: {login: 'scheduler'}}, {number: 2, user: {login: 'scheduler'}}, {number: 3, user: {login: 'scheduler'}}],
+      issues: [{ number: 1, user: { login: 'scheduler' } }, { number: 2, user: { login: 'scheduler' } }, { number: 3, user: { login: 'scheduler' } }],
       pulls: []
     }
   }]
   await labels.afterValidate(context, settings, '', schedulerResult)
   expect(context.octokit.issues.addLabels.mock.calls.length).toBe(3)
-  expect(context.octokit.issues.addLabels.mock.calls[0][0].labels).toStrictEqual({'labels': ['testLabel', '2ndTestLabel']})
-  expect(context.octokit.issues.addLabels.mock.calls[1][0].labels).toStrictEqual({'labels': ['testLabel', '2ndTestLabel']})
-  expect(context.octokit.issues.addLabels.mock.calls[2][0].labels).toStrictEqual({'labels': ['testLabel', '2ndTestLabel']})
+  expect(context.octokit.issues.addLabels.mock.calls[0][0].labels).toStrictEqual({ labels: ['testLabel', '2ndTestLabel'] })
+  expect(context.octokit.issues.addLabels.mock.calls[1][0].labels).toStrictEqual({ labels: ['testLabel', '2ndTestLabel'] })
+  expect(context.octokit.issues.addLabels.mock.calls[2][0].labels).toStrictEqual({ labels: ['testLabel', '2ndTestLabel'] })
 })
 
 test('check that labels from scheduler are deleted', async () => {
@@ -94,18 +94,18 @@ test('check that labels from scheduler are deleted', async () => {
     labels: ['*Label*', 'test1'],
     mode: 'delete'
   }
-  let schedulerResult = {}
+  const schedulerResult = {}
   schedulerResult.validationSuites = [{
     schedule: {
-      issues: [{number: 1, user: {login: 'scheduler'}}, {number: 2, user: {login: 'scheduler'}}, {number: 3, user: {login: 'scheduler'}}],
+      issues: [{ number: 1, user: { login: 'scheduler' } }, { number: 2, user: { login: 'scheduler' } }, { number: 3, user: { login: 'scheduler' } }],
       pulls: []
     }
   }]
   await labels.afterValidate(context, settings, '', schedulerResult)
   expect(context.octokit.issues.setLabels.mock.calls.length).toBe(3)
-  expect(context.octokit.issues.setLabels.mock.calls[0][0].labels).toStrictEqual({'labels': ['test2', 'label1']})
-  expect(context.octokit.issues.setLabels.mock.calls[1][0].labels).toStrictEqual({'labels': ['test2', 'label1']})
-  expect(context.octokit.issues.setLabels.mock.calls[2][0].labels).toStrictEqual({'labels': ['test2', 'label1']})
+  expect(context.octokit.issues.setLabels.mock.calls[0][0].labels).toStrictEqual({ labels: ['test2', 'label1'] })
+  expect(context.octokit.issues.setLabels.mock.calls[1][0].labels).toStrictEqual({ labels: ['test2', 'label1'] })
+  expect(context.octokit.issues.setLabels.mock.calls[2][0].labels).toStrictEqual({ labels: ['test2', 'label1'] })
 })
 
 test('check that labels from scheduler are set', async () => {
@@ -115,18 +115,18 @@ test('check that labels from scheduler are set', async () => {
     labels: ['testLabel', '2ndTestLabel'],
     mode: 'replace'
   }
-  let schedulerResult = {}
+  const schedulerResult = {}
   schedulerResult.validationSuites = [{
     schedule: {
-      issues: [{number: 1, user: {login: 'scheduler'}}, {number: 2, user: {login: 'scheduler'}}, {number: 3, user: {login: 'scheduler'}}],
+      issues: [{ number: 1, user: { login: 'scheduler' } }, { number: 2, user: { login: 'scheduler' } }, { number: 3, user: { login: 'scheduler' } }],
       pulls: []
     }
   }]
   await labels.afterValidate(context, settings, '', schedulerResult)
   expect(context.octokit.issues.setLabels.mock.calls.length).toBe(3)
-  expect(context.octokit.issues.setLabels.mock.calls[0][0].labels).toStrictEqual({'labels': ['testLabel', '2ndTestLabel']})
-  expect(context.octokit.issues.setLabels.mock.calls[1][0].labels).toStrictEqual({'labels': ['testLabel', '2ndTestLabel']})
-  expect(context.octokit.issues.setLabels.mock.calls[2][0].labels).toStrictEqual({'labels': ['testLabel', '2ndTestLabel']})
+  expect(context.octokit.issues.setLabels.mock.calls[0][0].labels).toStrictEqual({ labels: ['testLabel', '2ndTestLabel'] })
+  expect(context.octokit.issues.setLabels.mock.calls[1][0].labels).toStrictEqual({ labels: ['testLabel', '2ndTestLabel'] })
+  expect(context.octokit.issues.setLabels.mock.calls[2][0].labels).toStrictEqual({ labels: ['testLabel', '2ndTestLabel'] })
 })
 
 const createMockContext = (labels = [], eventName = undefined) => {

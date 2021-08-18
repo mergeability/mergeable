@@ -60,7 +60,7 @@ module.exports = (app, options) => {
     // Wait a random delay to more evenly distribute requests
     const delay = options.delay ? options.interval * Math.random() : 0
 
-    app.log.debug({ repository, delay, interval: options.interval }, `Scheduling interval`)
+    app.log.debug({ repository, delay, interval: options.interval }, 'Scheduling interval')
 
     intervals[repository.id] = setTimeout(() => {
       const event = {
@@ -114,7 +114,7 @@ module.exports = (app, options) => {
   }
 
   function stop (repository) {
-    app.log.info({ repository }, `Canceling interval`)
+    app.log.info({ repository }, 'Canceling interval')
 
     clearInterval(intervals[repository.id])
   }

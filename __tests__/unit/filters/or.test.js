@@ -23,7 +23,7 @@ describe('Or Filter Unit Test', () => {
         }
       ]
     }
-    let filter = await or.processFilter(createMockContext([ 'Topic 1' ]), settings, registry)
+    const filter = await or.processFilter(createMockContext(['Topic 1']), settings, registry)
     expect(filter.status).toBe('fail')
   })
 
@@ -50,7 +50,7 @@ describe('Or Filter Unit Test', () => {
         }
       ]
     }
-    let filter = await or.processFilter(createMockContext([ 'Topic 1' ]), settings, registry)
+    const filter = await or.processFilter(createMockContext(['Topic 1']), settings, registry)
     expect(filter.status).toBe('pass')
   })
 
@@ -77,7 +77,7 @@ describe('Or Filter Unit Test', () => {
         }
       ]
     }
-    let filter = await or.processFilter(createMockContext([ 'Topic 1' ]), settings, registry)
+    const filter = await or.processFilter(createMockContext(['Topic 1']), settings, registry)
     expect(filter.status).toBe('pass')
   })
 
@@ -86,7 +86,7 @@ describe('Or Filter Unit Test', () => {
     const settings = {
       do: 'or'
     }
-    let filter = await or.processFilter(createMockContext([ 'Topic 1' ]), settings, registry)
+    const filter = await or.processFilter(createMockContext(['Topic 1']), settings, registry)
     expect(filter.status).toBe('error')
   })
 
@@ -96,7 +96,7 @@ describe('Or Filter Unit Test', () => {
       do: 'or',
       filter: ''
     }
-    let filter = await or.processFilter(createMockContext([ 'Topic 1' ]), settings, registry)
+    const filter = await or.processFilter(createMockContext(['Topic 1']), settings, registry)
     expect(filter.status).toBe('error')
   })
 
@@ -106,7 +106,7 @@ describe('Or Filter Unit Test', () => {
       do: 'or',
       filter: []
     }
-    let filter = await or.processFilter(createMockContext([ 'Topic 1' ]), settings, registry)
+    const filter = await or.processFilter(createMockContext(['Topic 1']), settings, registry)
     expect(filter.status).toBe('error')
   })
 
@@ -118,7 +118,7 @@ describe('Or Filter Unit Test', () => {
         { do: 'missing' }
       ]
     }
-    let filter = await or.processFilter(createMockContext([ 'Topic 1' ]), settings, registry)
+    const filter = await or.processFilter(createMockContext(['Topic 1']), settings, registry)
     expect(filter.status).toBe('error')
   })
 
@@ -159,7 +159,7 @@ describe('Or Filter Unit Test', () => {
       ]
     }
 
-    let filter = await or.processFilter(createMockContext([ 'Topic 2' ]), settings, registry)
+    const filter = await or.processFilter(createMockContext(['Topic 2']), settings, registry)
     expect(filter.status).toBe('pass')
   })
 
@@ -200,7 +200,7 @@ describe('Or Filter Unit Test', () => {
       ]
     }
 
-    let filter = await or.processFilter(createMockContext([ 'Topic 2' ]), settings, registry)
+    const filter = await or.processFilter(createMockContext(['Topic 2']), settings, registry)
     expect(filter.status).toBe('error')
   })
 })

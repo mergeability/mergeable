@@ -31,7 +31,7 @@ test('check that merge is called for status events', async () => {
   const context = Helper.mockContext({ checkIfMerged, eventName: 'status' })
   context.octokit.search = {
     issuesAndPullRequests: jest.fn().mockReturnValue({
-      data: { items: [{pull_request: true, number: 1}, {pull_request: false, number: 2}] }
+      data: { items: [{ pull_request: true, number: 1 }, { pull_request: false, number: 2 }] }
     })
   }
   context.octokit.pulls.get.mockReturnValue({ data: { mergeable_state: 'clean', state: 'open' } })

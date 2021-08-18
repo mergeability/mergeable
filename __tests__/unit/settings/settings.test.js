@@ -28,7 +28,6 @@ describe('Loading bad settings', () => {
       Promise.reject(
         new HttpError(
           '{"message":"Not Found","documentation_url":"https://developer.github.com/v3/repos/contents/#get-contents"}',
-          404,
           404)
       )
     )
@@ -156,12 +155,12 @@ describe('settings file fetching', () => {
         `
 
     // intialize context with empty config
-    let emptyConfig = '{}'
+    const emptyConfig = '{}'
     const parsedSettings = yaml.safeLoad(settingsString)
-    let context = createMockGhSettings(emptyConfig)
+    const context = createMockGhSettings(emptyConfig)
     process.env.USE_SETTINGS_CACHE = true
-    let settingsCache = Settings.getCache()
-    let repo = context.repo()
+    const settingsCache = Settings.getCache()
+    const repo = context.repo()
     settingsCache.set(`${repo.owner}/${repo.repo}/settings`, parsedSettings)
     context.event = 'push'
     context.payload.head_commit = { added: ['.github/mergeable.settings.yml'] }
@@ -169,7 +168,7 @@ describe('settings file fetching', () => {
     const settings = await Settings.fetchSettingsFile(context)
     expect(context.octokit.repos.getContent.mock.calls.length).toEqual(1)
     expect(settings).toEqual(parsedSettings)
-    let keys = await settingsCache.keys()
+    const keys = await settingsCache.keys()
     expect(keys.length).toEqual(1)
   })
 })
@@ -188,12 +187,10 @@ const createMockGhSettings = (settings, options) => {
   return context
 }
 
-// to mimic HttpError (https://github.com/octokit/rest.js/blob/fc8960ccf3415b5d77e50372d3bb873cfec80c55/lib/request/http-error.js)
 class HttpError extends Error {
-  constructor (message, code, status) {
+  constructor (message, status) {
     super(message)
     this.message = message
-    this.code = code
     this.status = status
   }
 }

@@ -6,6 +6,7 @@ Stale
     - do: stale
       days: 20 # number of days ago.
       type: pull_request, issues # what items to search for.
+      ignore_drafts: true # if set to true, the stale check will ignore draft items
       ignore_milestones: true # if set to true, the stale check will ignore items that have an associated milestone
       ignore_projects: true # if set to true, the stale check will ignore items that have an associated project
       label: # optional property to filter the items that are actioned upon

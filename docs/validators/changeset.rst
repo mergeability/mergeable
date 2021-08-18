@@ -25,6 +25,11 @@ Change set
       max:
          count: 2 # max number of files in a PR
          message: 'Custom message...'
+      files: # status of files to be included in changeset. If no 'files' option is provided, all files are included. 
+         added: true # default: false. If true, added files are included.
+         modified: false # default: false. If true, modified files are included.
+         deleted: true # default: false. If true, deleted files are included. 
+      # note that setting file status sub-options (added, modified, deleted) to false is optional.
       # all of the message sub-option is optional
 
 you can use ``and`` and ``or`` options to create more complex validations

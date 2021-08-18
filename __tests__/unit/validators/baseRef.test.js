@@ -2,23 +2,23 @@ const BaseRef = require('../../../lib/validators/baseRef')
 const Helper = require('../../../__fixtures__/unit/helper')
 
 test('fail gracefully if invalid regex', async () => {
-  let baseRef = new BaseRef()
+  const baseRef = new BaseRef()
 
-  let settings = {
+  const settings = {
     do: 'baseRef',
     must_exclude: {
       regex: '@#$@#$@#$'
     }
   }
 
-  let baseRefValidation = await baseRef.processValidate(mockContext('WIP BaseRef'), settings)
+  const baseRefValidation = await baseRef.processValidate(mockContext('WIP BaseRef'), settings)
   expect(baseRefValidation.status).toBe('pass')
 })
 
 test('checks that it fail when exclude regex is in baseRef', async () => {
-  let baseRef = new BaseRef()
+  const baseRef = new BaseRef()
 
-  let settings = {
+  const settings = {
     do: 'baseRef',
     must_include: {
       regex: '^\\(feat\\)|^\\(doc\\)|^\\(fix\\)'
@@ -36,12 +36,12 @@ test('checks that it fail when exclude regex is in baseRef', async () => {
 })
 
 test('checks that advance setting of must_include works', async () => {
-  let baseRef = new BaseRef()
+  const baseRef = new BaseRef()
 
-  let includeList = `^\\(feat\\)|^\\(doc\\)|^\\(fix\\)`
-  let testMessage = 'this is a test message'
+  const includeList = '^\\(feat\\)|^\\(doc\\)|^\\(fix\\)'
+  const testMessage = 'this is a test message'
 
-  let settings = {
+  const settings = {
     do: 'baseRef',
     must_include: {
       regex: includeList,
@@ -62,6 +62,6 @@ test('checks that advance setting of must_include works', async () => {
 })
 
 const mockContext = baseRef => {
-  let context = Helper.mockContext({ baseRef: baseRef })
+  const context = Helper.mockContext({ baseRef: baseRef })
   return context
 }
