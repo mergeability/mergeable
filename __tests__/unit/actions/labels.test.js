@@ -2,6 +2,76 @@ const Labels = require('../../../lib/actions/labels')
 const Helper = require('../../../__fixtures__/unit/helper')
 const UnSupportedSettingError = require('../../../lib/errors/unSupportedSettingError')
 
+test('check that replace replaces existing labels', async () => {
+  const labels = new Labels()
+  const context = createMockContext(['drop_label'])
+
+  const settings = {
+    replace: ['work in progress', 'development']
+  }
+
+  await labels.afterValidate(context, settings)
+  expect(context.octokit.issues.setLabels.mock.calls.length).toBe(1)
+  expect(context.octokit.issues.setLabels.mock.calls[0][0].labels).toStrictEqual({ labels: settings.replace })
+})
+
+test('check that add appends to existing labels', async () => {
+  const labels = new Labels()
+  const context = createMockContext(['another label', 'test label'])
+
+  const settings = {
+    add: ['production', 'deploy']
+  }
+
+  await labels.afterValidate(context, settings)
+  expect(context.octokit.issues.setLabels.mock.calls.length).toBe(1)
+  expect(context.octokit.issues.setLabels.mock.calls[0][0].labels).toStrictEqual({ labels: ['another label', 'test label', 'production', 'deploy'] })
+})
+
+test('check that delete removes from existing labels', async () => {
+  const labels = new Labels()
+  const context = createMockContext(['another label', 'test label', 'delete me', 'delete this too'])
+
+  const settings = {
+    delete: ['delete me', 'delete this too']
+  }
+
+  await labels.afterValidate(context, settings)
+  expect(context.octokit.issues.setLabels.mock.calls.length).toBe(1)
+  expect(context.octokit.issues.setLabels.mock.calls[0][0].labels).toStrictEqual({ labels: ['another label', 'test label'] })
+})
+
+test('check the order of replace, add, delete', async () => {
+  const labels = new Labels()
+  const context = createMockContext(['original label', 'another label'])
+
+  // order of operations is replace, then add, then delete
+  const settings = {
+    delete: ['not present', 'more adds'],
+    add: ['addition', 'more adds'],
+    replace: ['test present', 'not present']
+  }
+
+  await labels.afterValidate(context, settings)
+  expect(context.octokit.issues.setLabels.mock.calls.length).toBe(1)
+  expect(context.octokit.issues.setLabels.mock.calls[0][0].labels).toStrictEqual({ labels: ['test present', 'addition'] })
+})
+
+test('check that settings can be a single value', async () => {
+  const labels = new Labels()
+  const context = createMockContext(['original label', 'another label', 'delete me'])
+
+  const settings = {
+    delete: 'deletion',
+    add: 'addition',
+    replace: 'replace'
+  }
+
+  await labels.afterValidate(context, settings)
+  expect(context.octokit.issues.setLabels.mock.calls.length).toBe(1)
+  expect(context.octokit.issues.setLabels.mock.calls[0][0].labels).toStrictEqual({ labels: ['replace', 'addition'] })
+})
+
 test('check that unknown mode throw errors', async () => {
   const labels = new Labels()
   const context = Helper.mockContext()
