@@ -138,6 +138,7 @@ These Options are used with validators.
 Options List
 
 .. toctree::
+    options/boolean.rst
     options/begins_with.rst
     options/ends_with.rst
     options/jira.rst
