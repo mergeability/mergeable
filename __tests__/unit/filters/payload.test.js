@@ -77,3 +77,37 @@ test('that proper errors are returned if the field does not exit', async () => {
   const filter = await payload.processFilter(context, settings)
   expect(filter.status).toBe('error')
 })
+
+test('that boolean checks succeed', async () => {
+  const payload = new Payload()
+
+  const settings = {
+    do: 'payload',
+    pull_request: {
+      draft: {
+        boolean: {
+          match: true
+        }
+      }
+    }
+  }
+
+  const context = {
+    payload: {
+      repository: {
+        full_name: 'test-repo'
+      },
+      pull_request: {
+        draft: true
+      }
+    }
+  }
+
+  let filter = await payload.processFilter(context, settings)
+  expect(filter.status).toBe('pass')
+
+  context.payload.pull_request.draft = false
+
+  filter = await payload.processFilter(context, settings)
+  expect(filter.status).toBe('fail')
+})
