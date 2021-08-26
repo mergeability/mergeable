@@ -1,5 +1,6 @@
 CHANGELOG
 =====================================
+| August 26, 2021 : feat: Add boolean option for payload filter `#583 <https://github.com/mergeability/mergeable/pull/583>`_
 | August 10, 2021 : feat: New labels API `#577 <https://github.com/mergeability/mergeable/pull/577>`_
 | August 6, 2021 : feat: Add team assignment to request_review action `#574 <https://github.com/mergeability/mergeable/pull/574>`_
 | August 6, 2021 : feat: Support must_include and must_exclude regex as an array `#575 <https://github.com/mergeability/mergeable/pull/575>`_
