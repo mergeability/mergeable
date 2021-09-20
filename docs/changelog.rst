@@ -1,5 +1,6 @@
 CHANGELOG
 =====================================
+| September 20, 2021 : fix: Check that getRouter is defined before attempting to access it `#587 <https://github.com/mergeability/mergeable/pull/587>`_
 | August 26, 2021 : fix: Await GithubAPI topics response `#585 <https://github.com/mergeability/mergeable/pull/585>`_
 | August 10, 2021 : feat: New labels API `#577 <https://github.com/mergeability/mergeable/pull/577>`_
 | August 6, 2021 : feat: Add team assignment to request_review action `#574 <https://github.com/mergeability/mergeable/pull/574>`_
