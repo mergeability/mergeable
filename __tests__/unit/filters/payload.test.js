@@ -181,3 +181,69 @@ test('that checks work against objects in an array with must_exclude', async () 
   filter = await payload.processFilter(context, settings)
   expect(filter.status).toBe('fail')
 })
+
+test('that proper errors are returned if a key is required but not provided in must_include', async () => {
+  const payload = new Payload()
+
+  const settings = {
+    do: 'payload',
+    pull_request: {
+      labels: {
+        must_include: {
+          regex: 'foo'
+        }
+      }
+    }
+  }
+
+  const context = {
+    payload: {
+      repository: {
+        full_name: 'test-repo'
+      },
+      pull_request: {
+        labels: [
+          {
+            name: 'foo'
+          }
+        ]
+      }
+    }
+  }
+
+  const filter = await payload.processFilter(context, settings)
+  expect(filter.status).toBe('error')
+})
+
+test('that proper errors are returned if a key is required but not provided in must_exclude', async () => {
+  const payload = new Payload()
+
+  const settings = {
+    do: 'payload',
+    pull_request: {
+      labels: {
+        must_exclude: {
+          regex: 'foo'
+        }
+      }
+    }
+  }
+
+  const context = {
+    payload: {
+      repository: {
+        full_name: 'test-repo'
+      },
+      pull_request: {
+        labels: [
+          {
+            name: 'bar'
+          }
+        ]
+      }
+    }
+  }
+
+  const filter = await payload.processFilter(context, settings)
+  expect(filter.status).toBe('error')
+})
