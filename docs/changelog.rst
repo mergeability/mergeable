@@ -1,6 +1,7 @@
 CHANGELOG
 =====================================
 | September 27, 2021 : fix: use node version 14.17.6 for the release action `#591 <https://github.com/mergeability/mergeable/pull/591>`_
+| September 25, 2021: feat: Support for objects in arrays in the payload filter `#589 <https://github.com/mergeability/mergeable/pull/589>`_
 | September 20, 2021 : fix: Check that getRouter is defined before attempting to access it `#587 <https://github.com/mergeability/mergeable/pull/587>`_
 | August 26, 2021 : fix: Await GithubAPI topics response `#585 <https://github.com/mergeability/mergeable/pull/585>`_
 | August 10, 2021 : feat: New labels API `#577 <https://github.com/mergeability/mergeable/pull/577>`_
