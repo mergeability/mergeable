@@ -1,11 +1,11 @@
 Payload
 ^^^^^^^^^^^^^^
 
-Check against any available fields within the payload, each event can have different field, please refer to `github API documentation for<https://docs.github.com/en/developers/webhooks-and-events/webhook-events-and-payloads>`_ available fields.
+Check against any available fields within the payload, each event can have different field, please refer to `github API documentation for <https://docs.github.com/en/developers/webhooks-and-events/webhook-events-and-payloads>`_ for available fields.
 
 An example to check if a pull_request_review event has `state` of `changes_requested`
 
-.. codeblock:: yml
+::
 
       - do: payload
         review:
@@ -14,16 +14,30 @@ An example to check if a pull_request_review event has `state` of `changes_reque
               regex: 'changes_requested'
 
 
+An example to check if a pull_request event has a `label` named `foo`
+
+::
+
+      - do: payload
+        pull_request:
+          labels:
+            must_include:
+              regex: 'foo'
+              key: 'name'
+
+
 Each field must be checked using one of the following options
 
-.. codeblock:: yml
+::
 
       must_include:
         regex: 'This text must be included'
         regex_flag: 'none' # Optional. Specify the flag for Regex. default is 'i', to disable default use 'none'
+        key: 'name' # Optional. If checking an array of objects, this specifies the key to check.
       must_exclude:
         regex: 'Text to exclude'
         regex_flag: 'none' # Optional. Specify the flag for Regex. default is 'i', to disable default use 'none'
+        key: 'name' # Optional. If checking an array of objects, this specifies the key to check.
 
 
 Supported Events:
