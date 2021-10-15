@@ -1,6 +1,8 @@
-const BooleanMatch = require('../../../../../lib/validators/options_processor/options/boolean')
+const BooleanMatch = require('../../../../../lib/filters/options_processor/options/boolean')
 
-const validatorContext = {
+const filterContext = undefined
+
+const filter = {
   name: 'payload',
   supportedOptions: [
     'boolean',
@@ -10,7 +12,7 @@ const validatorContext = {
 
 const verify = (match, input, result) => {
   const rule = { boolean: { match } }
-  const res = BooleanMatch.process(validatorContext, input, rule)
+  const res = BooleanMatch.process(filterContext, filter, input, rule)
   expect(res.status).toBe(result)
   return res
 }
@@ -34,7 +36,7 @@ test('return error if inputs are not in expected format', async () => {
   const rule = { boolean: { match: true } }
   const input = ['true']
   try {
-    const config = BooleanMatch.process(validatorContext, input, rule)
+    const config = BooleanMatch.process(filterContext, filter, input, rule)
     expect(config).toBeUndefined()
   } catch (e) {
     expect(e.message).toBe('Input type invalid, expected strings "true" or "false", or boolean literal `true` or `false` as input')
