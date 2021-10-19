@@ -200,3 +200,29 @@ Add 2 checks to the PR
                   - do: title
                     begins_with:
                       match: [ 'some prefix' ]
+
+
+Only run rules if PR is not a draft
+"""""""""""""""""""""""
+Checks that the PR's draft state is false before running actions.
+
+::
+
+    version: 2
+    mergeable:
+      - when: pull_request.*, pull_request_review.*
+        name: 'Draft check'
+        validate:
+          - do: payload
+            pull_request:
+              draft:
+                boolean:
+                  match: false
+        pass:
+          - do: comment
+            payload:
+              body: This PR is NOT a draft!
+        fail:
+          - do: comment
+            payload:
+              body: This PR is STILL a draft!
