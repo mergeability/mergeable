@@ -20,6 +20,8 @@ Approvals
         teams: ['org/team_slug'] # when the option is present, only the approvals from the team members will count
         users: ['user1', 'user2'] # when the option is present, approvals from users in this list will count
         owners: true # Optional boolean. When true, the file .github/CODEOWNER is read and only owners approval will count
+      exclude:
+        users: ['bot1', 'bot2'] # when the option is present, approvals from users in this list will NOT count
 
 
 .. note::
