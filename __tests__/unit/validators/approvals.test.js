@@ -115,6 +115,30 @@ test('mergeable is false if required member(s) has not approved', async () => {
   expect(validation.validations[0].description).toBe('approval: userC required')
 })
 
+test('mergeable is false if excluded member(s) has approved', async () => {
+  const approval = new Approval()
+  const reviewList = [
+    {
+      user: {
+        login: 'userA'
+      },
+      state: 'APPROVED'
+    }
+  ]
+  const settings = {
+    do: 'approval',
+    min: {
+      count: 1
+    },
+    exclude: {
+      users: ['userA']
+    }
+  }
+
+  const validation = await approval.processValidate(createMockContext(5, reviewList), settings)
+  expect(validation.validations[0].description).toBe('approval count is less than "1"')
+})
+
 test('mergeable passes if required user has approved', async () => {
   const approval = new Approval()
   const reviewList = [
