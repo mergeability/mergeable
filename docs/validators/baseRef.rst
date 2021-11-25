@@ -26,4 +26,4 @@ Simple example:
 Supported Events:
 ::
 
-    'pull_request.*', 'pull_request_review.*'
+    'pull_request.*', 'pull_request_review.*', 'check_suite.*'
