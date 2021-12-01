@@ -47,7 +47,7 @@ module.exports = {
               full_name: options.baseRepo ? options.baseRepo : 'owner/test',
               private: (options.repoPrivate) ? options.repoPrivate : false
             },
-            ref: 'baseRef',
+            ref: options.baseRef ? options.baseRef : 'baseRef',
             sha: 'sha2'
           },
           head: {
