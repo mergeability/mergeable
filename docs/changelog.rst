@@ -1,5 +1,6 @@
 CHANGELOG
 =====================================
+| November 25, 2021: feat: Add more supported events to baseRef validator `#395 <https://github.com/mergeability/mergeable/issues/395#issuecomment-975763927>` _
 | November 12, 2021 : feat: Add baseRef filter `#596 <https://github.com/mergeability/mergeable/pull/596>`_
 | October 19, 2021 : feat: Add validator approval option to exclude users `#594 <https://github.com/mergeability/mergeable/pull/594>`_
 | October 12, 2021 : feat: Add boolean option for payload filter `#583 <https://github.com/mergeability/mergeable/pull/583>`_
