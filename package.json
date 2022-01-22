@@ -27,7 +27,7 @@
     "lodash": "^4.17.20",
     "minimatch": "^3.0.4",
     "moment-timezone": "^0.5.31",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.1.1",
     "p-iteration": "^1.1.8",
     "probot": "11.0.1",
     "prom-client": "^13.1.0"
