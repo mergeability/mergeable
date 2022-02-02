@@ -94,6 +94,44 @@ test('that it validates ends_with correctly', async () => {
   expect(validation.status).toBe('pass')
 })
 
+test('that it validates must_include with all:true correctly', async () => {
+  const changeset = new Changeset()
+  const settings = {
+    do: 'changeset',
+    must_include: {
+      regex: '^\\w+\\.md$',
+      all: true
+    }
+  }
+
+  // This is all .md files, so should pass all: true
+  let validation = await changeset.processValidate(createMockContext(['test.md', 'another.md', 'something.md']), settings)
+  expect(validation.status).toBe('pass')
+
+  // This is not all .md files, so should fail all: true
+  validation = await changeset.processValidate(createMockContext(['test.md', 'not_md.js', 'another.md']), settings)
+  expect(validation.status).toBe('fail')
+})
+
+test('that it validates must_exclude with all:true correctly', async () => {
+  const changeset = new Changeset()
+  const settings = {
+    do: 'changeset',
+    must_exclude: {
+      regex: '^\\w+\\.md$',
+      all: true
+    }
+  }
+
+  // This doesn't contain any .md files, so should pass all: true
+  let validation = await changeset.processValidate(createMockContext(['test.js', 'another.py', 'something.txt']), settings)
+  expect(validation.status).toBe('pass')
+
+  // This contains 1 .md file, so you should fail exclude all
+  validation = await changeset.processValidate(createMockContext(['another.py', 'test.md', 'something.txt']), settings)
+  expect(validation.status).toBe('fail')
+})
+
 test('correct files are considered based on file status setting', async () => {
   const changeset = new Changeset()
   const settings = {
