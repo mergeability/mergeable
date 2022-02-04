@@ -39,8 +39,6 @@ mergeable:
     pass:
       - do: merge
         merge_method: 'squash'
-        commit_title: 'HELLO!!! {{ title }} (#{{ number }})'
-        commit_message: '{{ body }}'
       - do: checks
         status: 'success'
 
