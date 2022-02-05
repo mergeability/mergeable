@@ -139,3 +139,21 @@ test('check that commit_title and commit_message options support templating', as
   expect(context.octokit.pulls.merge.mock.calls[0][0].commit_title).toBe('some pr (#10)')
   expect(context.octokit.pulls.merge.mock.calls[0][0].commit_message).toBe('some message')
 })
+
+test('check that commit_title and commit_message options support empty string', async () => {
+  const merge = new Merge()
+  const checkIfMerged = false
+  const context = Helper.mockContext({ checkIfMerged })
+  context.octokit.pulls.get.mockReturnValue({ data: { mergeable_state: 'clean', state: 'open', title: 'some pr', body: 'some message', number: 10 } })
+  const settings = {
+    merge_method: 'squash',
+    commit_title: '',
+    commit_message: ''
+  }
+
+  await merge.afterValidate(context, settings)
+  expect(context.octokit.pulls.merge.mock.calls.length).toBe(1)
+  expect(context.octokit.pulls.merge.mock.calls[0][0].merge_method).toBe('squash')
+  expect(context.octokit.pulls.merge.mock.calls[0][0].commit_title).toBe('')
+  expect(context.octokit.pulls.merge.mock.calls[0][0].commit_message).toBe('')
+})
