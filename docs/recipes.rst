@@ -226,3 +226,46 @@ Checks that the PR's draft state is false before running actions.
           - do: comment
             payload:
               body: This PR is STILL a draft!
+
+
+
+
+Allow commits only if they contain a Issue ID (like an Azure DevOps Work Item)
+"""""""""""""""""""""""
+Checks that the PR's draft state is false before running actions.
+
+::
+
+version: 2
+mergeable:
+  - when: pull_request.*
+    validate:
+      - do: commit
+        message:
+            regex: '^(AB#[0-9]{1,})' #check if all commit messages begin with an AzDO Work Item
+    pass: 
+      - do: comment
+        payload:
+          body: >
+           <h2>Successfully checked for Azure Work Item IDs in commits</h2>
+           <h3>All commits in your PR have Azure Board Work Item IDs. Ready for Review!</h3>
+           :+1:
+      - do: labels
+        add: 'Ready for Review'
+    fail:
+      - do: comment
+        payload:
+          body: >
+            :warning: 
+            <h2>Azure Boards Work Item IDs missing in commits</h2>
+            <h3>Some commits messages were found not having the Azure Boards Work Item ID (AB#1234).</h3>
+            <h3>We will close this PR for now.</h3>
+            <h3>To resolve, please do one of the following</h3>
+            <ul>
+              <li>Identify your Azure Boards Work Item ID and <a href="https://gist.github.com/nepsilon/156387acf9e1e72d48fa35c4fabef0b4">amend your commits</a>. Then re-open the PR</li>
+              <li>In case you do not have a Work Item ID to reference, please discuss with your reviewer(s) for alternate options</li>
+            </ul>
+      - do: labels
+        add: 'Non-Compliant'
+      - do: close
+      
