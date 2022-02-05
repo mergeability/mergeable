@@ -100,6 +100,8 @@ test('check that merge_method option works correctly', async () => {
   await merge.afterValidate(context, settings)
   expect(context.octokit.pulls.merge.mock.calls.length).toBe(1)
   expect(context.octokit.pulls.merge.mock.calls[0][0].merge_method).toBe('squash')
+  expect(context.octokit.pulls.merge.mock.calls[0][0].commit_title).toBe(undefined)
+  expect(context.octokit.pulls.merge.mock.calls[0][0].commit_message).toBe(undefined)
 })
 
 test('check that commit_title and commit_message options work correctly', async () => {
