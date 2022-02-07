@@ -4,7 +4,12 @@ Merge
 ::
 
     - do: merge
-      merge_method: 'merge' # Optional , default is 'merge'. Other options : 'rebase', 'squash'
+      merge_method: 'merge' # Optional, default is 'merge'. Other options : 'rebase', 'squash'
+      # template variables for next two items come from result of https://docs.github.com/en/rest/reference/pulls#get-a-pull-request
+      # use triple curly braces to avoid html escaping
+      commit_title: '{{{ title }}} (#{{{ number }}})' # Optional, override commit title
+      commit_message: '{{{ body }}}' # Optional, override commit message
+
 
 Supported Events:
 ::
