@@ -22,10 +22,10 @@
 
 Some examples of what you can do:
 
-- Ensure pull requests follow conventions and [prevent merging](#pull-requests) when it is not followed.
-- [Notify author of failed guidelines](#issues) when opening an issue.
-- Schedule [detection for obsolete (stale) issues and pull requests](#staleness) and notify author and collaborators.
-- And [more](#configuration)
+- Ensure pull requests follow conventions and [prevent merging][comment-if-guidelines-not-met] when it is not followed.
+- [Notify author of failed guidelines][comment] when opening an issue.
+- Schedule [detection for obsolete (stale) issues and pull requests][staleness] and notify author and collaborators.
+- And [more][configuration]
 
 ---
 
@@ -54,3 +54,8 @@ We need your help:
   - Logo by [@minap0lis](https://www.instagram.com/minap0lis/)  👉  follow her on [Instagram](https://www.instagram.com/minap0lis/).
 ---
 AGPL, Copyright (c) 2019 [Justin Law](https://github.com/jusx) & [Shine Lee](https://github.com/shine2lay)
+
+[comment-if-guidelines-not-met]: https://mergeable.readthedocs.io/en/latest/recipes.html#comment-if-guidelines-not-met
+[comment]: https://mergeable.readthedocs.io/en/latest/actions/comment.html
+[staleness]: https://mergeable.readthedocs.io/en/latest/recipes.html#check-stale-pr-and-issues
+[configuration]: https://mergeable.readthedocs.io/en/latest/configuration.html
