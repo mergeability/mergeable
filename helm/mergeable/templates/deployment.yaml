@@ -18,6 +18,9 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       labels:
+        {{- if .Values.labels -}}
+        {{ toYaml .Values.labels | nindent 8 }}
+        {{- end -}}
         {{- include "mergeable.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
