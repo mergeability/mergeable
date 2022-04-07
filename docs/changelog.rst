@@ -1,5 +1,6 @@
 CHANGELOG
 =====================================
+| April 7, 2022: feat: Support adding deployment labels from values `#631 <https://github.com/mergeability/mergeable/pull/631>`_
 | March 22, 2022: fix: pass comment instance to removeErrorComments `#626 <https://github.com/mergeability/mergeable/pull/626>`_
 | February 24, 2022: fix: correct indentation on documentation `#623 <https://github.com/mergeability/mergeable/pull/623>`_
 | February 8, 2022: feat: Allow all option on must_include and must_include inside changeset validator `#611 <https://github.com/mergeability/mergeable/pull/611>`_
