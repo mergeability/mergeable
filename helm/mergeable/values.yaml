@@ -107,9 +107,6 @@ prometheus:
 
 ## Redis for cache
 redis:
-  usePassword: false
-  cluster:
-    enabled: false
   master:
     podLabels: {}
     service:
@@ -119,3 +116,5 @@ redis:
       enabled: true
       subPath: "mergeable"
       size: 512Mi
+  replica:
+    replicaCount: 0
