@@ -12,4 +12,4 @@ You can request specific reviews from specific reviewers, teams, or both
 Supported Events:
 ::
 
-    'pull_request.*', 'issues.*'
+    'pull_request.*'
