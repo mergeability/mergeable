@@ -1,6 +1,7 @@
 CHANGELOG
 =====================================
-| August 20, 2022: fix: supported events for `request_review` action `#623 <https://github.com/mergeability/mergeable/pull/651>`_
+| August 25, 2022: fix: set fallback value for `description` payload `#655 <https://github.com/mergeability/mergeable/pull/655>`_
+| August 20, 2022: fix: supported events for `request_review` action `#651 <https://github.com/mergeability/mergeable/pull/651>`_
 | August 2, 2022: feat: Add newest_only commit validation setting `#649 <https://github.com/mergeability/mergeable/pull/649>`_
 | April 7, 2022: feat: Support adding deployment labels from values `#631 <https://github.com/mergeability/mergeable/pull/631>`_
 | March 22, 2022: fix: pass comment instance to removeErrorComments `#626 <https://github.com/mergeability/mergeable/pull/626>`_
