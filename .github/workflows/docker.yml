@@ -7,8 +7,13 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read
+
 jobs:
   init:
+    permissions:
+      contents: none
     runs-on: ubuntu-latest
     outputs:
       do_docker: ${{ steps.vars.outputs.IS_DOCKERHUB_PUSH }}
