@@ -76,6 +76,44 @@ test('oldest_only sub option', async () => {
   expect(validation.status).toBe('pass')
 })
 
+test('newest_only sub option', async () => {
+  const commit = new Commit()
+  const settings = {
+    do: 'commit',
+    message: {
+      regex: 'feat:',
+      newest_only: true
+    }
+  }
+  const date = Date.now()
+  const commits = [
+    {
+      commit: {
+        author: {
+          date
+        },
+        message: 'fix: that'
+      }
+    },
+    {
+      commit: {
+        author: {
+          date: date + 1
+        },
+        message: 'fix: this'
+      }
+    }
+  ]
+
+  let validation = await commit.processValidate(createMockContext(commits), settings)
+  expect(validation.status).toBe('fail')
+
+  commits[1].commit.message = 'feat: this'
+
+  validation = await commit.processValidate(createMockContext(commits), settings)
+  expect(validation.status).toBe('pass')
+})
+
 test('skip_merge sub option', async () => {
   const commit = new Commit()
   const settings = {
