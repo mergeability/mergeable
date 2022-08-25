@@ -31,6 +31,8 @@ test('return pass if input meets the criteria', () => {
 
 test('return fail if input does not meet the criteria', () => {
   verify(true, '', [], 'fail')
+  verify(true, null, [], 'fail')
+  verify(true, undefined, [], 'fail')
   verify(false, '', [''], 'pass')
 })
 
