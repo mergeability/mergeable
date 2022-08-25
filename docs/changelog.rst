@@ -1,5 +1,6 @@
 CHANGELOG
 =====================================
+| August 26, 2022: set fallback for `no_empty` options processor `#657 <https://github.com/mergeability/mergeable/pull/657>`_
 | August 25, 2022: fix: set fallback value for `description` payload `#655 <https://github.com/mergeability/mergeable/pull/655>`_
 | August 20, 2022: fix: supported events for `request_review` action `#651 <https://github.com/mergeability/mergeable/pull/651>`_
 | August 2, 2022: feat: Add newest_only commit validation setting `#649 <https://github.com/mergeability/mergeable/pull/649>`_
