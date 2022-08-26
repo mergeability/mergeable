@@ -43,7 +43,7 @@ test('return error if input does not meet the criteria', () => {
     const config = noEmpty.process(validatorContext, input, rule)
     expect(config).toBeDefined()
   } catch (e) {
-    expect(e.message).toBe('Input type invalid, expected string as input')
+    expect(e.message).toBe('Input type invalid, expected string or Array as input')
   }
 
   input = [1]
@@ -51,7 +51,7 @@ test('return error if input does not meet the criteria', () => {
     const config = noEmpty.process(validatorContext, input, rule)
     expect(config).toBeDefined()
   } catch (e) {
-    expect(e.message).toBe('Input type invalid, expected string as input')
+    expect(e.message).toBe('Input type invalid, expected string or Array as input')
   }
 })
 
