@@ -31,7 +31,28 @@ test('return pass if input meets the criteria', () => {
 
 test('return fail if input does not meet the criteria', () => {
   verify(true, '', [], 'fail')
+  verify(true, null, [], 'fail')
+  verify(true, undefined, [], 'fail')
   verify(false, '', [''], 'pass')
+})
+
+test('return error if input does not meet the criteria', () => {
+  const rule = { no_empty: { enabled: true } }
+  let input = 1
+  try {
+    const config = noEmpty.process(validatorContext, input, rule)
+    expect(config).toBeDefined()
+  } catch (e) {
+    expect(e.message).toBe('Input type invalid, expected string or Array as input')
+  }
+
+  input = [1]
+  try {
+    const config = noEmpty.process(validatorContext, input, rule)
+    expect(config).toBeDefined()
+  } catch (e) {
+    expect(e.message).toBe('Input type invalid, expected string or Array as input')
+  }
 })
 
 test('return error if inputs are not in expected format', async () => {
