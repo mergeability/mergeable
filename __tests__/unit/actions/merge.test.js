@@ -1,30 +1,6 @@
 const Merge = require('../../../lib/actions/merge')
 const Helper = require('../../../__fixtures__/unit/helper')
 
-test('check that merge is called if PR has not been merged', async () => {
-  const merge = new Merge()
-  const checkIfMerged = false
-  const context = Helper.mockContext({ checkIfMerged })
-  context.octokit.pulls.get.mockReturnValue({ data: { mergeable_state: 'clean', state: 'open' } })
-  const settings = {}
-
-  await merge.afterValidate(context, settings)
-  expect(context.octokit.pulls.merge.mock.calls.length).toBe(1)
-  expect(context.octokit.pulls.merge.mock.calls[0][0].merge_method).toBe('merge')
-})
-
-test('check that merge is called for review events', async () => {
-  const merge = new Merge()
-  const checkIfMerged = false
-  const context = Helper.mockContext({ checkIfMerged, eventName: 'pull_request_review' })
-  context.octokit.pulls.get.mockReturnValue({ data: { mergeable_state: 'clean', state: 'open' } })
-  const settings = {}
-
-  await merge.afterValidate(context, settings)
-  expect(context.octokit.pulls.merge.mock.calls.length).toBe(1)
-  expect(context.octokit.pulls.merge.mock.calls[0][0].merge_method).toBe('merge')
-})
-
 test('check that merge is called for status events', async () => {
   const merge = new Merge()
   const checkIfMerged = false
@@ -43,10 +19,15 @@ test('check that merge is called for status events', async () => {
   expect(context.octokit.pulls.merge.mock.calls[0][0].merge_method).toBe('merge')
 })
 
-test('check that merge is called for check suite events', async () => {
+test.each([
+  undefined,
+  'pull_request_review',
+  'check_suite',
+  'issue_comment'
+])('check that merge is called for %s events', async (eventName) => {
   const merge = new Merge()
   const checkIfMerged = false
-  const context = Helper.mockContext({ checkIfMerged, eventName: 'check_suite' })
+  const context = Helper.mockContext({ checkIfMerged, eventName })
   context.octokit.pulls.get.mockReturnValue({ data: { mergeable_state: 'clean', state: 'open' } })
   const settings = {}
 
