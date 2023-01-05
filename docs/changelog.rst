@@ -1,5 +1,6 @@
 CHANGELOG
 =====================================
+| January 04, 2023: feat:Added user information for commit validator `#n/a <https://github.com/mergeability/mergeable/pull/682>`_
 | September 28, 2022: feat: Add last comment validator `#668 <https://github.com/mergeability/mergeable/pull/668>`_
 | August 26, 2022: set fallback for `no_empty` options processor `#657 <https://github.com/mergeability/mergeable/pull/657>`_
 | August 25, 2022: fix: set fallback value for `description` payload `#655 <https://github.com/mergeability/mergeable/pull/655>`_
