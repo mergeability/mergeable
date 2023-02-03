@@ -159,6 +159,7 @@ Operator List
 .. toctree::
     operators/and.rst
     operators/or.rst
+    operators/not.rst
 
 
 Actions
