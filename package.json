@@ -29,7 +29,7 @@
     "moment-timezone": "^0.5.31",
     "node-fetch": "^2.6.1",
     "p-iteration": "^1.1.8",
-    "probot": "11.0.1",
+    "probot": "12.3.0",
     "prom-client": "^13.1.0"
   },
   "devDependencies": {
