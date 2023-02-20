@@ -6,7 +6,11 @@ Author
       - do: author
         must_include:
             regex: 'user-1'
-            message: 'Custom message...'
+            message: 'Custom include message...'
+        must_exclude:
+            regex: 'user-2'
+            message: 'Custom exclude message...'
+        team: 'org/team-slug'  # verify that the author is in the team
         # all of the message sub-option is optional
 
 you can use ``and`` and ``or`` options to create more complex filters
