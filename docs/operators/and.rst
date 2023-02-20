@@ -1,7 +1,7 @@
 And
 ^^^^^^^^^^
 
-``And`` and ``Or`` can be used to create more complex validation/filter check
+``And``, ``Or``, and ``Not`` can be used to create more complex validation/filter check
 
 ::
 
@@ -20,7 +20,7 @@ And
         - do: label
           must_include: 'Ready to Merge'
 
-you can also create nested ``And`` and ``Or``
+you can also create nested ``And``, ``Or``, and ``Not``
 
 ::
 
