@@ -1,5 +1,6 @@
 CHANGELOG
 =====================================
+| February 27, 2023: fix: Extend checks supported events `#700 <https://github.com/mergeability/mergeable/pull/700>`_
 | February 03, 2023: feat: Add team option to author filter `#696 <https://github.com/mergeability/mergeable/pull/696>`_
 | February 3, 2023: chore: Update node version for release workflow `#699 <https://github.com/mergeability/mergeable/pull/699>`_
 | February 3, 2023: feat: Add Not operator `#695 <https://github.com/mergeability/mergeable/pull/695>`_
