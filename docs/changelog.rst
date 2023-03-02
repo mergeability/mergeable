@@ -1,5 +1,6 @@
 CHANGELOG
 =====================================
+| March 1, 2023: feat:Added user information for commit validator `#682 <https://github.com/mergeability/mergeable/pull/682>`_
 | February 03, 2023: feat: Add team option to author filter `#696 <https://github.com/mergeability/mergeable/pull/696>`_
 | February 3, 2023: chore: Update node version for release workflow `#699 <https://github.com/mergeability/mergeable/pull/699>`_
 | February 3, 2023: feat: Add Not operator `#695 <https://github.com/mergeability/mergeable/pull/695>`_

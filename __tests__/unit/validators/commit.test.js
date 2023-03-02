@@ -14,7 +14,14 @@ test('validate returns correctly', async () => {
     {
       commit: {
         author: {
-          date
+          date,
+          name: 'Monalisa Octocat',
+          email: 'support@github.com'
+        },
+        committer: {
+          date,
+          name: 'Valdis Ferdinand',
+          email: 'valdis@github.com'
         },
         message: 'fix: this'
       }
@@ -22,7 +29,14 @@ test('validate returns correctly', async () => {
     {
       commit: {
         author: {
-          date: date + 1
+          date: date + 1,
+          name: 'Monalisa Octocat1',
+          email: 'support1@github.com'
+        },
+        committer: {
+          date: date + 1,
+          name: 'Valdis Ferdinand1',
+          email: 'valdis1@github.com'
         },
         message: 'feat: that'
       }
@@ -188,6 +202,164 @@ test('single_commit_only sub option', async () => {
   validation = await commit.processValidate(createMockContext(commits), settings)
   expect(validation.status).toBe('fail')
   expect(validation.validations[0].description).toBe('Some or all of your commit messages doesn\'t meet the criteria')
+})
+
+test('author_email option should be used', async () => {
+  const commit = new Commit()
+  const settings = {
+    do: 'commit',
+    message: {
+      regex: '^[A-Za-z0-9._%+-]+@github.com$',
+      message_type: 'author_email'
+    }
+  }
+  const date = Date.now()
+  const commits = [
+    {
+      commit: {
+        author: {
+          date,
+          name: 'Monalisa Octocat',
+          email: 'support@github.com'
+        },
+        committer: {
+          date,
+          name: 'Valdis Ferdinand',
+          email: 'valdis@github.com'
+        },
+        message: 'fix: this'
+      }
+    },
+    {
+      commit: {
+        author: {
+          date: date + 1,
+          name: 'Monalisa Octocat1',
+          email: 'support1@github.com'
+        },
+        committer: {
+          date: date + 1,
+          name: 'Valdis Ferdinand1',
+          email: 'valdis1@github.com'
+        },
+        message: 'feat: that'
+      }
+    }
+  ]
+
+  const validation = await commit.processValidate(createMockContext(commits), settings)
+  expect(validation.status).toBe('pass')
+})
+
+test('author_email option should match the regex', async () => {
+  const commit = new Commit()
+  const settings = {
+    do: 'commit',
+    message: {
+      regex: '^[A-Za-z0-9._%+-]+@github.com$',
+      message_type: 'author_email'
+    }
+  }
+  const date = Date.now()
+  const commits = [
+    {
+      commit: {
+        author: {
+          date: date + 1,
+          name: 'Monalisa Octocat1',
+          email: 'support1@github1.com'
+        },
+        committer: {
+          date: date + 1,
+          name: 'Valdis Ferdinand1',
+          email: 'valdis1@github1.com'
+        },
+        message: 'feat: that'
+      }
+    }
+  ]
+
+  const validation = await commit.processValidate(createMockContext(commits), settings)
+  expect(validation.status).toBe('fail')
+})
+
+test('committer_email option should be used', async () => {
+  const commit = new Commit()
+  const settings = {
+    do: 'commit',
+    message: {
+      regex: '^[A-Za-z0-9._%+-]+@github.com$',
+      message_type: 'committer_email'
+    }
+  }
+  const date = Date.now()
+  const commits = [
+    {
+      commit: {
+        author: {
+          date,
+          name: 'Monalisa Octocat',
+          email: 'support@github.com'
+        },
+        committer: {
+          date,
+          name: 'Valdis Ferdinand',
+          email: 'valdis@github.com'
+        },
+        message: 'fix: this'
+      }
+    },
+    {
+      commit: {
+        author: {
+          date: date + 1,
+          name: 'Monalisa Octocat1',
+          email: 'support1@github.com'
+        },
+        committer: {
+          date: date + 1,
+          name: 'Valdis Ferdinand1',
+          email: 'valdis1@github.com'
+        },
+        message: 'feat: that'
+      }
+    }
+  ]
+
+  const validation = await commit.processValidate(createMockContext(commits), settings)
+  expect(validation.status).toBe('pass')
+})
+
+test('committer_email option should match the regex', async () => {
+  const commit = new Commit()
+  const settings = {
+    do: 'commit',
+    message: {
+      regex: '^[A-Za-z0-9._%+-]+@github.com$',
+      message_type: 'committer_email'
+    }
+  }
+  const date = Date.now()
+  const commits = [
+    {
+      commit: {
+        author: {
+          date: date + 1,
+          name: 'Monalisa Octocat1',
+          email: 'support1@github.com'
+        },
+        committer: {
+          date: date + 1,
+          name: 'Valdis Ferdinand1',
+          email: 'valdis1@github1.com'
+        },
+        message: 'feat: that'
+      }
+    }
+  ]
+
+  const validation = await commit.processValidate(createMockContext(commits), settings)
+  expect(validation.status).toBe('fail')
 })
 
 const createMockContext = (commits) => {
