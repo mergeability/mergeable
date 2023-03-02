@@ -1,4 +1,4 @@
-Or
+Not
 ^^^^^^^^^^
 
 ``And``, ``Or``, and ``Not`` can be used to create more complex validation/filter check
@@ -6,14 +6,14 @@ Or
 ::
 
   filter:
-    - do: or
+    - do: not
       filter:
         - do: author
           must_include: 'user-1'
         - do: repository
           visibility: public
   validate:
-    - do: or
+    - do: not
       validate:
         - do: title
           begins_with: '[WIP]'
@@ -25,7 +25,7 @@ you can also create nested ``And``, ``Or``, and ``Not``
 ::
 
   filter:
-    - do: and
+    - do: not
       filter:
         - do: or
           filter:
@@ -33,16 +33,14 @@ you can also create nested ``And``, ``Or``, and ``Not``
               must_include: 'user-1'
             - do: author
               must_include: 'user-2'
-        - do: repository
-          visibility: public
   validate:
     - do: and
       validate:
-        - do: or
+        - do: not
           validate:
             - do: title
-              begins_with: '[WIP]'
+              begins_with: 'feat:'
             - do: label
-              must_include: '[WIP]'
+              must_include: 'feature'
         - do: label
-          must_include: 'DO NOT MERGE'
+          must_include: 'Ready to Merge'
