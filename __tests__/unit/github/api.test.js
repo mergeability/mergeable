@@ -697,12 +697,21 @@ describe('listReviews', () => {
 describe('listCommits', () => {
   test('return correct data if no error', async () => {
     const date = Date.now()
+    const author = {
+      date,
+      name: 'Monalisa Octocat',
+      email: 'support@github.com'
+    }
+    const committer = {
+      date,
+      name: 'Valdis Ferdinand',
+      email: 'valdis@github.com'
+    }
     const commits = [
       {
         commit: {
-          author: {
-            date
-          },
+          author,
+          committer,
           message: 'fix: this'
         }
       }
@@ -712,6 +721,8 @@ describe('listCommits', () => {
     expect(res.length).toEqual(1)
     expect(res[0].date).toEqual(date)
     expect(res[0].message).toEqual('fix: this')
+    expect(res[0].author.email).toEqual('support@github.com')
+    expect(res[0].committer.email).toEqual('valdis@github.com')
   })
 
   test('that error are NOT re-thrown', async () => {
