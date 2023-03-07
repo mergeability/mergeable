@@ -69,6 +69,9 @@ You can pass in Handlebars template to show the details result of the run.
     checks will automatically re-run if the base branch has a modified config file
 
 Supported Events:
+
+The `pull_request.closed` event is not supported since it does not have meaningful use in the context of GitHub check API.
+
 ::
 
-    'pull_request.*', 'pull_request_review.*'
+    'pull_request.assigned', 'pull_request.auto_merge_disabled', 'pull_request.auto_merge_enabled', 'pull_request.converted_to_draft', 'pull_request.demilestoned', 'pull_request.dequeued', 'pull_request.edited', 'pull_request.enqueued', 'pull_request.labeled', 'pull_request.locked', 'pull_request.milestoned', 'pull_request.opened', 'pull_request.push_synchronize', 'pull_request.ready_for_review', 'pull_request.reopened', 'pull_request.review_request_removed', 'pull_request.review_requested', 'pull_request.synchronize', 'pull_request.unassigned', 'pull_request.unlabeled', 'pull_request.unlocked', 'pull_request_review.dismissed', 'pull_request_review.edited', 'pull_request_review.submitted'
