@@ -1,5 +1,6 @@
 CHANGELOG
 =====================================
+| March 13, 2023: fix: Replace delete with remove in changeset validator `#705 <https://github.com/mergeability/mergeable/pull/705>`_
 | March 7, 2023: fix: Extend checks supported events `#700 <https://github.com/mergeability/mergeable/pull/700>`_
 | March 1, 2023: feat:Added user information for commit validator `#682 <https://github.com/mergeability/mergeable/pull/682>`_
 | February 3, 2023: feat: Add team option to author filter `#696 <https://github.com/mergeability/mergeable/pull/696>`_
