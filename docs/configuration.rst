@@ -116,6 +116,7 @@ Validator List
     validators/age.rst
     validators/approval.rst
     validators/assignee.rst
+    validators/author.rst
     validators/baseRef.rst
     validators/changeset.rst
     validators/commit.rst
