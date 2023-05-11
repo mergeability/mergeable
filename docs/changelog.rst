@@ -1,5 +1,6 @@
 CHANGELOG
 =====================================
+| May 11, 2023: fix: Send correct payload for changing labels `#715 <https://github.com/mergeability/mergeable/pull/715>`_
 | April 25, 2023: feat: Add author validator `#710 <https://github.com/mergeability/mergeable/pull/710>`_
 | March 13, 2023: fix: Replace delete with remove in changeset validator `#705 <https://github.com/mergeability/mergeable/pull/705>`_
 | March 7, 2023: fix: Extend checks supported events `#700 <https://github.com/mergeability/mergeable/pull/700>`_
