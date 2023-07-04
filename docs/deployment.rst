@@ -47,7 +47,7 @@ Running Locally
 6. Add a repository for your Github app by going to `application settings <https://github.com/settings/installations>`_
 7. Do a test pull request to check if everything is working
 
-Note: if you wish to use a different config file name beside `mergeable.yml`, use `CONFIG_PATH` environment variable. Config files uses `.github` as base path, see [here](https://github.com/probot/probot/blob/1a19bdd/src/context.ts#L190)
+Note: if you wish to use a different config file name besides ``mergeable.yml``, use the ``CONFIG_PATH`` environment variable. Config files use ``.github`` as base path, see `here <https://github.com/probot/probot/blob/master/src/context.ts#L230>`_.
 
 
 Possible Issues
