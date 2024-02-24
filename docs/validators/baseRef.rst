@@ -40,4 +40,4 @@ Example with groot preview enabled (for status.* events on some older Github Ent
 Supported Events:
 ::
 
-    'pull_request.*', 'pull_request_review.*', 'check_suite.*', status.*
+    'pull_request.*', 'pull_request_review.*', 'check_suite.*', 'status.*'
