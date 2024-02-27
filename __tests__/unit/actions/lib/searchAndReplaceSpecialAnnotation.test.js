@@ -36,4 +36,22 @@ describe('searchAndReplaceSpecialAnnotations', () => {
     }
     expect(searchAndReplaceSpecialAnnotations('this is @author', payload)).toBe('this is creator')
   })
+
+  test('@@author is replaced by @payload.user.login', () => {
+    const payload = {
+      user: {
+        login: 'creator'
+      }
+    }
+    expect(searchAndReplaceSpecialAnnotations('this is @@author', payload)).toBe('this is @creator')
+  })
+
+  test('replaces annotation anywhere in the text', () => {
+    const payload = {
+      user: {
+        login: 'creator'
+      }
+    }
+    expect(searchAndReplaceSpecialAnnotations('this is something@author speaking', payload)).toBe('this is somethingcreator speaking')
+  })
 })
