@@ -1,5 +1,6 @@
 CHANGELOG
 =====================================
+| Feb 27, 2024: fix: search and replace of special annotations `#735 https://github.com/mergeability/mergeable/pull/735`_
 | May 12, 2023: fix: Loading teams for team option of author filter/validator `#713 <https://github.com/mergeability/mergeable/pull/713>`_
 | May 11, 2023: fix: Send correct payload for changing labels `#715 <https://github.com/mergeability/mergeable/pull/715>`_
 | April 25, 2023: feat: Add author validator `#710 <https://github.com/mergeability/mergeable/pull/710>`_
