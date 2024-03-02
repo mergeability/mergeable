@@ -54,4 +54,4 @@ Each field must be checked using one of the following options
 Supported Events:
 ::
 
-    'pull_request.*', 'pull_request_review.*', issues.*'
+    'pull_request.*', 'pull_request_review.*', 'issues.*'
