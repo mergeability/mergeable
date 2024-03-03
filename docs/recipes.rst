@@ -212,22 +212,17 @@ Checks that the PR's draft state is false before running actions.
     mergeable:
       - when: pull_request.*, pull_request_review.*
         name: 'Draft check'
-        validate:
+        filter:
           - do: payload
             pull_request:
               draft:
                 boolean:
                   match: false
-        pass:
-          - do: comment
-            payload:
-              body: This PR is NOT a draft!
-        fail:
-          - do: comment
-            payload:
-              body: This PR is STILL a draft!
-
-
+        validate:
+          - do: description
+            no_empty:
+              enabled: true
+              message: Description must be present when PR is not a draft
 
 
 Allow commits only if they contain a Issue ID (like an Azure DevOps Work Item)
