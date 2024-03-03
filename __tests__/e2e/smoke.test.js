@@ -72,7 +72,7 @@ mergeable:
       {
         title: '1/1 Fail(s):  TITLE',
         summary:
-            '### Status: FAIL\n\n        Here are some stats of the run:\n        1 validations were ran.\n        0 PASSED\n        1 FAILED\n      ',
+            '### Status: FAIL\n\n        Here are some stats of the run:\n        1 validations were run.\n        0 PASSED\n        1 FAILED\n      ',
         text:
           '#### :x: Validator: TITLE\n * :heavy_check_mark: ***title must exclude \'must_be_excluded_text\'***\n       Input : [WIP] Test3\n       Settings : ```{"must_exclude":{"regex":"must_be_excluded_text"}}```\n * :x: ***title does not include "must_be_included_text"***\n       Input : [WIP] Test3\n       Settings : ```{"must_include":{"regex":"must_be_included_text"}}```\n * :x: ***title must begins with "begins_with_text"***\n       Input : [WIP] Test3\n       Settings : ```{"begins_with":{"match":"begins_with_text"}}```\n * :x: ***title must end with "ends_with_text"***\n       Input : [WIP] Test3\n       Settings : ```{"ends_with":{"match":"ends_with_text"}}```\n * :x: ***(title must begins with "begins_with_text"  ***AND***  title must end with "ends_with_text")***\n       Input : [WIP] Test3\n       Settings : ```{"and":[{"begins_with":{"match":"begins_with_text"}},{"ends_with":{"match":"ends_with_text"}}]}```\n * :x: ***(title does not include "must_be_included_text"  ***OR***  title must begins with "begins_with_text")***\n       Input : [WIP] Test3\n       Settings : ```{"or":[{"must_include":{"regex":"must_be_included_text"}},{"begins_with":{"match":"begins_with_text"}}]}```\n<!-- #mergeable-data {"id":4,"eventName":"pull_request","action":"edited"} #mergeable-data -->'
       },
