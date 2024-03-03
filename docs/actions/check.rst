@@ -13,7 +13,7 @@ Check
       status: 'success' # Can be: success, failure, neutral, cancelled, timed_out, or action_required
       payload:
         title: 'Mergeable Run have been Completed!'
-        summary: "All the validators have returned 'pass'! \n Here are some stats of the run: \n {{validationCount}} validations were ran"
+        summary: "All the validators have returned 'pass'! \n Here are some stats of the run: \n {{validationCount}} validations were run"
 
 You can pass in Handlebars template to show the details result of the run.
 
@@ -26,7 +26,7 @@ You can pass in Handlebars template to show the details result of the run.
         summary: |
              ### Status: {{toUpperCase validationStatus}}
                   Here are some stats of the run:
-                  {{validationCount}} validations were ran.
+                  {{validationCount}} validations were run.
                   {{passCount}} PASSED
                   {{failCount}} FAILED
         text: "{{#each validationSuites}}\n
@@ -46,7 +46,7 @@ You can pass in Handlebars template to show the details result of the run.
         summary: |
             ### Status: {{toUpperCase validationStatus}}
             Some or All of the validators have returned 'error' status, please check below for details
-            Here are some stats of the run: \n {{validationCount}} validations were ran.
+            Here are some stats of the run: \n {{validationCount}} validations were run.
             {{passCount}} ***PASSED***
             {{failCount}} ***FAILED***
             {{errorCount}} ***ERRORED***
