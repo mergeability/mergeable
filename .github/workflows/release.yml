@@ -12,14 +12,14 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.14.1]
+        node-version: [20.11.1]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install
