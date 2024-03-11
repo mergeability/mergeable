@@ -23,7 +23,7 @@ describe('Schedules intervals for a repository', () => {
     createScheduler(probot)
   })
 
-  it('gets a page of repositories', async (done) => {
+  it('gets a page of repositories', async () => {
     nock('https://api.github.com')
       .get('/app/installations')
       .query({ per_page: 1 })
@@ -45,6 +45,5 @@ describe('Schedules intervals for a repository', () => {
       .reply(200, [{ id: 2 }])
 
     await probot.receive({ name: 'installation', payload })
-    await done()
   })
 })
