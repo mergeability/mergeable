@@ -29,21 +29,21 @@
     "moment-timezone": "^0.5.31",
     "node-fetch": "^2.6.1",
     "p-iteration": "^1.1.8",
-    "probot": "^12.2.8",
+    "probot": "^13.0.2",
     "prom-client": "^13.1.0"
   },
   "devDependencies": {
     "codecov": "^3.7.2",
     "cross-env": "^7.0.3",
-    "jest": "^26.6.3",
-    "nock": "13.1.0",
+    "jest": "^29.7.0",
+    "nock": "14.0.0-beta.5",
     "nodemon": "^2.0.3",
     "object-dot": "^1.7.0",
     "smee-client": "^1.0.1",
     "standard": "^16.0.3"
   },
   "engines": {
-    "node": "14.15.4"
+    "node": ">= 18.12.1"
   },
   "standard": {
     "env": [
