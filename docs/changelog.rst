@@ -1,5 +1,6 @@
 CHANGELOG
 =====================================
+| April 29, 2024: fix: Always allow assigning author  `#744 <https://github.com/mergeability/mergeable/pull/744>`_
 | Mar 11, 2024: fix: bump dependencies probot, jest and nock to latest versions and update ci workflow to use node 20 `#738 <https://github.com/mergeability/mergeable/pull/738>`_ 
 | Feb 27, 2024: fix: search and replace of special annotations `#735 <https://github.com/mergeability/mergeable/pull/735>`_
 | May 12, 2023: fix: Loading teams for team option of author filter/validator `#713 <https://github.com/mergeability/mergeable/pull/713>`_
