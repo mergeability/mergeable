@@ -14,7 +14,7 @@ Validates that the files specified are all part of a pull request (added or modi
         count: 250
         message: Change is very large. Should be under 250 lines of additions
       deletions:
-        count: 500
+        count: 250
         message: Change is very large. Should be under 250 lines of deletions.
       ignore_comments: false #if true, comments will not be counted toward the lines count
 
