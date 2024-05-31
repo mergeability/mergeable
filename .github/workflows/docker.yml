@@ -24,4 +24,4 @@ jobs:
       - name: Set up Buildpacks
         run: (curl -sSL "https://github.com/buildpacks/pack/releases/download/v0.34.1/pack-v0.34.1-linux.tgz" | sudo tar -C /usr/local/bin/ --no-same-owner -xzv pack)
       - run: pack --version
-      - run: pack build ${{ secrets.DOCKERHUB_USERNAME }}/mergeable --builder docker.io/paketobuildpacks/builder-jammy-buildpackless-tiny -b docker.io/paketobuildpacks/nodejs --publish
+      - run: pack build ${{ secrets.DOCKERHUB_USERNAME }}/mergeable --builder docker.io/paketobuildpacks/builder-jammy-buildpackless-tiny -b docker.io/paketobuildpacks/nodejs --platform amd64 --publish
