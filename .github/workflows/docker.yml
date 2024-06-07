@@ -22,4 +22,4 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - uses: buildpacks/github-actions/setup-pack@v5.7.1
-      - run: pack build test/mergeable --builder docker.io/paketobuildpacks/builder-jammy-base --platform amd64
+      - run: pack build test/mergeable --builder docker.io/paketobuildpacks/builder-jammy-buildpackless-tiny --buildpack docker.io/paketobuildpacks/nodejs
