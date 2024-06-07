@@ -91,6 +91,8 @@ jobs:
         with:
           images: ${{ env.REGISTRY_IMAGE }}
           tags: |
+            # minimal
+            type=semver,pattern={{version}}
             # set latest tag for default branch
             type=raw,value=latest,enable={{is_default_branch}}
       
