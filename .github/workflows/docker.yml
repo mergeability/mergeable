@@ -22,4 +22,4 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - uses: buildpacks/github-actions/setup-pack@v5.7.1
-      - run: pack build Ch4s3r/mergeable --builder docker.io/paketobuildpacks/builder-jammy-buildpackless-tiny --buildpack docker.io/paketobuildpacks/nodejs --cache-image index.docker.io/Ch4s3r/mergeable:latest --publish
+      - run: pack build Ch4s3r/mergeable --builder docker.io/paketobuildpacks/builder-jammy-buildpackless-tiny --buildpack docker.io/paketobuildpacks/nodejs --publish
