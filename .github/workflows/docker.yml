@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY_IMAGE: ch4s3r/mergeable
+  REGISTRY_IMAGE: mergeability/mergeable
 
 jobs:
   build:
@@ -17,6 +17,7 @@ jobs:
       matrix:
         platform:
           - linux/amd64
+          # Failing to build 
           # - linux/arm/v6
           - linux/arm/v7
           - linux/arm64
