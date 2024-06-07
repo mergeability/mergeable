@@ -1,6 +1,9 @@
-name: ci
+name: Docker
 
 on:
+  push:
+    tags:
+      - "*"
   workflow_dispatch:
 
 env:
