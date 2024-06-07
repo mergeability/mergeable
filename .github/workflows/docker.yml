@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY_IMAGE: ch4s3r/mergeable
+  REGISTRY_IMAGE: mergeability/mergeable
 
 jobs:
   build:
