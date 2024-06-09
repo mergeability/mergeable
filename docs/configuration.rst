@@ -7,8 +7,8 @@ Configuration
 
 First, you'll need to start by creating a ``.github/mergeable.yml`` file in your repository.
 
-.. hint::
-  Check out our :ref:`recipes-page` page for examples and most commonly used settings
+.. note::
+  Check out our :ref:`recipes-page` page for examples and most commonly used settings.
 
 Next, we'll go into how the configuration is structured.
 
@@ -34,7 +34,7 @@ error:
 
 Each recipe appears as a separate check in the pull request.
 
-Here is a full example of how a recipe looks -
+Here is a full example of how a recipe looks:
 
 .. code-block:: yml
 
@@ -79,7 +79,7 @@ Here is a full example of how a recipe looks -
           - do: {{action}}
 
 .. note::
-    There are some default actions that'll be automatically applied based on the events specified
+    There are some default actions that'll be automatically applied based on the events specified.
 
 Filters
 ------------
@@ -90,7 +90,7 @@ Filters are checks that mergeable will process in order to determine if validato
     Each filter have certain events that it can support, so keep an eye out for them.
 
 .. hint::
-    Don't see an filter that should be on here? Let us know by creating an `issue <https://github.com/mergeability/mergeable/issues/new>`_ on github
+    Don't see an filter that should be on here? Let us know by creating an `issue <https://github.com/mergeability/mergeable/issues/new>`_ on github.
 
 Filter List
 
@@ -108,7 +108,7 @@ Validators are checks that mergeable will process in order to determine whether 
     Each validator have certain events that it can support, so keep an eye out for them.
 
 .. hint::
-    Don't see an validator that should be on here? Let us know by creating an `issue <https://github.com/mergeability/mergeable/issues/new>`_ on github
+    Don't see an validator that should be on here? Let us know by creating an `issue <https://github.com/mergeability/mergeable/issues/new>`_ on github.
 
 Validator List
 
@@ -125,6 +125,7 @@ Validator List
     validators/description.rst
     validators/headRef.rst
     validators/label.rst
+    validators/lastComment.rst
     validators/milestone.rst
     validators/project.rst
     validators/size.rst
@@ -153,7 +154,7 @@ Options List
 Operators
 ------------
 
-These operators can help create more complex logic of validations
+These operators can help create more complex logic of validations.
 
 Operator List
 
@@ -169,7 +170,7 @@ Actions
 Actions that mergeable is currently able to perform.
 
 .. hint::
-    Don't see an action that should be on here? Let us know by creating an `issue <https://github.com/mergeability/mergeable/issues/new>`_ on github
+    Don't see an action that should be on here? Let us know by creating an `issue <https://github.com/mergeability/mergeable/issues/new>`_ on github.
 
 .. toctree::
     actions/assign.rst
@@ -185,9 +186,10 @@ Actions that mergeable is currently able to perform.
 Reusable Configuration
 --------------------------
 
-YML has a feature called `Anchor<https://blog.daemonl.com/2016/02/yaml.html>`_ that allows you to create reusable parts in the config
+YML has a feature called `Anchor <https://blog.daemonl.com/2016/02/yaml.html>`_ that allows you to create reusable parts in the config:
 
 .. code-block:: yml
+
     on_fail_comment: &default_fail_comment
       - do: comment
         payload:

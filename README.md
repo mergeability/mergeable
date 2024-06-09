@@ -25,6 +25,7 @@ Some examples of what you can do:
 - Ensure pull requests follow conventions and [prevent merging][comment-if-guidelines-not-met] when it is not followed.
 - [Notify author of failed guidelines][comment] when opening an issue.
 - Schedule [detection for obsolete (stale) issues and pull requests][staleness] and notify author and collaborators.
+- [Auto-merge][automerge] pull requests once all checks pass.
 - And [more][configuration]
 
 ---
@@ -45,7 +46,7 @@ We need your help:
 - Have an **💡idea** for a **new feature**? Please [create a new issue](https://github.com/mergeability/mergeable/issues) and tell us!
 - **Fix a bug**, implement a new **validator** or **action** and [open a pull request](CONTRIBUTING.md)!
 
-> ☝️ **NOTE:** For development and testing. You'll want to [read about how to run it locally](deploy.md#running-locally).
+> ☝️ **NOTE:** For development and testing. You'll want to [read about how to run it locally][run-locally].
 
 
 # Authors
@@ -58,4 +59,6 @@ AGPL, Copyright (c) 2019 [Justin Law](https://github.com/jusx) & [Shine Lee](htt
 [comment-if-guidelines-not-met]: https://mergeable.readthedocs.io/en/latest/recipes.html#comment-if-guidelines-not-met
 [comment]: https://mergeable.readthedocs.io/en/latest/actions/comment.html
 [staleness]: https://mergeable.readthedocs.io/en/latest/recipes.html#check-stale-pr-and-issues
+[automerge]: https://mergeable.readthedocs.io/en/latest/recipes.html#auto-merge-pull-requests-once-all-checks-pass
 [configuration]: https://mergeable.readthedocs.io/en/latest/configuration.html
+[run-locally]: https://mergeable.readthedocs.io/en/latest/deployment.html#running-locally

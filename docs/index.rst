@@ -14,6 +14,7 @@ Mergeable helps automate your team's GitHub workflow without a single line of co
    usage.rst
    configuration.rst
    recipes.rst
+   deployment.rst
    contributing.rst
    support.rst
    changelog.rst
