@@ -45,7 +45,7 @@ You can also use an array of regex matchers. If any of them match, the validatio
      - No
      - i
 
-Supported Validators:-
+Supported Validators:
 ::
 
-    'baseRef', 'headRef', 'changeset', 'content', 'description', 'label', 'milestone', 'title'
+    'author', 'baseRef', 'headRef', 'changeset', 'content', 'description', 'label', 'lastComment', 'milestone', 'title'
