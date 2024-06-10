@@ -1,9 +1,9 @@
 Payload
 ^^^^^^^^^^^^^^
 
-Check against any available fields within the payload, each event can have different field, please refer to `github API documentation<https://docs.github.com/en/developers/webhooks-and-events/webhook-events-and-payloads>`_ for available fields.
+Check against any available fields within the payload, each event can have different field, please refer to `github API documentation <https://docs.github.com/en/developers/webhooks-and-events/webhook-events-and-payloads>`_ for available fields.
 
-An example to check if a pull_request_review event has `state` of `changes_requested`
+An example to check if a `pull_request_review` event has ``state`` of `changes_requested`
 
 ::
 
@@ -23,7 +23,7 @@ To check if a `pull_request` event is not a `draft`
             boolean:
               match: false
 
-An example to check if a pull_request event has a `label` named `foo`
+An example to check if a `pull_request` event has a ``label`` named `foo`
 
 ::
 
@@ -54,4 +54,4 @@ Each field must be checked using one of the following options
 Supported Events:
 ::
 
-    'pull_request.*', 'pull_request_review.*', 'issues.*'
+    'pull_request.*', 'pull_request_review.*', 'issues.*', 'issue_comment.*'

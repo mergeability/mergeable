@@ -3,9 +3,12 @@
 Recipes
 --------------------------
 
+.. note::
+  Check out our :ref:`annotations-page` page for possible placeholders in values.
+
 Work In Progress
 """""""""""""""""
-Prevent accidental merging of Pull Requests that are work in progress by labeling it WIP or prefixing the title with the abbreviation.
+Prevent accidental merging of Pull Requests that are work in progress by labeling it `WIP` or prefixing the title with the abbreviation.
 
 ::
 
@@ -18,7 +21,7 @@ Prevent accidental merging of Pull Requests that are work in progress by labelin
               regex: ^\[WIP\]
           - do: label
             must_exclude:
-              regex: 'wip'
+              regex: 'wip|work in progress'
 
 No Empty Description
 """""""""""""""""
