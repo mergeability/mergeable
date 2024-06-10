@@ -32,7 +32,7 @@ jobs:
 
       - name: Lowercase REGISTRY_IMAGE for docker image naming convention
         run: |
-          echo "OWNER_LC=${REGISTRY_IMAGE,,}" >>${GITHUB_ENV}
+          echo "REGISTRY_IMAGE=${REGISTRY_IMAGE,,}" >> $GITHUB_ENV
         env:
           OWNER: '${{ github.repository_owner }}'
       
