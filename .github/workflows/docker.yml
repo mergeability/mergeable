@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY_IMAGE: ${{ github.repository }}
+  REGISTRY_IMAGE: ${{ github.repository_owner }}-${{ github.repository }}
 
 jobs:
   build:
@@ -29,6 +29,12 @@ jobs:
       
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Lowercase REGISTRY_IMAGE for docker image naming convention
+        run: |
+          echo "OWNER_LC=${REGISTRY_IMAGE,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
       
       - name: Docker meta
         id: meta
