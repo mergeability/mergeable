@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY_IMAGE: ${{ github.repository }}
+  REGISTRY_IMAGE: ch4s3r/mergeable
 
 jobs:
   build:
@@ -29,12 +29,6 @@ jobs:
       
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Lowercase REGISTRY_IMAGE for docker image naming convention
-        run: |
-          echo "REGISTRY_IMAGE=${REGISTRY_IMAGE,,}" >> $GITHUB_ENV
-        env:
-          REGISTRY_IMAGE: ${{ env.REGISTRY_IMAGE }}
       
       - name: Docker meta
         id: meta
