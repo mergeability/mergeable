@@ -34,7 +34,7 @@ jobs:
         run: |
           echo "REGISTRY_IMAGE=${REGISTRY_IMAGE,,}" >> $GITHUB_ENV
         env:
-          OWNER: '${{ github.repository_owner }}'
+          REGISTRY_IMAGE: ${{ env.REGISTRY_IMAGE }}
       
       - name: Docker meta
         id: meta
