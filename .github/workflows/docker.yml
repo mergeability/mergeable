@@ -1,66 +1,113 @@
-name: Docker Release
+name: Docker
 
 on:
   push:
     tags:
-      - '*'
-    branches:
-      - master
+      - "*"
+  workflow_dispatch:
 
-permissions:
-  contents: read
+env:
+  REGISTRY_IMAGE: mergeability/mergeable
 
 jobs:
-  init:
-    permissions:
-      contents: none
-    runs-on: ubuntu-latest
-    outputs:
-      do_docker: ${{ steps.vars.outputs.IS_DOCKERHUB_PUSH }}
-    steps:
-      - name: Initialize workflow variables
-        shell: bash
-        run: |
-          # work-around for inaccessible 'secrets' object for 'if'; see <https://github.community/t5/GitHub-Actions/jobs-lt-job-id-gt-if-does-not-work-with-env-secrets/m-p/38549>)
-          unset IS_DOCKERHUB_PUSH
-          if [ -z "$DOCKERHUB_PUSH" ]; then IS_DOCKERHUB_PUSH='false'; else IS_DOCKERHUB_PUSH='true' ; fi
-          echo set-output name=IS_DOCKERHUB_PUSH::${IS_DOCKERHUB_PUSH}
-          echo ::set-output name=IS_DOCKERHUB_PUSH::${IS_DOCKERHUB_PUSH}
-        env:
-          DOCKERHUB_PUSH: ${{ secrets.DOCKERHUB_PUSH }}
   build:
-    name: Build and push Docker image
     runs-on: ubuntu-latest
-    needs: [init]
-    if: ${{ needs.init.outputs.do_docker == 'true' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - linux/amd64
+          # Failing to build 
+          # - linux/arm/v6
+          - linux/arm/v7
+          - linux/arm64
     steps:
+      - name: Prepare
+        run: |
+          platform=${{ matrix.platform }}
+          echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+      
       - name: Checkout
-        uses: actions/checkout@v2
-
+        uses: actions/checkout@v4
+      
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_IMAGE }}
+      
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-
-      - name: Build and push latest
-        uses: docker/build-push-action@v2
-        if: github.ref == 'refs/heads/master'
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Build and push by digest
+        id: build
+        uses: docker/build-push-action@v5
         with:
-          push: true
-          tags: ${{ secrets.DOCKERHUB_REPO }}:latest
-
-      - name: Set version variable
-        id: version
-        if: startsWith(github.ref, 'refs/tags/')
-        run: echo ::set-output name=TAG::${GITHUB_REF#refs/tags/}
-
-      - name: Build and push tag
-        uses: docker/build-push-action@v2
-        if: startsWith(github.ref, 'refs/tags/')
+          context: .
+          platforms: ${{ matrix.platform }}
+          labels: ${{ steps.meta.outputs.labels }}
+          outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          cache-from: type=gha,scope=build-${{ matrix.platform }}
+          cache-to: type=gha,mode=max,scope=build-${{ matrix.platform }}
+      
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "/tmp/digests/${digest#sha256:}"
+      
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
         with:
-          push: true
-          tags: ${{ secrets.DOCKERHUB_REPO }}:${{ steps.version.outputs.TAG }}
+          name: digests-${{ env.PLATFORM_PAIR }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  merge:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    steps:
+      - name: Download digests
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/digests
+          pattern: digests-*
+          merge-multiple: true
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_IMAGE }}
+          tags: |
+            # minimal
+            type=semver,pattern={{version}}
+            # set latest tag for default branch
+            type=raw,value=latest,enable={{is_default_branch}}
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Create manifest list and push
+        working-directory: /tmp/digests
+        run: |
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
+      
+      - name: Inspect image
+        run: |
+          docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ steps.meta.outputs.version }}
