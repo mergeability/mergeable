@@ -1,6 +1,8 @@
 Merge
 ^^^^^^^^
 
+You can merge a pull request and specify the merge method used.
+
 ::
 
     - do: merge
@@ -14,4 +16,4 @@ Merge
 Supported Events:
 ::
 
-    'pull_request.*', 'pull_request_review.*', 'status.*', 'check_suite.*'
+    'pull_request.*', 'pull_request_review.*', 'status.*', 'check_suite.*', 'issue_comment.*'

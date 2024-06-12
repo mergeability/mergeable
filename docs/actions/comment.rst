@@ -1,6 +1,8 @@
 Comment
 ^^^^^^^^
 
+You can add a comment to a pull request or issue.
+
 ::
 
     - do: comment
@@ -12,4 +14,4 @@ Comment
 Supported Events:
 ::
 
-    'schedule.repository', 'pull_request.*', 'issues.*'
+    'schedule.repository', 'pull_request.*', 'issues.*', 'issue_comment.*'

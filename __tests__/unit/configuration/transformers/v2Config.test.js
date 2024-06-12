@@ -92,6 +92,42 @@ test('pass, fail, error defaults will load when pull_request is mixed with other
   expect(transformed.mergeable[0].error).toEqual(constants.DEFAULT_PR_ERROR)
 })
 
+test('pass, fail, error defaults will load when issue_comment event is specified.', () => {
+  const config = `
+  version: 2
+  mergeable:
+    - when: issue_comment.*
+      validate:
+        - do: lastComment
+          must_exclude:
+            regex: 'wip|work in progress'
+  `
+  const transformed = V2Config.transform(yaml.safeLoad(config))
+
+  expect(transformed.mergeable[0].pass).toEqual(constants.DEFAULT_PR_PASS)
+  expect(transformed.mergeable[0].fail).toEqual(constants.DEFAULT_PR_FAIL)
+  expect(transformed.mergeable[0].error).toEqual(constants.DEFAULT_PR_ERROR)
+})
+
+test('pass, fail, error defaults will load when pull_request_review event is specified.', () => {
+  const config = `
+  version: 2
+  mergeable:
+    - when: pull_request_review.*
+      validate:
+        - do: payload
+          review:
+            state:
+              must_exclude:
+                regex: 'changes_requested'
+  `
+  const transformed = V2Config.transform(yaml.safeLoad(config))
+
+  expect(transformed.mergeable[0].pass).toEqual(constants.DEFAULT_PR_PASS)
+  expect(transformed.mergeable[0].fail).toEqual(constants.DEFAULT_PR_FAIL)
+  expect(transformed.mergeable[0].error).toEqual(constants.DEFAULT_PR_ERROR)
+})
+
 test('only pass, fail defaults ignore recipes that are not for pull_requests', () => {
   const config = `
   version: 2

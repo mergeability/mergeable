@@ -174,7 +174,7 @@ Actions that mergeable is currently able to perform.
 
 .. toctree::
     actions/assign.rst
-    actions/check.rst
+    actions/checks.rst
     actions/close.rst
     actions/comment.rst
     actions/merge.rst

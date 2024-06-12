@@ -182,7 +182,7 @@ module.exports = {
           },
           requestReviewers: jest.fn().mockReturnValue(options.requestReviewers || 'request review success'),
           merge: jest.fn().mockReturnValue(options.merge || 'merged'),
-          get: jest.fn()
+          get: jest.fn().mockReturnValue({ data: { head: { ref: 'test', sha: 'sha1' } } })
         },
         paginate: jest.fn(async (fn, cb) => {
           return fn.then(cb)

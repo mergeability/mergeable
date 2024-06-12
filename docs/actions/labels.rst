@@ -83,4 +83,4 @@ Note that the glob functionality is powered by the minimatch library. Please see
 Supported Events:
 ::
 
-    'schedule.repository', 'pull_request.*', 'issues.*'
+    'schedule.repository', 'pull_request.*', 'issues.*', 'issue_comment.*'

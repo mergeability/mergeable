@@ -1,6 +1,8 @@
 Assign
 ^^^^^^^^
 
+You can assign specific people to a pull request or issue.
+
 ::
 
     - do: assign
@@ -9,4 +11,4 @@ Assign
 Supported Events:
 ::
 
-    'pull_request.*', 'issues.*'
+    'pull_request.*', 'issues.*', 'issue_comment.*'
