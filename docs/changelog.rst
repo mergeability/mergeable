@@ -1,5 +1,6 @@
 CHANGELOG
 =====================================
+| June 12, 2024: feat: Support `issue_comment` event as trigger for actions `#754 <https://github.com/mergeability/mergeable/pull/754>`_
 | June 10, 2024: fix: Docker image not working `#753 <https://github.com/mergeability/mergeable/pull/753>`_
 | June 10, 2024: feat: publish multi arch docker image to dockerhub `#751 <https://github.com/mergeability/mergeable/pull/751>`_
 | April 29, 2024: fix: Always allow assigning author  `#744 <https://github.com/mergeability/mergeable/pull/744>`_

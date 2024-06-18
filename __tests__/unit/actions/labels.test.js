@@ -2,6 +2,31 @@ const Labels = require('../../../lib/actions/labels')
 const Helper = require('../../../__fixtures__/unit/helper')
 const UnSupportedSettingError = require('../../../lib/errors/unSupportedSettingError')
 
+test.each([
+  undefined,
+  'pull_request',
+  'issues',
+  'issue_comment',
+  'schedule'
+])('check that close is called for %s events', async (eventName) => {
+  const labels = new Labels()
+  const context = createMockContext([], eventName)
+  const settings = {
+    add: ['a label']
+  }
+  const schedulerResult = {
+    validationSuites: [{
+      schedule: {
+        issues: [{ number: 1, user: { login: 'scheduler' } }],
+        pulls: []
+      }
+    }]
+  }
+
+  await labels.afterValidate(context, settings, '', schedulerResult)
+  expect(context.octokit.issues.setLabels.mock.calls.length).toBe(1)
+})
+
 test('check that replace replaces existing labels', async () => {
   const labels = new Labels()
   const context = createMockContext(['drop_label'])

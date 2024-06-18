@@ -1,7 +1,7 @@
 Request Review
 ^^^^^^^^^^^^^^^
 
-You can request specific reviews from specific reviewers, teams, or both
+You can request specific reviews from specific reviewers, teams, or both for a pull request.
 
 ::
 

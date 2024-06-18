@@ -1,6 +1,8 @@
 Close
 ^^^^^^^^
 
+You can close a pull request or issue.
+
 ::
 
     - do: close
@@ -8,4 +10,4 @@ Close
 Supported Events:
 ::
 
-    'schedule.repository', 'pull_request.*', 'issues.*'
+    'schedule.repository', 'pull_request.*', 'issues.*', 'issue_comment.*'
