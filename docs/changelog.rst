@@ -1,5 +1,6 @@
 CHANGELOG
 =====================================
+| June 20, 2024: fix: Comments on Issues should not trigger `checks` action `#759 <https://github.com/mergeability/mergeable/pull/759>`_
 | June 12, 2024: feat: Support `issue_comment` event as trigger for actions `#754 <https://github.com/mergeability/mergeable/pull/754>`_
 | June 10, 2024: fix: Docker image not working `#753 <https://github.com/mergeability/mergeable/pull/753>`_
 | June 10, 2024: feat: publish multi arch docker image to dockerhub `#751 <https://github.com/mergeability/mergeable/pull/751>`_
