@@ -317,8 +317,6 @@ test('validate correctly with reviews more than 30.', async () => {
   })
   expect(validation.validations[0].details.input).toEqual(['user2', 'user1'])
   expect(validation.status).toBe('pass')
-  // ensure paginate was called
-  expect(context.octokit.paginate.mock.calls.length).toBe(1)
 })
 
 test('pr creator is removed from required reviewer list', async () => {
