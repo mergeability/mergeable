@@ -8,7 +8,11 @@ To bypass the annotation, use ``\`` prefix. (i.e ``\@author`` will be replaced w
 
 ::
 
-   @author : replace with the login of creator of issues/PR
+   @author : replaced with the login of creator of issues/PR
+   @sender : replaced with the login of initiator of the ocurred event
+   @bot : replaced with the name of the Mergeable bot
+   @repository : replaced with the name of repository of issues/PR
+   @action : replaced with action of the ocurred event
 
 
 Actions supported:
