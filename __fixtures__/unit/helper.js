@@ -1,6 +1,5 @@
 const _ = require('lodash')
 const yaml = require('js-yaml')
-const moment = require('moment-timezone')
 
 const throwNotFound = () => {
   const error = new Error('404 error')
@@ -18,10 +17,13 @@ module.exports = {
         action: 'opened',
         repository: {
           name: (options.repoName) ? options.repoName : 'repoName',
-          full_name: 'name',
+          full_name: 'fullRepoName',
           owner: {
             login: 'owner'
           }
+        },
+        sender: {
+          login: 'initiator'
         },
         check_suite: {
           pull_requests: [
@@ -37,8 +39,8 @@ module.exports = {
           title: (options.title) ? options.title : 'title',
           body: options.body,
           number: (options.number) ? options.number : 1,
-          created_at: options.createdAt ? moment(options.createdAt) : moment(),
-          updated_at: options.updatedAt ? moment(options.updatedAt) : moment(),
+          created_at: (options.createdAt) ? options.createdAt : new Date().toISOString(),
+          updated_at: (options.updatedAt) ? options.updatedAt : new Date().toISOString(),
           milestone: (options.milestone) ? options.milestone : null,
           requested_reviewers: options.requestedReviewers ? options.requestedReviewers : [],
           requested_teams: options.requestedTeams ? options.requestedTeams : [],
@@ -64,7 +66,13 @@ module.exports = {
           user: {
             login: 'creator'
           },
+          title: (options.title) ? options.title : 'title',
+          body: options.body,
           number: (options.number) ? options.number : 1,
+          milestone: (options.milestone) ? options.milestone : null,
+          created_at: (options.createdAt) ? options.createdAt : new Date().toISOString(),
+          updated_at: (options.updatedAt) ? options.updatedAt : new Date().toISOString(),
+          assignees: (options.assignees) ? options.assignees : [],
           pull_request: {}
         }
       },

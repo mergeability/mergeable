@@ -32,9 +32,9 @@ test('check that assignees are added when afterValidate is called with proper pa
   expect(context.octokit.issues.addAssignees.mock.calls[0][0].assignees[1]).toBe('testuser2')
 })
 
-test('check that creator is added when assignee is @author', async () => {
+test('check that creator is added when assignee is @author or @sender or @bot', async () => {
   const settings = {
-    assignees: ['@author']
+    assignees: ['@author', '@sender', '@bot']
   }
 
   const assign = new Assign()
@@ -43,6 +43,8 @@ test('check that creator is added when assignee is @author', async () => {
   await assign.afterValidate(context, settings)
   expect(context.octokit.issues.addAssignees.mock.calls.length).toBe(1)
   expect(context.octokit.issues.addAssignees.mock.calls[0][0].assignees[0]).toBe('creator')
+  expect(context.octokit.issues.addAssignees.mock.calls[0][0].assignees[1]).toBe('initiator')
+  expect(context.octokit.issues.addAssignees.mock.calls[0][0].assignees[2]).toBe('Mergeable[bot]')
 })
 
 test('check only authorized users are added as assignee ', async () => {

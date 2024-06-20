@@ -73,3 +73,31 @@ describe('Action#getActionables', () => {
     ).toBe(1)
   })
 })
+
+describe('Action#getEventAttributes', () => {
+  const action = new Action()
+
+  test('Extracts event properties from pull_request correctly', () => {
+    const evt = action.getEventAttributes(Helper.mockContext({ eventName: 'pull_request' }))
+
+    expect(evt.action).toBe('opened')
+    expect(evt.repository.full_name).toBe('fullRepoName')
+    expect(evt.sender.login).toBe('initiator')
+  })
+
+  test('Extracts event properties from issues correctly', () => {
+    const evt = action.getEventAttributes(Helper.mockContext({ eventName: 'issues' }))
+
+    expect(evt.action).toBe('opened')
+    expect(evt.repository.full_name).toBe('fullRepoName')
+    expect(evt.sender.login).toBe('initiator')
+  })
+
+  test('Defaults event properties on schedule event', () => {
+    const evt = action.getEventAttributes(Helper.mockContext({ eventName: 'schedule' }))
+
+    expect(evt.action).toBe('')
+    expect(evt.repository).toEqual({})
+    expect(evt.sender).toEqual({})
+  })
+})

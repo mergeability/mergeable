@@ -1,57 +1,69 @@
 const searchAndReplaceSpecialAnnotations = require('../../../../lib/actions/lib/searchAndReplaceSpecialAnnotation')
 
 describe('searchAndReplaceSpecialAnnotations', () => {
-  test('does not affect input if no special annotations are found', () => {
-    const payload = {
-      user: {
-        login: 'creator'
-      }
+  const SPECIAL_ANNOTATION = {
+    '@author': 'creator',
+    '@action': 'created',
+    '@sender': 'initiator',
+    '@bot': 'Mergeable[bot]',
+    '@repository': 'botrepo'
+  }
+  const tests = [
+    {
+      name: 'does not affect input if no special annotations are found',
+      message: 'no special annotations',
+      expected: 'no special annotations'
+    },
+    {
+      name: 'special annotation at the beginning of string works properly',
+      message: '$annotation$ says hello!',
+      expected: '$annotation$ says hello!'
+    },
+    {
+      name: 'escape character works properly',
+      message: 'this is \\@author',
+      expected: 'this is @author'
+    },
+    {
+      name: 'special annotation at the end of string works properly',
+      message: 'this is $annotation$',
+      expected: 'this is $annotation$'
+    },
+    {
+      name: '@@annotation is replaced, prepending @ remains',
+      message: 'this is @$annotation$',
+      expected: 'this is @$annotation$'
+    },
+    {
+      name: 'replaces special annotation anywhere in the text',
+      message: 'this is something$annotation$ speaking',
+      expected: 'this is something$annotation$ speaking'
     }
-    expect(searchAndReplaceSpecialAnnotations('no special annotations', payload)).toBe('no special annotations')
-  })
+  ]
 
-  test('special annotation at the beginning of string works properly', () => {
-    const payload = {
-      user: {
-        login: 'creator'
+  test.each(tests)(
+    '$name',
+    async ({ message, expected }) => {
+      const payload = {
+        user: {
+          login: 'creator'
+        }
       }
-    }
-    expect(searchAndReplaceSpecialAnnotations('@author says hello!', payload)).toBe('creator says hello!')
-  })
+      const evt = {
+        action: 'created',
+        repository: {
+          full_name: 'botrepo'
+        },
+        sender: {
+          login: 'initiator'
+        }
+      }
 
-  test('escape character works properly', () => {
-    const payload = {
-      user: {
-        login: 'creator'
+      for (const annotation of Object.keys(SPECIAL_ANNOTATION)) {
+        const messageWithAnnotation = message.replace('$annotation$', annotation)
+        const messageWithReplacement = expected.replace('$annotation$', SPECIAL_ANNOTATION[annotation])
+        expect(searchAndReplaceSpecialAnnotations(messageWithAnnotation, payload, evt)).toBe(messageWithReplacement)
       }
     }
-    expect(searchAndReplaceSpecialAnnotations('this is \\@author', payload)).toBe('this is @author')
-  })
-
-  test('@author is replaced by payload.user.login', () => {
-    const payload = {
-      user: {
-        login: 'creator'
-      }
-    }
-    expect(searchAndReplaceSpecialAnnotations('this is @author', payload)).toBe('this is creator')
-  })
-
-  test('@@author is replaced by @payload.user.login', () => {
-    const payload = {
-      user: {
-        login: 'creator'
-      }
-    }
-    expect(searchAndReplaceSpecialAnnotations('this is @@author', payload)).toBe('this is @creator')
-  })
-
-  test('replaces annotation anywhere in the text', () => {
-    const payload = {
-      user: {
-        login: 'creator'
-      }
-    }
-    expect(searchAndReplaceSpecialAnnotations('this is something@author speaking', payload)).toBe('this is somethingcreator speaking')
-  })
+  )
 })

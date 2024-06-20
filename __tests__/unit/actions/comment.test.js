@@ -40,7 +40,7 @@ test.each([
 
 test('check that comment created when afterValidate is called with proper parameter', async () => {
   const comment = new Comment()
-  const context = createMockContext()
+  const context = createMockContext([])
 
   const result = {
     status: 'pass',
@@ -257,23 +257,24 @@ test('remove Error comment fail gracefully if payload does not exists', async ()
   expect(context.octokit.issues.deleteComment.mock.calls.length).toBe(0)
 })
 
-test('error handling includes removing old error comments and creating new error comment', async () => {
+test('special annotations are replaced', async () => {
   const comment = new Comment()
-  const context = createMockContext()
+  const context = createMockContext([])
   const settings = {
     payload: {
-      body: '@author , do something!'
+      body: '@author @sender @bot @repository @action {{formatDate created_at}} , do something!'
     }
   }
 
   await comment.afterValidate(context, settings, '', result)
   await Helper.flushPromises()
 
-  expect(context.octokit.issues.createComment.mock.calls[0][0].body).toBe('creator , do something!')
+  expect(context.octokit.issues.createComment.mock.calls[0][0].body).toBe('creator initiator Mergeable[bot] fullRepoName opened Jun 15, 2024, 7:14 PM , do something!')
 })
 
 const createMockContext = (comments, eventName = undefined, event = undefined) => {
-  const context = Helper.mockContext({ comments, eventName, event })
+  const createdAt = '2024-06-15T19:14:00Z'
+  const context = Helper.mockContext({ comments, eventName, createdAt, event })
 
   context.octokit.issues.createComment = jest.fn()
   context.octokit.issues.deleteComment = jest.fn()
