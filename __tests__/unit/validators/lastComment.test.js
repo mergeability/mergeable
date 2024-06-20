@@ -122,5 +122,5 @@ test('complex Logic test', async () => {
 })
 
 function createMockContext (comments) {
-  return Helper.mockContext({ listComments: Array.isArray(comments) ? comments.map(comment => ({ body: comment })) : [{ body: comments }] })
+  return Helper.mockContext({ comments: Array.isArray(comments) ? comments.map(comment => ({ body: comment })) : [{ body: comments }] })
 }

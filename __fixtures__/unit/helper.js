@@ -208,8 +208,10 @@ module.exports = {
               resolve({ status: 204 })
             })
           },
-          listComments: () => {
-            return { data: (options.listComments) ? options.listComments : [] }
+          listComments: {
+            endpoint: {
+              merge: () => Promise.resolve({ data: (options.comments) ? options.comments : [] })
+            }
           },
           createComment: jest.fn().mockReturnValue(options.createComment || 'createComment call success'),
           deleteComment: jest.fn().mockReturnValue(options.deleteComment || 'deleteComment call success'),
@@ -254,5 +256,10 @@ module.exports = {
     context.probotContext.config = () => {
       return Promise.resolve(yaml.safeLoad(configString))
     }
+  },
+
+  flushPromises: () => {
+    // https://stackoverflow.com/questions/49405338/jest-test-promise-resolution-and-event-loop-tick
+    return new Promise(resolve => setImmediate(resolve))
   }
 }
