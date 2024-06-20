@@ -64,7 +64,8 @@ module.exports = {
           user: {
             login: 'creator'
           },
-          number: (options.number) ? options.number : 1
+          number: (options.number) ? options.number : 1,
+          pull_request: {}
         }
       },
       log: {
