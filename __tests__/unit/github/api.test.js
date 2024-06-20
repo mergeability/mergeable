@@ -9,6 +9,12 @@ describe('listFiles', () => {
     expect(res[0]).toEqual({ filename: 'abc.js', additions: 0, deletions: 0, changes: 0, status: 'modified' })
   })
 
+  test('that pagination is used', async () => {
+    const context = Helper.mockContext()
+    await GithubAPI.listFiles(context)
+    expect(context.octokit.paginate.mock.calls.length).toBe(1)
+  })
+
   test('that error are re-thrown', async () => {
     const context = Helper.mockContext()
     context.octokit.pulls.listFiles.endpoint.merge = jest.fn().mockRejectedValue({ status: 402 })
@@ -259,14 +265,20 @@ describe('createComment', () => {
 
 describe('listComments', () => {
   test('return correct data if no error', async () => {
-    const res = await GithubAPI.listComments(Helper.mockContext({ listComments: [{ user: { login: 'mergeable[bot]' } }, { user: { login: 'userA' } }] }))
-    expect(res.data.length).toEqual(2)
-    expect(res.data[0].user.login).toEqual('mergeable[bot]')
+    const res = await GithubAPI.listComments(Helper.mockContext({ comments: [{ user: { login: 'mergeable[bot]' } }, { user: { login: 'userA' } }] }))
+    expect(res.length).toEqual(2)
+    expect(res[0].user.login).toEqual('mergeable[bot]')
+  })
+
+  test('that pagination is used', async () => {
+    const context = Helper.mockContext()
+    await GithubAPI.listComments(context)
+    expect(context.octokit.paginate.mock.calls.length).toBe(1)
   })
 
   test('that error are re-thrown', async () => {
     const context = Helper.mockContext()
-    context.octokit.issues.listComments = jest.fn().mockRejectedValue({ status: 402 })
+    context.octokit.issues.listComments.endpoint.merge = jest.fn().mockRejectedValue({ status: 402 })
 
     try {
       await GithubAPI.listComments(context)
@@ -680,6 +692,12 @@ describe('listReviews', () => {
     expect(res).toEqual(reviews)
   })
 
+  test('that pagination is used', async () => {
+    const context = Helper.mockContext()
+    await GithubAPI.listReviews(context)
+    expect(context.octokit.paginate.mock.calls.length).toBe(1)
+  })
+
   test('that error are re-thrown', async () => {
     const context = Helper.mockContext()
     context.octokit.pulls.listReviews.endpoint.merge = jest.fn().mockRejectedValue({ status: 402 })
@@ -723,6 +741,12 @@ describe('listCommits', () => {
     expect(res[0].message).toEqual('fix: this')
     expect(res[0].author.email).toEqual('support@github.com')
     expect(res[0].committer.email).toEqual('valdis@github.com')
+  })
+
+  test('that pagination is used', async () => {
+    const context = Helper.mockContext()
+    await GithubAPI.listCommits(context)
+    expect(context.octokit.paginate.mock.calls.length).toBe(1)
   })
 
   test('that error are NOT re-thrown', async () => {

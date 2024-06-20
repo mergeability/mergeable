@@ -1,5 +1,6 @@
 CHANGELOG
 =====================================
+| June 20, 2024: fix: Respect all comments in lastComment validator and comment action `#755 <https://github.com/mergeability/mergeable/pull/755>`_
 | June 12, 2024: feat: Support `issue_comment` event as trigger for actions `#754 <https://github.com/mergeability/mergeable/pull/754>`_
 | June 10, 2024: fix: Docker image not working `#753 <https://github.com/mergeability/mergeable/pull/753>`_
 | June 10, 2024: feat: publish multi arch docker image to dockerhub `#751 <https://github.com/mergeability/mergeable/pull/751>`_
