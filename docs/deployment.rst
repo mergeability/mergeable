@@ -23,7 +23,7 @@ The `Probot deployment guide <https://probot.github.io/docs/deployment/>`_ descr
 * Commit statuses - **Read & Write**
 * Single file - **Read-only**
   * Path: ``.github/mergeable.yml``
-* Contents - **Read-Only**
+* Contents - **Read-Only** (Note: the ``merge`` action requires Read & Write)
 * Projects - **Read-Only**
 
 **Organization Permissions:**

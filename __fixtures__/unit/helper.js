@@ -74,7 +74,8 @@ module.exports = {
           updated_at: (options.updatedAt) ? options.updatedAt : new Date().toISOString(),
           assignees: (options.assignees) ? options.assignees : [],
           pull_request: {}
-        }
+        },
+        comment: options.issueComment
       },
       log: {
         child: (s) => {
