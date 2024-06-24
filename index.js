@@ -18,6 +18,7 @@ module.exports = (robot, { getRouter }) => {
     }
   }
 
+
   logger.init(robot.log)
   const mergeable = new Mergeable(process.env.NODE_ENV)
   mergeable.start(robot)
