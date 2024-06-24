@@ -43,7 +43,7 @@
     "standard": "^16.0.3"
   },
   "engines": {
-    "node": ">= 18.12.1"
+    "node": "^20"
   },
   "standard": {
     "env": [
@@ -58,5 +58,9 @@
     "collectCoverageFrom": [
       "lib/**/*.js"
     ]
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "private": false
 }
