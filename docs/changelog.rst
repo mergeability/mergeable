@@ -1,5 +1,6 @@
 CHANGELOG
 =====================================
+| June 25 2024: feat: Add buildpacks for building docker image `#764 <https://github.com/mergeability/mergeable/pull/764>`_
 | June 20, 2024: feat: Add options 'one_of' and 'none_of'. Support in filters `payload`, `author`, and in action `lastComment` to filter comments authors `#757 <https://github.com/mergeability/mergeable/pull/757>`_
 | June 20, 2024: feat: Add annotations @sender @bot @repository @action and template helper {{formatDate}} `#756 <https://github.com/mergeability/mergeable/pull/756>`_
 | June 20, 2024: fix: Comments on Issues should not trigger `checks` action `#759 <https://github.com/mergeability/mergeable/pull/759>`_
