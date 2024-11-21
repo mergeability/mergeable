@@ -762,6 +762,83 @@ describe('with version 1', () => {
     config = await Configuration.fetchConfigFile(context)
     expect(config.mergeable.length).toEqual(1)
     expect(config.mergeable[0].name).toBe('repository rules')
+
+    // Clean-up the cache state after test
+    const configCache = Configuration.getCache()
+    await configCache.reset()
+  })
+
+  test('config cache uses only owner as cache key if only global config can be fetched', async () => {
+    const orgConfigStr = `
+          mergeable:
+            issues:
+              stale:
+                days: 20
+                message: Issue test
+            pull_requests:
+              stale:
+                days: 20
+                message: PR test
+        `
+    // Check that on first load, the cache is correctly set
+    const emptyConfig = '{}'
+    const orgConfig = yaml.safeLoad(orgConfigStr)
+    const context = createMockGhConfig(emptyConfig, orgConfigStr)
+    context.globalSettings.use_config_cache = true
+    context.globalSettings.use_config_from_pull_request = false
+    context.globalSettings.use_org_as_default_config = true
+    const configCache = Configuration.getCache()
+    const repo = context.repo()
+    let keys = await configCache.keys()
+    expect(keys.length).toEqual(0)
+    context.eventName = 'push'
+    context.payload.head_commit = { added: ['.github/mergeable.yml'] }
+    expect(context.probotContext.config.mock.calls.length).toEqual(0)
+    let config = await Configuration.fetchConfigFile(context)
+    expect(config).toEqual(orgConfig)
+    keys = await configCache.keys()
+    expect(keys.length).toEqual(1)
+    const cachedConfig = await configCache.get(repo.owner)
+    expect(cachedConfig).toEqual(orgConfig)
+    // Check that cached value in the repo.owner is really used
+    const injectedConfig = { test: 'test' }
+    await configCache.set(repo.owner, injectedConfig)
+    config = await Configuration.fetchConfigFile(context)
+    expect(config).toEqual(injectedConfig)
+
+    // Clean-up the cache state after test
+    await configCache.reset()
+  })
+
+  test('cache is reset for org correctly when .github repo mergeable file is modified', async () => {
+    const orgConfigStr = `
+          mergeable:
+            pull_requests:
+              stale:
+                days: 20
+        `
+    const orgConfig = yaml.safeLoad(orgConfigStr)
+    const context = createMockGhConfig('{}', orgConfigStr)
+    context.globalSettings.use_config_cache = true
+    context.globalSettings.use_config_from_pull_request = false
+    context.globalSettings.use_org_as_default_config = true
+    const repo = context.repo()
+    const configCache = Configuration.getCache()
+    // Inject config that will be reset and overriden with the actual orgConfig
+    const injectedConfig = { test: 'test' }
+    configCache.set(repo.owner, injectedConfig)
+    let keys = await configCache.keys()
+    expect(keys.length).toEqual(1)
+    context.eventName = 'push'
+    context.repo = jest.fn().mockReturnValue({ owner: repo.owner, repo: '.github' })
+    context.payload.head_commit = { added: ['.github/mergeable.yml'] }
+    const config = await Configuration.fetchConfigFile(context)
+    expect(config).toEqual(orgConfig)
+    keys = await configCache.keys()
+    expect(keys.length).toEqual(1)
+
+    // Clean-up the cache state after test
+    await configCache.reset()
   })
 })
 
