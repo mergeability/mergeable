@@ -1,0 +1,338 @@
+name: "Pull Request CI"
+on:
+  - pull_request
+jobs:
+  detect-test-suite-modules:
+    name: Detect Modules in PR
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - id: fetch-latest-target-branch-commits # makes sure that latest target branch HEAD commit is available locally
+        # fetching the latest 15 commits as we want to rebase the PR to target branch to ensure just changed file are parsed.
+        # If someone have outdated branch (16+ commits) the job fail
+        name: 'Fetch the latest 2 target (base) branch commits'
+        run: |
+          git remote add quarkus_qe_target_repo https://github.com/quarkus-qe/quarkus-test-suite.git
+          git fetch quarkus_qe_target_repo ${GITHUB_BASE_REF} --depth=15
+          git config user.email "qe@quarkus"
+          git config user.name "Quarkus QE"
+          git rebase quarkus_qe_target_repo/${GITHUB_BASE_REF}
+      - id: files
+        uses: tj-actions/changed-files@v45
+        continue-on-error: true
+      - id: detect-changes
+        run: |
+          MODULES=$(find -name pom.xml | sed -e 's|pom.xml| |' | sed -e 's|./| |' | grep -v " quarkus/" | grep -v resources)
+          CHANGED=""
+          MODULES_ARG=""
+          EXCLUDE_LONG_RUNS="-DexcludedGroups=long-running"
+          # If changed file have some special character, its path is surrounded with quotes which causing the if statement fail
+          CHANGED_FILE=$(echo ${{ steps.files.outputs.all_changed_and_modified_files }} | sed 's/\"/\\"/')
+          for module in $MODULES
+          do
+            # Check if files contains main pom.xml or changes github workflows as we want to run all modules here.
+            if [[ $CHANGED_FILE =~ [^\/]pom\.xml|^pom\.xml|^\.github/ ]]; then
+                CHANGED=""
+                EXCLUDE_LONG_RUNS=""
+                break
+            fi
+          
+            if [[ $CHANGED_FILE =~ ("$module") ]] ; then
+                # Check if module contains tests with @Tag("long-running")
+                for file in $(find "$module" -type f -name "*.java"); do
+                  if grep -q '@Tag("long-running")' "$file"; then
+                    EXCLUDE_LONG_RUNS=""
+                    break
+                  fi
+                done
+          
+                CHANGED=$(echo $CHANGED" "$module)
+            fi
+          done
+          # trim leading spaces so that module args don't start with comma
+          CHANGED="$(echo $CHANGED | xargs)"
+          MODULES_ARG="${CHANGED// /,}"
+          echo "MODULES_ARG=$MODULES_ARG" >> $GITHUB_OUTPUT
+          echo "EXCLUDE_LONG_RUNS=$EXCLUDE_LONG_RUNS" >> $GITHUB_OUTPUT
+    outputs:
+      MODULES_ARG: ${{ steps.detect-changes.outputs.MODULES_ARG }}
+      EXCLUDE_LONG_RUNS: ${{ steps.detect-changes.outputs.EXCLUDE_LONG_RUNS }}
+  prepare-jvm-native-latest-modules-mvn-param:
+    name: Prepare Maven Params For Linux JVM and native Build
+    runs-on: ubuntu-latest
+    needs: detect-test-suite-modules
+    env:
+      MODULES_ARG: ${{ needs.detect-test-suite-modules.outputs.MODULES_ARG }}
+      EXCLUDE_LONG_RUNS: ${{ needs.detect-test-suite-modules.outputs.EXCLUDE_LONG_RUNS }}
+    steps:
+      - id: prepare-modules-mvn-param
+        run: |
+          if [[ -n ${MODULES_ARG} ]]; then
+            echo "Running modules: ${MODULES_ARG}"
+            echo "JVM_MODULES_MAVEN_PARAM=[\" -pl ${MODULES_ARG} -Dall-modules ${EXCLUDE_LONG_RUNS}\"]" >> $GITHUB_OUTPUT
+            echo "NATIVE_MODULES_MAVEN_PARAM=[\" -pl ${MODULES_ARG} -Dall-modules ${EXCLUDE_LONG_RUNS}\"]" >> $GITHUB_OUTPUT
+          else
+            JVM_MODULES_GROUPS=(
+              " -P root-modules,cache-modules,spring-modules,http-modules,test-tooling-modules,messaging-modules,monitoring-modules"
+              " -P security-modules,sql-db-modules,websockets-modules,nosql-db-modules"
+            )
+          
+            NATIVE_MODULES_GROUPS=(
+              " -P root-modules,websockets-modules,test-tooling-modules,nosql-db-modules"
+              " -P http-modules,cache-modules"
+              " -P security-modules,spring-modules"
+              " -P sql-db-modules -pl env-info,sql-db/hibernate,sql-db/sql-app,sql-db/sql-app-compatibility,sql-db/multiple-pus,sql-db/panache-flyway,sql-db/hibernate-reactive"
+              " -P sql-db-modules -pl env-info,sql-db/reactive-rest-data-panache,sql-db/vertx-sql,sql-db/reactive-vanilla,sql-db/hibernate-fulltext-search,sql-db/narayana-transactions"
+              " -P messaging-modules,monitoring-modules"
+            )
+          
+            JVM_PARAMS=$(printf "'%s ${EXCLUDE_LONG_RUNS}', " "${JVM_MODULES_GROUPS[@]}")
+            JVM_PARAMS="[${JVM_PARAMS%, }]"
+            echo "JVM_MODULES_MAVEN_PARAM=${JVM_PARAMS}" >> $GITHUB_OUTPUT
+          
+            NATIVE_PARAMS=$(printf "'%s ${EXCLUDE_LONG_RUNS}', " "${NATIVE_MODULES_GROUPS[@]}")
+            NATIVE_PARAMS="[${NATIVE_PARAMS%, }]"
+            echo "NATIVE_MODULES_MAVEN_PARAM=${NATIVE_PARAMS}" >> $GITHUB_OUTPUT
+          fi
+    outputs:
+      JVM_MODULES_MAVEN_PARAM: ${{ steps.prepare-modules-mvn-param.outputs.JVM_MODULES_MAVEN_PARAM }}
+      NATIVE_MODULES_MAVEN_PARAM: ${{ steps.prepare-modules-mvn-param.outputs.NATIVE_MODULES_MAVEN_PARAM }}
+  linux-validate-format:
+    name: Linux - Validate format
+    runs-on: ubuntu-latest
+    needs: prepare-jvm-native-latest-modules-mvn-param
+    strategy:
+      matrix:
+        java: [ 17 ]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install JDK {{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
+          check-latest: true
+      - name: Build with Maven
+        run: |
+          mvn -V -B --no-transfer-progress -s .github/mvn-settings.xml verify -Dall-modules -Dvalidate-format -DskipTests -DskipITs -Dquarkus.container-image.build=false -Dquarkus.container-image.push=false
+  linux-build-jvm-latest:
+    name: PR - Linux - JVM build - Latest Version
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    needs: [linux-validate-format, prepare-jvm-native-latest-modules-mvn-param]
+    strategy:
+      matrix:
+        java: [ 17 ]
+        module-mvn-args: ${{ fromJSON(needs.prepare-jvm-native-latest-modules-mvn-param.outputs.JVM_MODULES_MAVEN_PARAM) }}
+    outputs:
+      has-flaky-tests: ${{steps.flaky-test-detector.outputs.has-flaky-tests}}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reclaim Disk Space
+        run: .github/ci-prerequisites.sh
+      - name: Install JDK {{ matrix.java }}
+        # Uses sha for added security since tags can be updated
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
+          check-latest: true
+          cache: 'maven'
+      - uses: ./.github/actions/prepare-quarkus-cli
+      - name: Build with Maven
+        run: |
+          mvn -fae -V -B --no-transfer-progress clean verify -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli" ${{ matrix.module-mvn-args }} -am
+      - name: Detect flaky tests
+        id: flaky-test-detector
+        if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
+        run: echo "has-flaky-tests=true" >> "$GITHUB_OUTPUT"
+      - name: Rename flaky test run report to avoid file name conflicts
+        id: rename-flaky-test-run-report
+        if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
+        shell: bash
+        run: mv target/flaky-run-report.json target/flaky-run-report-linux-jvm-latest.json
+      - name: Archive flaky run report
+        id: archive-flaky-run-report
+        if: ${{ hashFiles('**/flaky-run-report-linux-jvm-latest.json') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: flaky-run-report-linux-jvm-latest
+          path: target/flaky-run-report-linux-jvm-latest.json
+      - name: Zip Artifacts
+        if: failure()
+        run: |
+          zip -R artifacts-latest-linux-jvm${{ matrix.java }}.zip '*-reports/*'
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: artifacts-latest-linux-jvm${{ matrix.java }}
+          path: artifacts-latest-linux-jvm${{ matrix.java }}.zip
+  linux-build-native-latest:
+    name: PR - Linux - Native build - Latest Version
+    runs-on: ubuntu-latest
+    needs: [linux-validate-format, prepare-jvm-native-latest-modules-mvn-param]
+    strategy:
+      matrix:
+        java: [ 17 ]
+        module-mvn-args: ${{ fromJSON(needs.prepare-jvm-native-latest-modules-mvn-param.outputs.NATIVE_MODULES_MAVEN_PARAM) }}
+    outputs:
+      has-flaky-tests: ${{steps.flaky-test-detector.outputs.has-flaky-tests}}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reclaim Disk Space
+        run: .github/ci-prerequisites.sh
+      - name: Install JDK {{ matrix.java }}
+        # Uses sha for added security since tags can be updated
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
+          check-latest: true
+          cache: 'maven'
+      - uses: ./.github/actions/prepare-quarkus-cli
+      - name: Build with Maven
+        run: |
+          mvn -fae -V -B --no-transfer-progress \
+                      -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli" \
+                      ${{ matrix.module-mvn-args }} clean verify -Dnative -am
+      - name: Detect flaky tests
+        id: flaky-test-detector
+        if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
+        run: echo "has-flaky-tests=true" >> "$GITHUB_OUTPUT"
+      - name: Rename flaky test run report to avoid file name conflicts
+        id: rename-flaky-test-run-report
+        if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
+        shell: bash
+        run: mv target/flaky-run-report.json target/flaky-run-report-linux-native-latest.json
+      - name: Archive flaky run report
+        id: archive-flaky-run-report
+        if: ${{ hashFiles('**/flaky-run-report-linux-native-latest.json') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: flaky-run-report-linux-native-latest
+          path: target/flaky-run-report-linux-native-latest.json
+      - name: Zip Artifacts
+        if: failure()
+        run: |
+          zip -R artifacts-latest-linux-native${{ matrix.java }}.zip '*-reports/*'
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: artifacts-latest-linux-native${{ matrix.java }}
+          path: artifacts-latest-linux-native${{ matrix.java }}.zip
+  windows-build-jvm-latest:
+    name: PR - Windows - JVM build - Latest Version
+    runs-on: windows-latest
+    needs: [linux-validate-format, prepare-jvm-native-latest-modules-mvn-param]
+    strategy:
+      matrix:
+        java: [ 17 ]
+        module-mvn-args: ${{ fromJSON(needs.prepare-jvm-native-latest-modules-mvn-param.outputs.JVM_MODULES_MAVEN_PARAM) }}
+    outputs:
+      has-flaky-tests: ${{steps.flaky-test-detector.outputs.has-flaky-tests}}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install JDK {{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
+          check-latest: true
+          cache: 'maven'
+      - name: Set up Maven settings.xml
+        run: Copy-Item -Path ".github/quarkus-snapshots-mvn-settings.xml" -Destination "$env:USERPROFILE/.m2/settings.xml"
+      - name: Download Quarkus CLI
+        shell: bash
+        run: mvn -B --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:get -Dartifact=io.quarkus:quarkus-cli:999-SNAPSHOT:jar:runner
+      - name: Install Quarkus CLI
+        run: |
+          $quarkusCliFileContent = @"
+          @ECHO OFF
+          java -jar %HOMEDRIVE%%HOMEPATH%\.m2\repository\io\quarkus\quarkus-cli\999-SNAPSHOT\quarkus-cli-999-SNAPSHOT-runner.jar %*
+          "@
+          New-Item -Path "$(pwd)\quarkus-dev-cli.bat" -ItemType File
+          Set-Content -Path "$(pwd)\quarkus-dev-cli.bat" -Value $quarkusCliFileContent
+          ./quarkus-dev-cli.bat version
+      - name: Build in JVM mode
+        shell: bash
+        run: |
+          # Need to set UTF-8 as otherwise the cp1252 is used on GH windows runner
+          # TODO revisit this with Windows 2025 when available or when we move testing to JDK 21+ only
+          export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+          mvn -B --no-transfer-progress -fae clean verify ${{ matrix.module-mvn-args }} -am -D"include.quarkus-cli-tests" -D"ts.quarkus.cli.cmd=$(pwd)\quarkus-dev-cli.bat" -D"gh-action-disable-on-win"
+      - name: Detect flaky tests
+        id: flaky-test-detector
+        if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
+        shell: bash
+        run: echo "has-flaky-tests=true" >> "$GITHUB_OUTPUT"
+      - name: Rename flaky test run report to avoid file name conflicts
+        id: rename-flaky-test-run-report
+        if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
+        shell: bash
+        run: mv target/flaky-run-report.json target/flaky-run-report-windows-jvm-latest.json
+      - name: Archive flaky run report
+        id: archive-flaky-run-report
+        if: ${{ hashFiles('**/flaky-run-report-windows-jvm-latest.json') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: flaky-run-report-windows-jvm-latest
+          path: target/flaky-run-report-windows-jvm-latest.json
+      - name: Zip Artifacts
+        shell: bash
+        if: failure()
+        run: |
+          # Disambiguate windows find from cygwin find
+          /usr/bin/find . -name '*-reports/*' -type d | tar -czf artifacts-latest-windows-jvm${{ matrix.java }}.tar -T -
+      - name: Archive artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-latest-windows-jvm${{ matrix.java }}
+          path: artifacts-latest-windows-jvm${{ matrix.java }}.tar
+  detect-flaky-tests:
+    name: Detect flaky tests
+    runs-on: ubuntu-latest
+    needs: [linux-build-jvm-latest, linux-build-native-latest, windows-build-jvm-latest]
+    steps:
+      - name: Create file with information about job with flaky test
+        if: needs.linux-build-jvm-latest.outputs.has-flaky-tests == 'true' || needs.linux-build-native-latest.outputs.has-flaky-tests == 'true' || needs.windows-build-jvm-latest.outputs.has-flaky-tests == 'true'
+        run: |
+          job_name=""
+          if $IS_LINUX_JVM
+          then
+          job_name+=", 'PR - Linux - JVM build - Latest Version'"
+          fi
+          if $IS_LINUX_NATIVE
+          then
+          job_name+=", 'PR - Linux - Native build - Latest Version'"
+          fi
+          if $IS_WINDOWS_JVM
+          then
+          job_name+=", 'PR - Windows - JVM build - Latest Version'"
+          fi
+          echo "${job_name:2}" > jobs-with-flaky-tests
+        env:
+          IS_LINUX_JVM: ${{ needs.linux-build-jvm-latest.outputs.has-flaky-tests == 'true' }}
+          IS_LINUX_NATIVE: ${{ needs.linux-build-native-latest.outputs.has-flaky-tests == 'true' }}
+          IS_WINDOWS_JVM: ${{ needs.windows-build-jvm-latest.outputs.has-flaky-tests == 'true' }}
+      - name: Archive 'jobs-with-flaky-tests' artifact
+        if: ${{ hashFiles('**/jobs-with-flaky-tests') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: jobs-with-flaky-tests
+          path: jobs-with-flaky-tests
+      - name: Save PR number
+        if: ${{ hashFiles('**/jobs-with-flaky-tests') != '' }}
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+        run: echo $PR_NUMBER > pr-number
+      - name: Archive PR number
+        uses: actions/upload-artifact@v4
+        if: ${{ hashFiles('**/jobs-with-flaky-tests') != '' }}
+        with:
+          name: pr-number
+          path: pr-number
