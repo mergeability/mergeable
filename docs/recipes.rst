@@ -298,4 +298,23 @@ Checks that the PR's draft state is false before running actions.
           - do: labels
             add: 'Non-Compliant'
           - do: close
-      
+
+Weekend Deployment Freeze
+""""""""""""""""""""""""""
+Block pull request merges during weekend hours to prevent deployments during low-coverage periods.
+
+::
+
+    version: 2
+    mergeable:
+      - when: pull_request.*, pull_request_review.*
+        name: "Weekend Freeze Window"
+        validate:
+          - do: timeWindow
+            freeze_periods:
+              - start_day: "Fri"
+                start_hour: 17        # 5pm EST
+                end_day: "Mon"
+                end_hour: 9           # 9am EST
+                time_zone: "America/New_York"
+                message: "Pull requests cannot be merged during weekend freeze (Friday 5pm - Monday 9am EST). Please wait until Monday morning."

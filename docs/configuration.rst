@@ -130,6 +130,7 @@ Validator List
     validators/project.rst
     validators/size.rst
     validators/stale.rst
+    validators/timeWindow.rst
     validators/title.rst
 
 Options
