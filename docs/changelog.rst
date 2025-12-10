@@ -1,5 +1,6 @@
 CHANGELOG
 =====================================
+| December 10, 2025 : fix: codeowners team again `#789 <https://github.com/mergeability/mergeable/pull/789>`_
 | July 10, 2024: feat: Add trigger 'issue_comment' in validators `age`, `assignee`, `author`, `description`, `label`, `title` `#766 <https://github.com/mergeability/mergeable/pull/766>`_
 | June 25 2024: feat: Add buildpacks for building docker image `#764 <https://github.com/mergeability/mergeable/pull/764>`_
 | June 20, 2024: feat: Add options 'one_of' and 'none_of'. Support in filters `payload`, `author`, and in action `lastComment` to filter comments authors `#757 <https://github.com/mergeability/mergeable/pull/757>`_
