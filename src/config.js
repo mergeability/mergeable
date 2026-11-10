@@ -1,23 +1,14 @@
-const AgentOwners = require('./agentowners');
+const fs = require('fs');
+const path = require('path');
 
-function loadConfig(configObj = {}) {
-  const config = { ...configObj };
-  
-  if (config.agentowners || config.AGENTOWNERS) {
-    config.agentownersPolicy = new AgentOwners(config.agentowners || config.AGENTOWNERS);
-  } else {
-    config.agentownersPolicy = new AgentOwners([]);
+function loadAgentOwnersConfig(baseDir = process.cwd()) {
+  const configPath = path.join(baseDir, 'AGENTOWNERS');
+  if (fs.existsSync(configPath)) {
+    return fs.readFileSync(configPath, 'utf8');
   }
-
-  return config;
-}
-
-function parseAgentOwners(content) {
-  return AgentOwners.parse(content);
+  return null;
 }
 
 module.exports = {
-  loadConfig,
-  parseAgentOwners,
-  AgentOwners
+  loadAgentOwnersConfig
 };
