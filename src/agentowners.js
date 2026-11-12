@@ -6,20 +6,20 @@ function parseAgentOwners(content) {
   const lines = content.split('\n');
   let currentRule = null;
 
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('#')) continue;
+  for (let line of lines) {
+    line = line.trim();
+    if (!line || line.startsWith('#')) continue;
 
-    if (trimmed.startsWith('- pattern:')) {
+    if (line.startsWith('- pattern:')) {
       if (currentRule) rules.push(currentRule);
-      currentRule = { pattern: trimmed.replace('- pattern:', '').trim().replace(/['"]+/g, '') };
+      currentRule = { pattern: line.replace('- pattern:', '').trim().replace(/['"]/g, '') };
     } else if (currentRule) {
-      if (trimmed.startsWith('agent:')) {
-        currentRule.agent = trimmed.replace('agent:', '').trim().replace(/['"]+/g, '');
-      } else if (trimmed.startsWith('decision:')) {
-        currentRule.decision = trimmed.replace('decision:', '').trim().replace(/['"]+/g, '');
-      } else if (trimmed.startsWith('reason:')) {
-        currentRule.reason = trimmed.replace('reason:', '').trim().replace(/['"]+/g, '');
+      if (line.startsWith('agent:')) {
+        currentRule.agent = line.replace('agent:', '').trim().replace(/['"]/g, '');
+      } else if (line.startsWith('decision:')) {
+        currentRule.decision = line.replace('decision:', '').trim().replace(/['"]/g, '');
+      } else if (line.startsWith('reason:')) {
+        currentRule.reason = line.replace('reason:', '').trim().replace(/['"]/g, '');
       }
     }
   }
@@ -27,39 +27,29 @@ function parseAgentOwners(content) {
   return { rules };
 }
 
-function matchPattern(filePath, pattern) {
-  const regexPattern = pattern
-    .replace(/\./g, '\\.')
-    .replace(/\*\*\//g, '(?:.*\/)?')
-    .replace(/\*\*/g, '.*')
-    .replace(/\*/g, '[^\/]*');
-  const regex = new RegExp(`^${regexPattern}$`);
-  return regex.test(filePath);
-}
+function evaluatePolicy(filePath, agentName, configPath = '.agentowners') {
+  if (!fs.existsSync(configPath)) {
+    return { decision: 'allow', reason: 'No AGENTOWNERS policy found' };
+  }
 
-function evaluatePolicy(configContent, files, agentName) {
-  const policy = parseAgentOwners(configContent);
-  const results = [];
+  const content = fs.readFileSync(configPath, 'utf8');
+  const policy = parseAgentOwners(content);
 
-  for (const file of files) {
-    let matched = false;
-    for (const rule of policy.rules) {
-      if (rule.agent && rule.agent !== agentName) continue;
-      if (matchPattern(file, rule.pattern)) {
-        results.push({ file, decision: rule.decision, reason: rule.reason, rule });
-        matched = true;
-        break;
-      }
-    }
-    if (!matched) {
-      results.push({ file, decision: 'allow', reason: 'Default allow' });
+  for (const rule of policy.rules) {
+    if (rule.agent && rule.agent !== agentName && rule.agent !== '*') continue;
+    
+    // Simple glob matching support (e.g. src/core/** or docs/**)
+    const regexPattern = rule.pattern
+      .replace(/\*\*/g, '.*')
+      .replace(/\*/g, '[^/]*');
+    const regex = new RegExp(`^${regexPattern}$`);
+
+    if (regex.test(filePath)) {
+      return { decision: rule.decision || 'allow', reason: rule.reason || 'Matched rule' };
     }
   }
-  return results;
+
+  return { decision: 'allow', reason: 'Default allow' };
 }
 
-module.exports = {
-  parseAgentOwners,
-  matchPattern,
-  evaluatePolicy
-};
+module.exports = { parseAgentOwners, evaluatePolicy };
